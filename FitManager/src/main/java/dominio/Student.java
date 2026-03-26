@@ -1,6 +1,7 @@
 package dominio;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
@@ -12,6 +13,16 @@ public class Student {
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private boolean active;
 
+    /*construtor sem dados, gera objetos sem dados*/
+    public Student() {
+        this.name = "";
+        this.cpf = "";
+        this.contact = "";
+        this.birthDate = LocalDate.of(2000, Month.JANUARY, 1);
+        this.active = false;
+    }
+    
+    /*construtor com dados, gera objetos com dados*/
     public Student(String name, String cpf, String contact, LocalDate birthDate, boolean active) {
         this.name = name;
         this.cpf = cpf;
@@ -20,6 +31,7 @@ public class Student {
         this.active = active;
     }
     
+    /*setters*/
     public void setName(String name) {
         this.name = name;
     }
@@ -44,6 +56,7 @@ public class Student {
         this.active = false;
     }
     
+    /*getters*/
     public String getName() {
         return name;
     }
@@ -64,6 +77,7 @@ public class Student {
         return active;
     }
     
+    /*retorna true se valido, false para invalido*/
     public static boolean validateCpf(String cpf){
         /*tratamento em regex para tirar pontos e traços*/
         cpf = cpf.replaceAll("\\D", "");
@@ -116,6 +130,7 @@ public class Student {
         return true;
     }
     
+    /*retorna a idade do objeto*/
     public int calculateAge(){
         LocalDate today = LocalDate.now();
         Period entireAge = Period.between(birthDate, today);
