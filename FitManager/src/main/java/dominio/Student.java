@@ -10,7 +10,7 @@ public class Student {
     private String contact;
     private LocalDate birthDate;
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    boolean active;
+    private boolean active;
 
     public Student(String name, String cpf, String contact, LocalDate birthDate, boolean active) {
         this.name = name;
@@ -35,11 +35,15 @@ public class Student {
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
-
-    public void setActive(boolean active) {
-        this.active = active;
+    
+    public void activate(){
+        this.active = true;
     }
-
+    
+    public void deactivate(){
+        this.active = false;
+    }
+    
     public String getName() {
         return name;
     }
