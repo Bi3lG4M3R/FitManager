@@ -14,7 +14,7 @@ public class Payment {
     public Payment() {
         this.date = LocalDate.of(2000, Month.JANUARY, 1);
         this.amount = 00.00;
-        this.type = PaymentType(1);
+        this.type = PaymentType.valueOf("PIX");
         this.description = "";
     }
     
@@ -33,8 +33,12 @@ public class Payment {
         this.amount = amount;
     }
 
-    public void setType(PaymentType type) {
+    public void setTypeType(PaymentType type) {
         this.type = type;
+    }
+    
+    public void setTypeString(String type) {
+        this.type = PaymentType.valueOf(type.toUpperCase());
     }
 
     public void setDescription(String description) {
@@ -49,17 +53,15 @@ public class Payment {
         return amount;
     }
 
-    public PaymentType getType() {
+    public String getTypeString() {
+        return type.name();
+    }
+    
+    public PaymentType getTypeType() {
         return type;
     }
 
     public String getDescription() {
         return description;
     }
-
-    private PaymentType PaymentType(int i) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-    
-    
 }
