@@ -1,5 +1,6 @@
-package dominio;
+package domain.payment;
 
+import domain.payment.PaymentType;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;

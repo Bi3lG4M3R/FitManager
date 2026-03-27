@@ -1,4 +1,4 @@
-package dominio;
+package domain;
 
 import java.time.LocalDate;
 import java.time.Month;

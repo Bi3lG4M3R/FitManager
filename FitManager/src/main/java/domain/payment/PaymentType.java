@@ -1,15 +1,24 @@
-package dominio;
+package domain.payment;
 
 public enum PaymentType {
-    PIX(1), CREDIT_CARD(2), DEBIT_CARD(3), CASH(4);
-    
+    PIX(1, "O método escolhido foi o Pix"),
+    CREDIT_CARD(2, "O método escolhido foi o Cartão de Crédito"),
+    DEBIT_CARD(3, "O método escolhido foi o Cartão de Débito"),
+    CASH(4, "O método escolhido foi o Dinheiro");
+
     private final int option;
-    
-    PaymentType(int option){
+    private final String description;
+        
+    PaymentType(int option, String description){
         this.option = option;
+        this.description = description;
     }
     
     public int getValorOpcao(){
         return option;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }
