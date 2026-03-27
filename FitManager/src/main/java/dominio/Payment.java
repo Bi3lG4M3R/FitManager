@@ -15,7 +15,7 @@ public class Payment {
         this.date = LocalDate.of(2000, Month.JANUARY, 1);
         this.amount = 00.00;
         this.type = PaymentType(1);
-        this.description = description;
+        this.description = "";
     }
     
     public Payment(LocalDate date, double amount, PaymentType type, String description) {
