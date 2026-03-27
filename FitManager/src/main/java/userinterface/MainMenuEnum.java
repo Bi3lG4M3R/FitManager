@@ -1,8 +1,8 @@
 package userinterface;
 
-/* Menu principal do programa */
+/* Menu principal */
 
-public enum MainMenu {
+public enum MainMenuEnum {
 
     MANAGE_STUDENTS (1, "Gerenciar Alunos"),
     MANAGE_PLANS (2, "Gerenciar Planos"),
@@ -13,8 +13,8 @@ public enum MainMenu {
 
     private int option;
     private String description;
-
-    MainMenu(int option, String description) {
+    
+    MainMenuEnum(int option, String description) {
         this.option = option;
         this.description = description;
     }
