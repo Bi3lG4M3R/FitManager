@@ -34,12 +34,8 @@ public class Payment {
         this.amount = amount;
     }
 
-    public void setTypeType(PaymentType type) {
+    public void setType(PaymentType type) {
         this.type = type;
-    }
-    
-    public void setTypeString(String type) {
-        this.type = PaymentType.valueOf(type.toUpperCase());
     }
 
     public void setDescription(String description) {
