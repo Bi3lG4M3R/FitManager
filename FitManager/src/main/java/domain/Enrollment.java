@@ -61,7 +61,6 @@ public class Enrollment {
     public void cancel(String reason) {
         this.status = EnrollmentStatus.CANCELLED;
         this.cancellationDate = LocalDate.now();
-        //operador ternário.
         this.cancellationReason = (reason != null && !reason.isBlank()) ? reason : "Não informado";
     }
 
