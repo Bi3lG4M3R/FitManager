@@ -12,7 +12,7 @@ public class EnrollmentService {
     public ArrayList<Enrollment> enrollments; 
     static int nextCode;
     public OperationResult enroll(Student student, Plan plan, LocalDate startDate, 
-            int duration, Double amount, PaymentType paymentType, String paymentDescription){
+            int duration, double amount, PaymentType paymentType, String paymentDescription){
         if(plan.getMinimumDurationMonths() > duration){
             return new OperationResult(false, "Duration shorter than the plan's minimum.");
         }
