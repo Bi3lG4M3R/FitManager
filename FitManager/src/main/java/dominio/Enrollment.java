@@ -40,7 +40,7 @@ public class Enrollment {
         payments.add(payment);
     }
     
-    //Soma todos pagamentos
+    /*Soma todos pagamentos do array e coloca na variavel*/
     public double calculateTotalPaid() {
         double total = 0;
         for (Payment payment : payments) {
@@ -49,15 +49,15 @@ public class Enrollment {
         return total;
     }
 
-    /**Resultado positivo = saldo pendente; resultado negativo = crédito 
-     * Calculado dinamicamente a partir dos pagamentos — nunca armazenado como atributo separado
-     * para evitar inconsistências entre o saldo e a lista de pagamentos*/
+    /*Resultado positivo = saldo pendente; resultado negativo = crédito 
+     Calculado dinamicamente a partir dos pagamentos — nunca armazenado como atributo separado
+     para evitar inconsistências entre o saldo e a lista de pagamentos*/
     public double calculateBalance() {
         return totalPrice - calculateTotalPaid();
     }
 
-    /**CANCEL. A transição é unidirecional: CANCELLED não pode voltar para ACTIVE.
-     * Registra opcionalmente um motivo para fins de histórico*/
+    /**A transição é unidirecional: CANCELLED não pode voltar para ACTIVE.
+    Registra opcionalmente um motivo para fins de histórico*/
     public void cancel(String reason) {
         this.status = EnrollmentStatus.CANCELLED;
         this.cancellationDate = LocalDate.now();
@@ -66,23 +66,45 @@ public class Enrollment {
     }
 
     public long getMonthsUsed() {
-        // Se já foi cancelada, conta até a data de cancelamento; caso contrário, até hoje
+        /* Se já foi cancelada, conta até a data de cancelamento; caso contrário, até hoje*/
         LocalDate end = (status == EnrollmentStatus.CANCELLED && cancellationDate != null)? cancellationDate : LocalDate.now();
-        //Retorna o tempo de permanencia da matricula
+        /*Retorna o tempo de permanencia da matricula*/
         return ChronoUnit.MONTHS.between(startDate, end);
     }
 
     /* Getters*/
-    public int getCode(){return code; }
-    public Student getStudent() { return student; }
-    public Plan getPlan() { return plan; }
-    public LocalDate getStartDate() { return startDate; }
-    public LocalDate getEndDate() { return endDate; }
-    public int getDurationMonths() { return durationMonths; }
-    public double getTotalPrice() { return totalPrice; }
-    public EnrollmentStatus getStatus() { return status; }
-    public List<Payment> getPayments() { return Collections.unmodifiableList(payments); }
-    public LocalDate getCancellationDate() { return cancellationDate; }
-    public String getCancellationReason() { return cancellationReason; }
+    public int getCode(){
+        return code; 
+    }
+    public Student getStudent() { 
+        return student; 
+    }
+    public Plan getPlan() { 
+        return plan; 
+    }
+    public LocalDate getStartDate() { 
+        return startDate; 
+    }
+    public LocalDate getEndDate() { 
+        return endDate; 
+    }
+    public int getDurationMonths() { 
+        return durationMonths; 
+    }
+    public double getTotalPrice() { 
+        return totalPrice; 
+    }
+    public EnrollmentStatus getStatus() { 
+        return status; 
+    }
+    public List<Payment> getPayments() { 
+        return Collections.unmodifiableList(payments); 
+    }
+    public LocalDate getCancellationDate() { 
+        return cancellationDate; 
+    }
+    public String getCancellationReason() { 
+        return cancellationReason; 
+    }
 
 }
