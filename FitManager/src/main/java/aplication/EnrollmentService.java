@@ -49,5 +49,18 @@ public class EnrollmentService {
         
     }
 
-   
+    public boolean hasActiveEnrollment(String cpf){
+        int i=0;
+        while( enrollments.size() > i && !enrollments.get(i).getStudent().getCpf().equals(cpf)){
+            i++;
+        }
+        if(enrollments.size()==i){
+            return false;
+        }
+        Enrollment enrollment = enrollments.get(i);
+        if(enrollment.getStatus()!= EnrollmentStatus.ACTIVE){
+            return false;
+        }
+        return true;
+    }
 }   
