@@ -2,6 +2,7 @@ package aplication;
 
 import domain.Payment;
 import domain.Enrollment;
+import domain.EnrollmentStatus;
 import domain.Student;
 import domain.Plan;
 import domain.PaymentType;
@@ -27,4 +28,26 @@ public class EnrollmentService {
         return new OperationResult(true, "Registration successful!", enrollment);
         
     }
+    
+    public OperationResult registerPayment(int code, double amount, PaymentType paymentType, String paymentDescription){
+        int i=0;
+        while( i < enrollments.size() && enrollments.get(i).getCode()!=code){
+            i++;
+        }
+        if(i == enrollments.size()){
+            return new OperationResult(false, "Erro");
+        }
+        Enrollment enrollment = enrollments.get(i);
+        
+        if(enrollment.getStatus() != EnrollmentStatus.ACTIVE || amount <= 0){
+            return new OperationResult(false, "Erro");
+        }
+        Payment payment = new Payment(amount, paymentType, paymentDescription);
+        enrollment.registerPayment(payment);
+        
+        return new OperationResult(true, "Pagamento Registrado");
+        
+    }
+
+   
 }   
