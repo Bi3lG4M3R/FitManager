@@ -30,14 +30,14 @@ public class EnrollmentService {
     }
     
     public OperationResult registerPayment(int code, double amount, PaymentType paymentType, String paymentDescription){
-        int i=0;
-        while( i < enrollments.size() && enrollments.get(i).getCode()!=code){
-            i++;
+        int index=0;
+        while( index < enrollments.size() && enrollments.get(index).getCode()!=code){
+            index++;
         }
-        if(i == enrollments.size()){
+        if(index == enrollments.size()){
             return new OperationResult(false, "Erro");
         }
-        Enrollment enrollment = enrollments.get(i);
+        Enrollment enrollment = enrollments.get(index);
         
         if(enrollment.getStatus() != EnrollmentStatus.ACTIVE || amount <= 0){
             return new OperationResult(false, "Erro");
@@ -48,20 +48,31 @@ public class EnrollmentService {
         return new OperationResult(true, "Pagamento Registrado");
         
     }
-
+    
+    public Enrollment findByCode(int code){
+        int index = 0;
+        while( index < enrollments.size() && enrollments.get(index).getCode()!=code){
+            index++;
+        }
+        if(index != enrollments.size()){
+            return enrollments.get(index);
+        }
+        return null;
+    } 
+    
     public ArrayList<Enrollment> listEnrollment(){
         return enrollments;
     }
     
     public boolean hasActiveEnrollment(String cpf){
-        int i=0;
-        while( enrollments.size() > i && !enrollments.get(i).getStudent().getCpf().equals(cpf)){
-            i++;
+        int index=0;
+        while( enrollments.size() > index && !enrollments.get(index).getStudent().getCpf().equals(cpf)){
+            index++;
         }
-        if(enrollments.size()==i){
+        if(enrollments.size()==index){
             return false;
         }
-        Enrollment enrollment = enrollments.get(i);
+        Enrollment enrollment = enrollments.get(index);
         if(enrollment.getStatus()!= EnrollmentStatus.ACTIVE){
             return false;
         }
