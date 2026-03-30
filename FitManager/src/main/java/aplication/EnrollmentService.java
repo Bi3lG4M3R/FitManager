@@ -49,6 +49,10 @@ public class EnrollmentService {
         
     }
 
+    public ArrayList<Enrollment> listEnrollment(){
+        return enrollments;
+    }
+    
     public boolean hasActiveEnrollment(String cpf){
         int i=0;
         while( enrollments.size() > i && !enrollments.get(i).getStudent().getCpf().equals(cpf)){
