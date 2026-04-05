@@ -73,9 +73,6 @@ public class EnrollmentService {
             return false;
         }
         Enrollment enrollment = enrollments.get(index);
-        if(enrollment.getStatus()!= EnrollmentStatus.ACTIVE){
-            return false;
-        }
-        return true;
+        return enrollment.getStatus() == EnrollmentStatus.ACTIVE;
     }
 }   
