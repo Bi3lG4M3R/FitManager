@@ -14,7 +14,7 @@ public enum PaymentType {
         this.description = description;
     }
     
-    public int getValorOpcao(){ return option; }
+    public int getValueOpcao(){ return option; }
 
     public String getDescription() { return description; }
 }

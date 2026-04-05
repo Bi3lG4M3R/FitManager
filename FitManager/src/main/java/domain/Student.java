@@ -34,7 +34,10 @@ public class Student {
     /*setters*/
     public void setName(String name) { this.name = name; }
 
-    public void setCpf(String cpf) { this.cpf = cpf; }
+    public void setCpf(String cpf) { 
+        cpf = cpf.replaceAll("\\D", "");
+        this.cpf = cpf;
+    }
 
     public void setContact(String contact) { this.contact = contact; }
 
@@ -48,6 +51,10 @@ public class Student {
     public String getName() { return name; }
 
     public String getCpf() { return cpf; }
+    
+    public String getFormattedCpf() { 
+        return this.cpf.replaceAll("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4");
+    }
 
     public String getContact() { return contact; }
 

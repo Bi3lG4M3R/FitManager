@@ -1,11 +1,11 @@
 package domain.plan;
 
 public class Plan {
-    String name;
-    String description;
-    PlanType type;
-    int minDurationMonths;
-    double pricePerMonth;
+    private String name;
+    private String description;
+    private PlanType type;
+    private int minDurationMonths;
+    private double pricePerMonth;
 
     /*contrutores*/
     public Plan() {
@@ -33,7 +33,7 @@ public class Plan {
 
     public void setMinDurationMonths(int minDurationMonths) { this.minDurationMonths = minDurationMonths; }
 
-    public void setPricePerMonth(double pricePerMonth) { this.pricePerMonth = pricePerMonth; }
+    public void updatePrice(double newPrice) { this.pricePerMonth = newPrice; }
 
     /*getters*/
     public String getName() { return name; }
@@ -46,5 +46,5 @@ public class Plan {
 
     public double getPricePerMonth() { return pricePerMonth; }
     
-    
+    public double calculateTotalPrice(int months){ return months * this.pricePerMonth; }
 }

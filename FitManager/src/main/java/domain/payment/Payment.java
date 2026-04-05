@@ -6,11 +6,11 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 
 public class Payment {
-    LocalDate date;
-    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    double amount;
-    PaymentType type;
-    String description;
+    private LocalDate date;
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private double amount;
+    private PaymentType type;
+    private String description;
 
     public Payment() {
         this.date = LocalDate.of(2000, Month.JANUARY, 1);
@@ -38,9 +38,7 @@ public class Payment {
 
     public double getAmount() { return amount; }
 
-    public String getTypeString() { return type.name(); }
-    
-    public PaymentType getTypeType() { return type; }
+    public PaymentType getType() { return type; }
 
     public String getDescription() { return description; }
 }
