@@ -25,46 +25,26 @@ public class Plan {
     }
     
     /*setters*/
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
+    
+    public void setDescription(String description) { this.description = description; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setType(PlanType type) { this.type = type; }
 
-    public void setType(PlanType type) {
-        this.type = type;
-    }
+    public void setMinDurationMonths(int minDurationMonths) { this.minDurationMonths = minDurationMonths; }
 
-    public void setMinDurationMonths(int minDurationMonths) {
-        this.minDurationMonths = minDurationMonths;
-    }
-
-    public void setPricePerMonth(double pricePerMonth) {
-        this.pricePerMonth = pricePerMonth;
-    }
+    public void setPricePerMonth(double pricePerMonth) { this.pricePerMonth = pricePerMonth; }
 
     /*getters*/
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
 
-    public PlanType getType() {
-        return type;
-    }
+    public PlanType getType() { return type; }
 
-    public int getMinDurationMonths() {
-        return minDurationMonths;
-    }
+    public int getMinDurationMonths() { return minDurationMonths; }
 
-    public double getPricePerMonth() {
-        return pricePerMonth;
-    }
+    public double getPricePerMonth() { return pricePerMonth; }
     
     
 }

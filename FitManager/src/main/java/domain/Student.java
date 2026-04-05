@@ -32,50 +32,28 @@ public class Student {
     }
     
     /*setters*/
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
+    public void setCpf(String cpf) { this.cpf = cpf; }
 
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
+    public void setContact(String contact) { this.contact = contact; }
 
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
+    public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
     
-    public void activate(){
-        this.active = true;
-    }
+    public void activate(){ this.active = true; }
     
-    public void deactivate(){
-        this.active = false;
-    }
+    public void deactivate(){ this.active = false; }
     
     /*getters*/
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public String getCpf() {
-        return cpf;
-    }
+    public String getCpf() { return cpf; }
 
-    public String getContact() {
-        return contact;
-    }
+    public String getContact() { return contact; }
 
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
+    public LocalDate getBirthDate() { return birthDate; }
 
-    public boolean isActive() {
-        return active;
-    }
+    public boolean isActive() { return active; }
     
     /*retorna true se valido, false para invalido*/
     public static boolean validateCpf(String cpf){

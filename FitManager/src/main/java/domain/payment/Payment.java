@@ -26,39 +26,21 @@ public class Payment {
         this.description = description;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
+    public void setDate(LocalDate date) { this.date = date; }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
+    public void setAmount(double amount) { this.amount = amount; }
 
-    public void setType(PaymentType type) {
-        this.type = type;
-    }
+    public void setType(PaymentType type) { this.type = type; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setDescription(String description) { this.description = description; }
 
-    public LocalDate getDate() {
-        return date;
-    }
+    public LocalDate getDate() { return date; }
 
-    public double getAmount() {
-        return amount;
-    }
+    public double getAmount() { return amount; }
 
-    public String getTypeString() {
-        return type.name();
-    }
+    public String getTypeString() { return type.name(); }
     
-    public PaymentType getTypeType() {
-        return type;
-    }
+    public PaymentType getTypeType() { return type; }
 
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
 }
