@@ -64,6 +64,18 @@ public class EnrollmentService {
         return enrollments;
     }
     
+    public OperationResult cancel(int code, String reason){
+        Enrollment enrollment = findByCode(code); 
+        if(enrollment==null){
+            return new OperationResult(false, "Erro.");
+        }
+        if(enrollment.getStatus()!=EnrollmentStatus.ACTIVE){
+            return new OperationResult(false, "Matricula ja cancelada.");
+        }
+        enrollment.cancel(reason);
+        return new OperationResult(true, "Matricula  cancelada!!");
+    }
+    
     public boolean hasActiveEnrollment(String cpf){
         int index=0;
         while( enrollments.size() > index && !enrollments.get(index).getStudent().getCpf().equals(cpf)){
