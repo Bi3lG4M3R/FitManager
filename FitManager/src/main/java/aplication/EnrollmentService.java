@@ -49,6 +49,15 @@ public class EnrollmentService {
         
     }
     
+    public Enrollment findActiveByStudent(String cpf){
+        for(Enrollment enrollment : enrollments){
+            if(enrollment.getStudent().getCpf().equals(cpf) && enrollment.getStatus() == EnrollmentStatus.ACTIVE){
+                return enrollment;
+            }
+        }
+        return null;
+    }
+    
     public Enrollment findByCode(int code){
         int index = 0;
         while( index < enrollments.size() && enrollments.get(index).getCode()!=code){
