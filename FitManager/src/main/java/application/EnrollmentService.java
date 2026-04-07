@@ -1,4 +1,4 @@
-package aplication;
+package application;
 
 import domain.Payment;
 import domain.Enrollment;
