@@ -2,9 +2,9 @@
   <img src="https://i.imgur.com/7RagzNi.png" width="300"/>
 </p>
 
-# 💪 FitManager
+# 💪 O que é a FitManager?
 
-Sistema de gerenciamento para academias desenvolvido como parte da disciplina da UFMS.
+É um Sistema de gerenciamento para academias desenvolvido como parte da disciplina "Programação Orientada a Objetos" da Univerdade Federal de Mato Grosso do Sul da cidade Três Lagoas-MS, mistrada pelo Doutor Humberto Lidio Antonelli.
 
 ## 📌 Sobre o projeto
 
