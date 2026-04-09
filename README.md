@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://i.imgur.com/8hJVVEk.png" width="300"/>
+</p>
+
 # 💪 FitManager
 
 Sistema de gerenciamento para academias desenvolvido como parte da disciplina da UFMS.
