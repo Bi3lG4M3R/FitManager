@@ -5,9 +5,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import domain.plan.Plan;
+import domain.payment.Payment;
 
 public class Enrollment {
-
     private int code;
     private Student student;
     private Plan plan;
@@ -21,7 +22,6 @@ public class Enrollment {
     private LocalDate cancellationDate;
     private String cancellationReason;
     
-
     public Enrollment(int code, Student student, Plan plan, LocalDate startDate, int durationMonths) {
         this.code = code;
         this.student = student;
@@ -36,9 +36,7 @@ public class Enrollment {
         this.payments = new ArrayList<>();
     }
 
-    public void registerPayment(Payment payment) {
-        payments.add(payment);
-    }
+    public void registerPayment(Payment payment) { payments.add(payment); }
     
     /*Soma todos pagamentos do array e coloca na variavel*/
     public double calculateTotalPaid() {
@@ -52,9 +50,7 @@ public class Enrollment {
     /*Resultado positivo = saldo pendente; resultado negativo = crédito 
      Calculado dinamicamente a partir dos pagamentos — nunca armazenado como atributo separado
      para evitar inconsistências entre o saldo e a lista de pagamentos*/
-    public double calculateBalance() {
-        return totalPrice - calculateTotalPaid();
-    }
+    public double calculateBalance() { return totalPrice - calculateTotalPaid(); }
 
     /**A transição é unidirecional: CANCELLED não pode voltar para ACTIVE.
     Registra opcionalmente um motivo para fins de histórico*/
@@ -72,38 +68,25 @@ public class Enrollment {
     }
 
     /* Getters*/
-    public int getCode(){
-        return code; 
-    }
-    public Student getStudent() { 
-        return student; 
-    }
-    public Plan getPlan() { 
-        return plan; 
-    }
-    public LocalDate getStartDate() { 
-        return startDate; 
-    }
-    public LocalDate getEndDate() { 
-        return endDate; 
-    }
-    public int getDurationMonths() { 
-        return durationMonths; 
-    }
-    public double getTotalPrice() { 
-        return totalPrice; 
-    }
-    public EnrollmentStatus getStatus() { 
-        return status; 
-    }
-    public List<Payment> getPayments() { 
-        return Collections.unmodifiableList(payments); 
-    }
-    public LocalDate getCancellationDate() { 
-        return cancellationDate; 
-    }
-    public String getCancellationReason() { 
-        return cancellationReason; 
-    }
-
+    public int getCode(){ return code; }
+    
+    public Student getStudent() { return student; }
+    
+    public Plan getPlan() { return plan; }
+    
+    public LocalDate getStartDate() { return startDate; }
+    
+    public LocalDate getEndDate() { return endDate; }
+    
+    public int getDurationMonths() { return durationMonths; }
+    
+    public double getTotalPrice() { return totalPrice; }
+    
+    public EnrollmentStatus getStatus() { return status; }
+    
+    public List<Payment> getPayments() { return Collections.unmodifiableList(payments); }
+    
+    public LocalDate getCancellationDate() { return cancellationDate; }
+    
+    public String getCancellationReason() { return cancellationReason; }
 }
