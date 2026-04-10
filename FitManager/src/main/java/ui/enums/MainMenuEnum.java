@@ -1,4 +1,4 @@
-package userinterface;
+package ui.enums;
 
 /* Menu principal */
 
@@ -11,8 +11,8 @@ public enum MainMenuEnum {
     EXIT (0, "Sair");
 
 
-    private int option;
-    private String description;
+    private final int option;
+    private final String description;
     
     MainMenuEnum(int option, String description) {
         this.option = option;
@@ -29,6 +29,14 @@ public enum MainMenuEnum {
         return description;
     }
 
-
+    // Metodo para selecionar uma opcao do menu a partir de um int
+    public static MainMenuEnum chooseFromInt(int option) {
+        for (MainMenuEnum menuOp : MainMenuEnum.values()) {
+            if (menuOp.getOption() == option) {
+                return menuOp;
+            }
+        }
+        return null; // caso a opcao nao exista devolve null
+    }
 
 }

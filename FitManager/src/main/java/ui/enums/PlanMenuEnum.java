@@ -1,0 +1,42 @@
+package ui.enums;
+
+/* Menu para gerenciar planos */
+
+public enum PlanMenuEnum {
+
+    REGISTER_NEW_PLAN (1, "Cadastrar novo plano"),
+    CHECK_BY_NAME (2, "Consultar por nome"),
+    CHANGE_PRICE (3, "Alterar preço"),
+    VIEW_ALL (4, "Listar todos"),
+    EXIT (0, "Sair");
+
+
+    private final int option;
+    private final String description;
+    
+    PlanMenuEnum(int option, String description) {
+        this.option = option;
+        this.description = description;
+    }
+
+
+    // Getters
+    public int getOption() {
+        return option;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    // Metodo para selecionar uma opcao do menu a partir de um int
+    public static MainMenuEnum chooseFromInt(int option) {
+        for (MainMenuEnum menuOp : MainMenuEnum.values()) {
+            if (menuOp.getOption() == option) {
+                return menuOp;
+            }
+        }
+        return null; // caso a opcao nao exista devolve null
+    }
+
+}

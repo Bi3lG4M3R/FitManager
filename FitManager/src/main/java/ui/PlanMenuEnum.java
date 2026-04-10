@@ -11,8 +11,8 @@ public enum PlanMenuEnum {
     EXIT (0, "Sair");
 
 
-    private int option;
-    private String description;
+    private final int option;
+    private final String description;
     
     PlanMenuEnum(int option, String description) {
         this.option = option;

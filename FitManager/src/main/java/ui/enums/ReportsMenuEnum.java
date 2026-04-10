@@ -1,0 +1,41 @@
+package ui.enums;
+
+/* Menu de Relatórios */
+
+public enum ReportsMenuEnum {
+
+    VIEW_ACTIVE_STUDENTS (1, "Alunos com matrícula ativa"),
+    PENDING_PAYMENTS_ENROLLMENTS (2, "Matrículas com saldo pendente"),
+    VIEW_ALL_ENROLLMENTS (3, "Todas as matrículas"),
+    EXIT (0, "Sair");
+
+
+    private final int option;
+    private final String description;
+    
+    ReportsMenuEnum(int option, String description) {
+        this.option = option;
+        this.description = description;
+    }
+
+
+    // Getters
+    public int getOption() {
+        return option;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    // Metodo para selecionar uma opcao do menu a partir de um int
+    public static MainMenuEnum chooseFromInt(int option) {
+        for (MainMenuEnum menuOp : MainMenuEnum.values()) {
+            if (menuOp.getOption() == option) {
+                return menuOp;
+            }
+        }
+        return null; // caso a opcao nao exista devolve null
+    }
+
+}

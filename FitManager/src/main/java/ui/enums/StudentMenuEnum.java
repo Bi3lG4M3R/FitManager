@@ -1,4 +1,4 @@
-package userinterface;
+package ui.enums;
 
 /* Menu para gerenciar alunos */
 
@@ -11,8 +11,8 @@ public enum StudentMenuEnum {
     VIEW_ALL_STUDENTS (5, "Listar todos alunos"),
     BACK (0, "Voltar ao menu principal");
 
-    private int option;
-    private String description;
+    private final int option;
+    private final String description;
 
     StudentMenuEnum(int option, String description) {
         this.option = option;
@@ -29,4 +29,13 @@ public enum StudentMenuEnum {
         return description;
     }
 
+    // Metodo para selecionar uma opcao do menu a partir de um int
+    public static MainMenuEnum chooseFromInt(int option) {
+        for (MainMenuEnum menuOp : MainMenuEnum.values()) {
+            if (menuOp.getOption() == option){
+                return menuOp;
+            }
+        }
+        return null; // caso a opcao nao exista devolve null
+    }
 }   
