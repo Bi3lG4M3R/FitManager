@@ -6,7 +6,7 @@ public enum StudentMenuEnum {
 
     REGISTER_STUDENT (1, "Cadastrar novo aluno"),
     SEARCH_BY_CPF (2, "Buscar por CPF"),
-    EDIT_STUDENT (3, "Editar aluno"),
+    EDIT_STUDENT (3, "Editar cadastro"),
     DELETE_STUDENT (4, "Excluir aluno"),
     VIEW_ALL_STUDENTS (5, "Listar todos alunos"),
     BACK (0, "Voltar ao menu principal");
