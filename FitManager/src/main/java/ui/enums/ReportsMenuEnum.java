@@ -20,18 +20,18 @@ public enum ReportsMenuEnum {
 
 
     // Getters
-    public int getOption() {
+    public int getOptionNumber() {
         return option;
     }
 
-    public String getDescription() {
+    public String getOptionDescription() {
         return description;
     }
 
     // Metodo para selecionar uma opcao do menu a partir de um int
     public static MainMenuEnum chooseFromInt(int option) {
         for (MainMenuEnum menuOp : MainMenuEnum.values()) {
-            if (menuOp.getOption() == option) {
+            if (menuOp.getOptionNumber() == option) {
                 return menuOp;
             }
         }

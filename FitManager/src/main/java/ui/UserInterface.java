@@ -17,14 +17,17 @@ public class UserInterface {
         }
     }
 
+    // Recebe a entrada do usuário como String
     public String getInput(String input){
         return this.input.nextLine();
     }
 
+    // Mostra uma mensagem para o usuário
     public void showMessage(String message){
         System.out.println(message);
     }
 
+    // Mostra uma mensagem de erro para o usuário
     public void showError(String error){
         System.out.println("ERRO: " + error);
     }
