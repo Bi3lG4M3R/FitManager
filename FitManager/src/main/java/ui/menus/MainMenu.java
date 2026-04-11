@@ -2,25 +2,30 @@ package ui.menus;
 
 import ui.UserInterface;
 import ui.enums.MainMenuEnum;
-//import application.FitManager;
+import ui.menus.StudentMenu;
+import ui.menus.EnrollmentMenu;
+import ui.menus.PlanMenu;
+import ui.menus.ReportsMenu;
+
+import application.FitManager;
 
 public class MainMenu {
     
     private UserInterface ui;
-    //private FitManager fitManager;
+    private FitManager fitManager;
 
 
     // Construtor
-    public MainMenu(UserInterface ui/*, FitManager fitManager*/){
+    public MainMenu(UserInterface ui, FitManager fitManager){
         this.ui = ui;
-        //this.fitManager = fitManager;
+        this.fitManager = fitManager;
     }
 
 
 
     public void start(){
         ui = new UserInterface();
-        //fitManager = new FitManager();
+        fitManager = new FitManager();
         int optionSelected;
 
 
@@ -33,8 +38,6 @@ public class MainMenu {
         }
 
 
-
-
         // Execução do menu 
         do { 
             ui.showMenu("Menu Principal", menuOptions);
@@ -45,23 +48,25 @@ public class MainMenu {
             switch(MainMenuEnum.selectFromInt(optionSelected)){
                 
                 case MANAGE_STUDENTS:
-                    StudentMenu studentMenu = new StudentMenu(ui/*, fitManager*/);
-                    studentMenu.start();
-                    break;
+                    StudentMenu studentMenu = new StudentMenu(ui, fitManager);
+                    studentMenu.run();
+                break;
+
                 case MANAGE_PLANS:
-                    PlanMenu planMenu = new PlanMenu(ui/*, fitManager*/);
+                    PlanMenu planMenu = new PlanMenu(ui, fitManager);
                     planMenu.run();
-                    break;
+                break;
+
                 case MANAGE_ENROLLMENTS:
-                    EnrollmentMenu enrollmentMenu = new EnrollmentMenu(ui/*, fitManager*/);
+                    EnrollmentMenu enrollmentMenu = new EnrollmentMenu(ui, fitManager);
                     enrollmentMenu.run();
-                    break;
+                break;
+
                 case REPORTS:
-                    ReportsMenu reportsMenu = new ReportsMenu(ui/*, fitManager*/);
+                    ReportsMenu reportsMenu = new ReportsMenu(ui, fitManager);
                     reportsMenu.run();
-                    break;
-                case EXIT:
-                    break;
+                break;
+
                 default:
                     ui.showMessage("Opção inexistente, selecione uma das opçãoes acima.");
             }
