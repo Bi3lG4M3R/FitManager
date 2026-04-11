@@ -1,14 +1,34 @@
 package application;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+import domain.Student;
+import java.util.ArrayList;
 
-/**
- *
- * @author Diore
- */
 public class StudentService {
     
+    private ArrayList<Student> students = new ArrayList<>();
+    
+    public OperationResult registerStudent(){
+        
+    }
+    
+    public Student findByCpf(String cpf){
+        
+    }
+    
+    public OperationResult removeStudent(String cpf){
+        
+    }
+    
+    public ArrayList<Student> listStudents(){
+        
+    }
+    
+    public boolean cpfExists(String cpf) {
+        for (Student comparation : students) {
+            if (comparation.getCpf().equals(cpf)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
