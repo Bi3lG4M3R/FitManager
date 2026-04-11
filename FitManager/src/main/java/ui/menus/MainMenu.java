@@ -24,10 +24,7 @@ public class MainMenu {
 
 
     public void start(){
-        ui = new UserInterface();
-        fitManager = new FitManager();
         int optionSelected;
-
 
         //  String array para armazenar as opções dos menus
         String[] menuOptions = new String[MainMenuEnum.values().length];
@@ -67,15 +64,19 @@ public class MainMenu {
                     reportsMenu.run();
                 break;
 
+                case EXIT:
+                    ui.showMessage("Saindo do programa...");
+                break;
+
                 default:
                     ui.showMessage("Opção inexistente, selecione uma das opçãoes acima.");
+                break;
             }
 
 
 
         } while (optionSelected != MainMenuEnum.EXIT.getOptionNumber());
 
-        ui.showMessage("Saindo do programa...");
 
     }
 }
