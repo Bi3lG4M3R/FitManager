@@ -1,11 +1,10 @@
 package application;
 
-import domain.Payment;
 import domain.Enrollment;
 import domain.EnrollmentStatus;
 import domain.Student;
-import domain.Plan;
-import domain.PaymentType;
+import domain.plan.Plan;
+import domain.payment.*;
 import java.util.ArrayList;
 import java.time.LocalDate;
 
@@ -14,7 +13,7 @@ public class EnrollmentService {
     static int nextCode;
     public OperationResult enroll(Student student, Plan plan, LocalDate startDate, 
             int duration, double amount, PaymentType paymentType, String paymentDescription){
-        if(plan.getMinimumDurationMonths() > duration){
+        if(plan.getMinDurationMonths() > duration){
             return new OperationResult(false, "Duration shorter than the plan's minimum.");
         }
         nextCode++;
@@ -22,14 +21,14 @@ public class EnrollmentService {
         Enrollment enrollment = new Enrollment(nextCode, student, plan, startDate, duration);
         enrollments.add(enrollment);
         
-        Payment payment = new Payment(amount, paymentType, paymentDescription);
+        Payment payment = new Payment(startDate, amount, paymentType, paymentDescription);
         enrollment.registerPayment(payment);
         
-        return new OperationResult(true, "Registration successful!", enrollment);
+        return new OperationResult(true, "Registration successful!", startDate);
         
     }
     
-    public OperationResult registerPayment(int code, double amount, PaymentType paymentType, String paymentDescription){
+    public OperationResult registerPayment(LocalDate date, int code, double amount, PaymentType paymentType, String paymentDescription){
         int index=0;
         while( index < enrollments.size() && enrollments.get(index).getCode()!=code){
             index++;
@@ -42,7 +41,7 @@ public class EnrollmentService {
         if(enrollment.getStatus() != EnrollmentStatus.ACTIVE || amount <= 0){
             return new OperationResult(false, "Erro");
         }
-        Payment payment = new Payment(amount, paymentType, paymentDescription);
+        Payment payment = new Payment(date, amount, paymentType, paymentDescription);
         enrollment.registerPayment(payment);
         
         return new OperationResult(true, "Pagamento Registrado");
