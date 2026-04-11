@@ -42,6 +42,7 @@ public class MainMenu{
 
             optionSelected = Integer.parseInt(ui.getInput());
 
+            
             switch(MainMenuEnum.selectFromInt(optionSelected)){
                 
                 case MANAGE_STUDENTS:

@@ -43,6 +43,7 @@ public class StudentsMenu{
                     processSearchByCpf();
                 break;
 
+                
                 case EDIT_STUDENT:
                     fitManager.updateStudent();
                 break;
