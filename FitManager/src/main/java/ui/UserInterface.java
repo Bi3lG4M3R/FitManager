@@ -20,6 +20,8 @@ public class UserInterface {
         return this.input.nextLine();
     }
 
+    
+
     // Mostra uma mensagem para o usuário
     public void showMessage(String message){
         System.out.println(message);

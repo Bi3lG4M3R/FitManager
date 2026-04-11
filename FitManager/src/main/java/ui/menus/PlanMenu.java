@@ -3,6 +3,7 @@ package ui.menus;
 import ui.UserInterface;
 import ui.enums.PlanMenuEnum;
 import application.FitManager;
+import domain.PlanType;
 
 public class PlanMenu{
     
@@ -32,31 +33,31 @@ public class PlanMenu{
 
             optionSelected = Integer.parseInt(ui.getInput());
 
-            switch(PlanMenuEnum.selectFromInt(optionSelected)){
-
-                case REGISTER_NEW_PLAN:
+            switch(optionSelected){
+                // realizar essa alteração nos demais menus
+                case PlanMenuEnum.REGISTER_NEW_PLAN.getOptionNumber():
                     processRegisterNewPlan();
                 break;
 
-                case CHECK_BY_NAME:
+                case PlanMenuEnum.CHECK_BY_NAME.getOptionNumber():
                     processCheckByName();
                 break;
 
-                case CHANGE_PRICE:
+                case PlanMenuEnum.CHANGE_PRICE.getOptionNumber():
                     processChangePrice();
                 break;
 
                 // Sugestão de implementação:
                 // Metodo para excluir um plano existente
-                /*  case DELETE_PLAN:
+                /*  case PlanMenuEnum.DELETE_PLAN.getOptionNumber():
                     fitManager.removePlan();
                 break;  */
 
-                case VIEW_ALL:
+                case PlanMenuEnum.VIEW_ALL.getOptionNumber():
                     fitManager.listPlans();
                 break;
 
-                case BACK:
+                case PlanMenuEnum.BACK.getOptionNumber():
                     ui.showMessage("Voltando ao menu principal...");
                 break;
             }
@@ -70,9 +71,16 @@ public class PlanMenu{
         ui.showMessage("Digite a descrição do plano:");
         String planDescription = ui.getInput();
 
-        ui.showMessage("Digite o tipo do plano:");
-        int planType = Integer.parseInt(ui.getInput());
-        // adequar variavel acima para enviar o enum correspondente ao tipo do plano
+        ui.showMenu("Tipos de planos disponiveis", new String[] {
+            "1 - " + PlanType.MONTHLY.getDescription(),
+            "2 - " + PlanType.QUARTERLY.getDescription(),
+            "3 - " + PlanType.SEMI_ANUAL.getDescription(),
+            "4 - " + PlanType.ANNUAL.getDescription()
+        });
+
+        ui.showMessage("Selecione o tipo do plano:");
+        int selectedPlan = Integer.parseInt(ui.getInput());
+        PlanType planType = PlanType.selectFromInt(selectedPlan);
 
         ui.showMessage("Digite o preço do plano:");
         double planPrice = Double.parseDouble(ui.getInput());
