@@ -36,6 +36,7 @@ public class StudentsMenu{
             switch(StudentMenuEnum.selectFromInt(optionSelected)){
 
                 case REGISTER_STUDENT:
+                    
                     fitManager.registerStudent();
                 break;
 

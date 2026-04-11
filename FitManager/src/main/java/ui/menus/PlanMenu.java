@@ -34,23 +34,25 @@ public class PlanMenu{
 
             switch(PlanMenuEnum.selectFromInt(optionSelected)){
 
-                case REGISTER_PLAN:
-                    fitManager.registerPlan();
+                case REGISTER_NEW_PLAN:
+                    processRegisterNewPlan();
                 break;
 
-                case SEARCH_BY_ID:
-                    fitManager.findPlanById();
+                case CHECK_BY_NAME:
+                    processCheckByName();
                 break;
 
-                case EDIT_PLAN:
-                    fitManager.updatePlan();
+                case CHANGE_PRICE:
+                    processChangePrice();
                 break;
 
-                case DELETE_PLAN:
+                // Sugestão de implementação:
+                // Metodo para excluir um plano existente
+                /*  case DELETE_PLAN:
                     fitManager.removePlan();
-                break;
+                break;  */
 
-                case VIEW_ALL_PLANS:
+                case VIEW_ALL:
                     fitManager.listPlans();
                 break;
 
@@ -60,4 +62,50 @@ public class PlanMenu{
             }
         }while(optionSelected != PlanMenuEnum.BACK.getOptionNumber());
     }
+
+    private void processRegisterNewPlan(){
+        ui.showMessage("Digite o nome do plano:");
+        String planName = ui.getInput();
+
+        ui.showMessage("Digite a descrição do plano:");
+        String planDescription = ui.getInput();
+
+        ui.showMessage("Digite o tipo do plano:");
+        int planType = Integer.parseInt(ui.getInput());
+        // adequar variavel acima para enviar o enum correspondente ao tipo do plano
+
+        ui.showMessage("Digite o preço do plano:");
+        double planPrice = Double.parseDouble(ui.getInput());
+
+        ui.showMessage("Digite a duração minima do plano (em meses):");
+        int planDuration = Integer.parseInt(ui.getInput());
+
+        fitManager.registerPlan(planName, planDescription, planType, planPrice, planDuration);
+    }
+
+
+
+    private void processCheckByName(){
+        ui.showMessage("Digite o nome do plano a ser consultado: ");
+        String planName = ui.getInput();
+        fitManager.findPlanByName(planName);
+    }
+
+
+    private void processChangePrice(){
+        ui.showMessage("Digite o nome do plano a ser alterado: ");
+        String planName = ui.getInput();
+
+        ui.showMessage("Digite o novo preço do plano: ");
+        double newPrice = Double.parseDouble(ui.getInput());
+
+        fitManager.updatePlan(planName, newPrice);
 }
+
+
+
+
+
+}
+
+
