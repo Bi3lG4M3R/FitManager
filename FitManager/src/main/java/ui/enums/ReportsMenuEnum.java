@@ -29,8 +29,8 @@ public enum ReportsMenuEnum {
     }
 
     // Metodo para selecionar uma opcao do menu a partir de um int
-    public static MainMenuEnum chooseFromInt(int option) {
-        for (MainMenuEnum menuOp : MainMenuEnum.values()) {
+    public static ReportsMenuEnum selectFromInt(int option) {
+        for (ReportsMenuEnum menuOp : ReportsMenuEnum.values()) {
             if (menuOp.getOptionNumber() == option) {
                 return menuOp;
             }

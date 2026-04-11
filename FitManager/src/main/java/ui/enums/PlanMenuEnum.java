@@ -30,8 +30,8 @@ public enum PlanMenuEnum {
     }
 
     // Metodo para selecionar uma opcao do menu a partir de um int
-    public static MainMenuEnum chooseFromInt(int option) {
-        for (MainMenuEnum menuOp : MainMenuEnum.values()) {
+    public static PlanMenuEnum selectFromInt(int option) {
+        for (PlanMenuEnum menuOp : PlanMenuEnum.values()) {
             if (menuOp.getOptionNumber() == option) {
                 return menuOp;
             }

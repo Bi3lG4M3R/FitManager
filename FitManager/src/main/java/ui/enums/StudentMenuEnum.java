@@ -30,8 +30,8 @@ public enum StudentMenuEnum {
     }
 
     // Metodo para selecionar uma opcao do menu a partir de um int
-    public static MainMenuEnum chooseFromInt(int option) {
-        for (MainMenuEnum menuOp : MainMenuEnum.values()) {
+    public static StudentMenuEnum selectFromInt(int option) {
+        for (StudentMenuEnum menuOp : StudentMenuEnum.values()) {
             if (menuOp.getOptionNumber() == option){
                 return menuOp;
             }

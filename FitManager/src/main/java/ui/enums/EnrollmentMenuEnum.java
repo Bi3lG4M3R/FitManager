@@ -31,8 +31,8 @@ public enum EnrollmentMenuEnum {
     }
 
     // Metodo para selecionar uma opcao do menu a partir de um int
-    public static MainMenuEnum chooseFromInt(int option) {
-        for (MainMenuEnum menuOp : MainMenuEnum.values()) {
+    public static EnrollmentMenuEnum selectFromInt(int option) {
+        for (EnrollmentMenuEnum menuOp : EnrollmentMenuEnum.values()) {
             if (menuOp.getOptionNumber() == option) {
                 return menuOp;
             }

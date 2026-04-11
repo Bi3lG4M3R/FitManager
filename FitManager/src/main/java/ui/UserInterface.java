@@ -3,8 +3,6 @@ package ui;
 //Lista de imports
 import java.util.Scanner;
 
-
-
 public class UserInterface {
 
     private Scanner input = new Scanner(System.in);
@@ -18,7 +16,7 @@ public class UserInterface {
     }
 
     // Recebe a entrada do usuário como String
-    public String getInput(String input){
+    public String getInput(){
         return this.input.nextLine();
     }
 
