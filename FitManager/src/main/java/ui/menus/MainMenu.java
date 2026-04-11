@@ -9,7 +9,7 @@ import ui.menus.ReportsMenu;
 
 import application.FitManager;
 
-public class MainMenu {
+public class MainMenu{
     
     private UserInterface ui;
     private FitManager fitManager;

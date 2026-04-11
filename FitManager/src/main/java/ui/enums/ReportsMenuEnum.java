@@ -7,7 +7,7 @@ public enum ReportsMenuEnum {
     VIEW_ACTIVE_STUDENTS (1, "Alunos com matrícula ativa"),
     PENDING_PAYMENTS_ENROLLMENTS (2, "Matrículas com saldo pendente"),
     VIEW_ALL_ENROLLMENTS (3, "Todas as matrículas"),
-    EXIT (0, "Sair");
+    BACK (0, "Voltar ao menu principal");
 
 
     private final int option;

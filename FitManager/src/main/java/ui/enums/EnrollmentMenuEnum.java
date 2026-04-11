@@ -9,7 +9,7 @@ public enum EnrollmentMenuEnum {
     CANCEL_ENROLLMENT (3, "Cancelar matrícula"),
     CHECK_ACTIVE_ENROLLMENT (4, "Consultar matrícula ativa"),
     VIEW_HISTORY (5, "Listar histórico"),
-    EXIT (0, "Sair");
+    BACK (0, "Voltar ao menu principal");
 
 
     private final int option;
