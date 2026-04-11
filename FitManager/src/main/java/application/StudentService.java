@@ -20,8 +20,13 @@ public class StudentService {
         return null;
     }
     
-    public OperationResult removeStudent(String cpf){
-        
+    public OperationResult removeStudent(String cpf) {
+        Student student = findByCpf(cpf);
+        if (student == null) {
+            return new OperationResult(false, "CPF não cadastrado.");
+        }
+        student.deactivate();
+        return new OperationResult(true, "Estudante removido.");
     }
     
     public ArrayList<Student> listStudents(){
