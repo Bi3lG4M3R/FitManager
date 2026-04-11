@@ -12,7 +12,12 @@ public class StudentService {
     }
     
     public Student findByCpf(String cpf){
-        
+        for (Student comparation : students) {
+            if (comparation.getCpf().equals(cpf)) {
+                return comparation;
+            }
+        }
+        return null;
     }
     
     public OperationResult removeStudent(String cpf){
@@ -20,15 +25,10 @@ public class StudentService {
     }
     
     public ArrayList<Student> listStudents(){
-        
+        return students;
     }
     
     public boolean cpfExists(String cpf) {
-        for (Student comparation : students) {
-            if (comparation.getCpf().equals(cpf)) {
-                return true;
-            }
-        }
-        return false;
-    }
+        return findByCpf(cpf) != null;
+    }   
 }
