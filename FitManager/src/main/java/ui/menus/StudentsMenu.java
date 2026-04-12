@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import ui.UserInterface;
 import ui.enums.StudentMenuEnum;
 import application.FitManager;
+import application.OperationResult;
 
 public class StudentsMenu{
     
@@ -40,12 +41,23 @@ public class StudentsMenu{
                     String studentCpf = ui.getInput("Digite o CPF do aluno: ");
                     String studentContact = ui.getInput("Digite um meio de contato (E-mail ou telefone): ");
                     LocalDate studentBirthDate = ui.getInputDate("Digite a data de nascimento do aluno (dd/mm/aaaa): ");
-                    fitManager.registerStudent(studentName, studentCpf, studentContact, studentBirthDate);
+                    
+                    OperationResult resultRegister = fitManager.registerStudent(studentName, studentCpf, studentContact, studentBirthDate);
+                    if(resultRegister.getSuccess()){
+                        ui.showMessage(resultRegister.getMessage());
+                    } else {
+                        ui.showMessage("Erro ao cadastrar aluno: " + resultRegister.getMessage());
+                    }
                 break;
 
                 case SEARCH_BY_CPF:
                     String cpfToSearch = ui.getInput("Digite o CPF do aluno a ser consultado: ");
-                    fitManager.findStudentByCpf(cpfToSearch);
+                    OperationResult resultFind = fitManager.findStudentByCpf(cpfToSearch);
+                    if(resultFind.getSuccess()){
+                        ui.showMessage(resultFind.getMessage());
+                    } else {
+                        ui.showMessage("Erro ao buscar aluno: " + resultFind.getMessage());
+                    }
                 break;
 
                 
@@ -57,7 +69,12 @@ public class StudentsMenu{
 
                 case DELETE_STUDENT:
                     String cpfToDelete = ui.getInput("Digite o CPF do aluno a ser excluído: ");
-                    fitManager.removeStudent(cpfToDelete);
+                    OperationResult resultDelete = fitManager.removeStudent(cpfToDelete);
+                    if(resultDelete.getSuccess()){
+                        ui.showMessage(resultDelete.getMessage());
+                    } else {
+                        ui.showMessage("Erro ao excluir aluno: " + resultDelete.getMessage());
+                    }
                 break;
 
                 case VIEW_ALL_STUDENTS:

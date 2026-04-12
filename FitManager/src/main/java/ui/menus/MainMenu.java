@@ -43,7 +43,8 @@ public class MainMenu{
             switch(MainMenuEnum.selectFromInt(optionSelected)){
                 
                 case MANAGE_STUDENTS:
-
+                    StudentsMenu studentsMenu = new StudentsMenu(ui, fitManager);
+                    studentsMenu.run();
                 break;
 
                 case MANAGE_PLANS:
@@ -52,7 +53,8 @@ public class MainMenu{
                 break;
 
                 case MANAGE_ENROLLMENTS:
-
+                    EnrollmentMenu enrollmentMenu = new EnrollmentMenu(ui, fitManager);
+                    enrollmentMenu.run();
                 break;
 
                 case REPORTS:

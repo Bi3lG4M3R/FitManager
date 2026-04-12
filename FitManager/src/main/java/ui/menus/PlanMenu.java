@@ -60,7 +60,12 @@ public class PlanMenu{
 
                     int planDuration = ui.getInputInt("Digite a duração minima do plano (em meses): ");
 
-                    OperationResult result = new fitManager.registerPlan(planName, planDescription, planType, planPrice, planDuration);
+                    OperationResult resultRegister = fitManager.registerPlan(planName, planDescription, planType, planPrice, planDuration);
+                    if(resultRegister.getSuccess())
+                        ui.showMessage(resultRegister.getMessage());
+                     else 
+                        ui.showError("Erro ao registrar plano: " + resultRegister.getMessage());
+                    
                 break;
 
 
@@ -68,7 +73,13 @@ public class PlanMenu{
 
                 case CHECK_BY_NAME:
                     planName = ui.getInput("Digite o nome do plano a ser consultado: ");
-                    fitManager.findPlanByName(planName);
+                    OperationResult resultFind = fitManager.findPlanByName(planName);
+                    if(resultFind.getSuccess()){
+                        ui.showMessage(resultFind.getMessage());
+                        // Mostrar detalhes do plano encontrado
+                    } else {
+                        ui.showError("Erro ao buscar plano: " + resultFind.getMessage());
+                    }
                 break;
 
 
@@ -78,7 +89,11 @@ public class PlanMenu{
                 case CHANGE_PRICE:
                     planName = ui.getInput("Digite o nome do plano a ser alterado: ");
                     double newPrice = ui.getInputDouble("Digite o novo preço do plano: ");
-                    fitManager.updatePlan(planName, newPrice);
+                    OperationResult resultUpdate = fitManager.updatePlan(planName, newPrice);
+                    if(resultUpdate.getSuccess())
+                        ui.showMessage(resultUpdate.getMessage());
+                    else
+                        ui.showError("Erro ao atualizar preço do plano: " + resultUpdate.getMessage());
                 break;
 
 
