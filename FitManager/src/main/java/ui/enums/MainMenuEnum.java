@@ -8,7 +8,7 @@ public enum MainMenuEnum {
     MANAGE_PLANS (2, "Gerenciar Planos"),
     MANAGE_ENROLLMENTS (3, "Gerenciar Inscrições"),
     REPORTS (4, "Relatórios / Listagens"),
-    EXIT (0, "Sair");
+    EXIT (5, "Sair");
 
 
     private final int option;

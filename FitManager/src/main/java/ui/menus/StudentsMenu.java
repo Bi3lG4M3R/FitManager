@@ -1,5 +1,6 @@
 package ui.menus;
 
+import java.time.LocalDate;
 import ui.UserInterface;
 import ui.enums.StudentMenuEnum;
 import application.FitManager;
@@ -29,27 +30,34 @@ public class StudentsMenu{
 
         do{ 
             ui.showMenu("GERENCIAR ALUNOS", menuOptions);
-            ui.showMessage("Selecione uma opção: ");
 
-            optionSelected = Integer.parseInt(ui.getInput());
+            optionSelected = ui.getInputInt("Selecione uma opção: ");
 
             switch(StudentMenuEnum.selectFromInt(optionSelected)){
 
                 case REGISTER_STUDENT:
-                    processRegisterNewStudent();
+                    String studentName = ui.getInput("Digite o nome do aluno: ");
+                    String studentCpf = ui.getInput("Digite o CPF do aluno: ");
+                    String studentContact = ui.getInput("Digite um meio de contato (E-mail ou telefone): ");
+                    LocalDate studentBirthDate = ui.getInputDate("Digite a data de nascimento do aluno (dd/mm/aaaa): ");
+                    fitManager.registerStudent(studentName, studentCpf, studentContact, studentBirthDate);
                 break;
 
                 case SEARCH_BY_CPF:
-                    processSearchByCpf();
+                    String cpfToSearch = ui.getInput("Digite o CPF do aluno a ser consultado: ");
+                    fitManager.findStudentByCpf(cpfToSearch);
                 break;
 
                 
                 case EDIT_STUDENT:
-                    fitManager.updateStudent();
+                    ui.showMessage("Funcionalidade em desenvolvimento. Em breve será possível editar o cadastro do aluno.");
+                    //String cpfToEdit = ui.getInput("Digite o CPF do aluno que o cadastro será editado: ");
+                    //fitManager.updateStudent(cpfToEdit);
                 break;
 
                 case DELETE_STUDENT:
-                    processDeleteStudent();
+                    String cpfToDelete = ui.getInput("Digite o CPF do aluno a ser excluído: ");
+                    fitManager.removeStudent(cpfToDelete);
                 break;
 
                 case VIEW_ALL_STUDENTS:
@@ -69,31 +77,4 @@ public class StudentsMenu{
 
     }
 
-    private void processRegisterNewStudent(){
-        ui.showMessage("Digite o nome do aluno: ");
-        String studentName = ui.getInput();
-
-        ui.showMessage("Digite o CPF do aluno: ");
-        String studentCpf = ui.getInput();
-
-        ui.showMessage("Digite um meio de contato (E-mail ou telefone): ");
-        String studentContact = ui.getInput();
-
-        ui.showMessage("Digite a data de nascimento do aluno (dd/mm/aaaa): ");
-        String studentBirthDate = ui.getInput();
-
-        fitManager.registerStudent(studentName, studentCpf, studentContact, studentBirthDate);
-    }
-
-    private void processSearchByCpf(){
-        ui.showMessage("Digite o CPF do aluno a ser consultado: ");
-        String cpf = ui.getInput();
-        fitManager.findStudentByCpf(cpf);
-    }
-
-    private void processDeleteStudent(){
-        ui.showMessage("Digite o CPF do aluno a ser excluído: ");
-        String cpf = ui.getInput();
-        fitManager.removeStudent(cpf);
-    }
 }

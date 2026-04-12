@@ -8,7 +8,7 @@ public enum PlanMenuEnum {
     CHECK_BY_NAME (2, "Consultar por nome"),
     CHANGE_PRICE (3, "Alterar preço"),
     VIEW_ALL (4, "Listar todos"),
-    BACK (0, "Voltar ao menu principal");
+    BACK (5, "Voltar ao menu principal");
 
 
     private final int option;

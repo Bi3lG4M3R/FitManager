@@ -2,8 +2,9 @@ package ui.menus;
 
 import ui.UserInterface;
 import ui.enums.PlanMenuEnum;
+import domain.plan.PlanType;
 import application.FitManager;
-import domain.PlanType;
+import application.OperationResult;
 
 public class PlanMenu{
     
@@ -16,105 +17,90 @@ public class PlanMenu{
         this.fitManager = fitManager;
     }
 
+
+
     public void run(){
         int optionSelected;
-
+        
+        String planName;
         //  String array para armazenar as opções dos menus
         String[] menuOptions = new String[PlanMenuEnum.values().length];
 
-        //  Construção do array pegando as descrições do do enum
+        //  Construção do array a partir das descrições do do enum
         for(int i = 0; i < PlanMenuEnum.values().length; i++){
             menuOptions[i] = PlanMenuEnum.values()[i].getOptionDescription();
         }
 
+
+
         do{ 
             ui.showMenu("GERENCIAR PLANOS", menuOptions);
-            ui.showMessage("Selecione uma opção: ");
 
-            optionSelected = Integer.parseInt(ui.getInput());
+            optionSelected = ui.getInputInt("Selecione uma opção: ");
 
-            switch(optionSelected){
-                // realizar essa alteração nos demais menus
-                case PlanMenuEnum.REGISTER_NEW_PLAN.getOptionNumber():
-                    processRegisterNewPlan();
+            switch(PlanMenuEnum.selectFromInt(optionSelected)){
+
+
+                case REGISTER_NEW_PLAN:
+                    planName = ui.getInput("Digite o nome do plano: ");
+
+                    String planDescription = ui.getInput("Digite a descrição do plano:");
+
+                    ui.showMenu("Tipos de planos disponiveis", new String[] {
+                        PlanType.MONTHLY.getValueOpcao() + " - " + PlanType.MONTHLY.getDescription(),
+                        PlanType.QUARTERLY.getValueOpcao() + " - " + PlanType.QUARTERLY.getDescription(),
+                        PlanType.SEMI_ANNUAL.getValueOpcao() + " - " + PlanType.SEMI_ANNUAL.getDescription(),
+                        PlanType.ANNUAL.getValueOpcao() + " - " + PlanType.ANNUAL.getDescription()
+                    });
+
+                    int selectedPlan = ui.getInputInt("Selecione o tipo do plano: ");
+                    PlanType planType = PlanType.selectFromInt(selectedPlan);
+
+                    double planPrice = ui.getInputDouble("Digite o preço do plano: ");
+
+                    int planDuration = ui.getInputInt("Digite a duração minima do plano (em meses): ");
+
+                    OperationResult result = new fitManager.registerPlan(planName, planDescription, planType, planPrice, planDuration);
                 break;
 
-                case PlanMenuEnum.CHECK_BY_NAME.getOptionNumber():
-                    processCheckByName();
+
+
+
+                case CHECK_BY_NAME:
+                    planName = ui.getInput("Digite o nome do plano a ser consultado: ");
+                    fitManager.findPlanByName(planName);
                 break;
 
-                case PlanMenuEnum.CHANGE_PRICE.getOptionNumber():
-                    processChangePrice();
+
+
+
+
+                case CHANGE_PRICE:
+                    planName = ui.getInput("Digite o nome do plano a ser alterado: ");
+                    double newPrice = ui.getInputDouble("Digite o novo preço do plano: ");
+                    fitManager.updatePlan(planName, newPrice);
                 break;
 
-                
-                // Sugestão de implementação:
-                // Metodo para excluir um plano existente
-                /*  case PlanMenuEnum.DELETE_PLAN.getOptionNumber():
-                    fitManager.removePlan();
-                break;  */
 
-                case PlanMenuEnum.VIEW_ALL.getOptionNumber():
+
+
+
+                case VIEW_ALL:
                     fitManager.listPlans();
                 break;
 
-                case PlanMenuEnum.BACK.getOptionNumber():
+
+
+
+
+                case BACK:
                     ui.showMessage("Voltando ao menu principal...");
                 break;
             }
         }while(optionSelected != PlanMenuEnum.BACK.getOptionNumber());
     }
 
-    private void processRegisterNewPlan(){
-        ui.showMessage("Digite o nome do plano:");
-        String planName = ui.getInput();
-
-        ui.showMessage("Digite a descrição do plano:");
-        String planDescription = ui.getInput();
-
-        ui.showMenu("Tipos de planos disponiveis", new String[] {
-            "1 - " + PlanType.MONTHLY.getDescription(),
-            "2 - " + PlanType.QUARTERLY.getDescription(),
-            "3 - " + PlanType.SEMI_ANUAL.getDescription(),
-            "4 - " + PlanType.ANNUAL.getDescription()
-        });
-
-        ui.showMessage("Selecione o tipo do plano:");
-        int selectedPlan = Integer.parseInt(ui.getInput());
-        PlanType planType = PlanType.selectFromInt(selectedPlan);
-
-        ui.showMessage("Digite o preço do plano:");
-        double planPrice = Double.parseDouble(ui.getInput());
-
-        ui.showMessage("Digite a duração minima do plano (em meses):");
-        int planDuration = Integer.parseInt(ui.getInput());
-
-        fitManager.registerPlan(planName, planDescription, planType, planPrice, planDuration);
-    }
-
-
-
-    private void processCheckByName(){
-        ui.showMessage("Digite o nome do plano a ser consultado: ");
-        String planName = ui.getInput();
-        fitManager.findPlanByName(planName);
-    }
-
-
-    private void processChangePrice(){
-        ui.showMessage("Digite o nome do plano a ser alterado: ");
-        String planName = ui.getInput();
-
-        ui.showMessage("Digite o novo preço do plano: ");
-        double newPrice = Double.parseDouble(ui.getInput());
-
-        fitManager.updatePlan(planName, newPrice);
 }
 
-
-
-
-
-}
 
 

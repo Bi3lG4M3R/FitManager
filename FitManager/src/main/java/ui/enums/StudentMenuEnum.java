@@ -9,7 +9,7 @@ public enum StudentMenuEnum {
     EDIT_STUDENT (3, "Editar cadastro"),
     DELETE_STUDENT (4, "Excluir aluno"),
     VIEW_ALL_STUDENTS (5, "Listar todos alunos"),
-    BACK (0, "Voltar ao menu principal");
+    BACK (6, "Voltar ao menu principal");
 
     private final int option;
     private final String description;
@@ -29,7 +29,7 @@ public enum StudentMenuEnum {
         return description;
     }
 
-    // Metodo para selecionar uma opcao do menu a partir de um int
+    // Metodo responsalvel por retornar um enum a partir de um inteiro
     public static StudentMenuEnum selectFromInt(int option) {
         for (StudentMenuEnum menuOp : StudentMenuEnum.values()) {
             if (menuOp.getOptionNumber() == option){

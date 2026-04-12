@@ -2,10 +2,8 @@ package ui.menus;
 
 import ui.UserInterface;
 import ui.enums.MainMenuEnum;
-import ui.menus.StudentMenu;
-import ui.menus.EnrollmentMenu;
 import ui.menus.PlanMenu;
-import ui.menus.ReportsMenu;
+import ui.menus.StudentsMenu;
 
 import application.FitManager;
 
@@ -38,16 +36,14 @@ public class MainMenu{
         // Execução do menu 
         do { 
             ui.showMenu("Menu Principal", menuOptions);
-            ui.showMessage("Selecione uma opção: ");
 
-            optionSelected = Integer.parseInt(ui.getInput());
+            optionSelected = ui.getInputInt("Selecione uma opção: ");
 
             
             switch(MainMenuEnum.selectFromInt(optionSelected)){
                 
                 case MANAGE_STUDENTS:
-                    StudentMenu studentMenu = new StudentMenu(ui, fitManager);
-                    studentMenu.run();
+
                 break;
 
                 case MANAGE_PLANS:
@@ -56,13 +52,11 @@ public class MainMenu{
                 break;
 
                 case MANAGE_ENROLLMENTS:
-                    EnrollmentMenu enrollmentMenu = new EnrollmentMenu(ui, fitManager);
-                    enrollmentMenu.run();
+
                 break;
 
                 case REPORTS:
-                    ReportsMenu reportsMenu = new ReportsMenu(ui, fitManager);
-                    reportsMenu.run();
+
                 break;
 
                 case EXIT:
@@ -70,11 +64,9 @@ public class MainMenu{
                 break;
 
                 default:
-                    ui.showMessage("Opção inexistente, selecione uma das opçãoes acima.");
+                    ui.showError("Opção inexistente. Selecione uma das opçãoes acima.");
                 break;
             }
-
-
 
         } while (optionSelected != MainMenuEnum.EXIT.getOptionNumber());
 
