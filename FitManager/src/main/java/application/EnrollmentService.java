@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.time.LocalDate;
 
 public class EnrollmentService {
-    public ArrayList<Enrollment> enrollments; 
+    private ArrayList<Enrollment> enrollments = new ArrayList<>(); 
     static int nextCode;
     public OperationResult enroll(Student student, Plan plan, LocalDate startDate, 
             int duration, double amount, PaymentType paymentType, String paymentDescription){
         if(plan.getMinDurationMonths() > duration){
-            return new OperationResult(false, "Duration shorter than the plan's minimum.");
+            return new OperationResult(false, "Duração inferior à mínima prevista no plano.");
         }
         nextCode++;
         
@@ -24,7 +24,7 @@ public class EnrollmentService {
         Payment payment = new Payment(startDate, amount, paymentType, paymentDescription);
         enrollment.registerPayment(payment);
         
-        return new OperationResult(true, "Registration successful!", startDate);
+        return new OperationResult(true, "Cadastro realizado com sucesso!", enrollment);
         
     }
     
@@ -44,7 +44,7 @@ public class EnrollmentService {
         Payment payment = new Payment(date, amount, paymentType, paymentDescription);
         enrollment.registerPayment(payment);
         
-        return new OperationResult(true, "Pagamento Registrado");
+        return new OperationResult(true, "Pagamento Registrado", payment);
         
     }
     
@@ -68,7 +68,7 @@ public class EnrollmentService {
         return null;
     } 
     
-    public ArrayList<Enrollment> listEnrollment(){
+    public ArrayList<Enrollment> listEnrollments(){
         return enrollments;
     }
     
@@ -95,4 +95,5 @@ public class EnrollmentService {
         Enrollment enrollment = enrollments.get(index);
         return enrollment.getStatus() == EnrollmentStatus.ACTIVE;
     }
+    
 }   

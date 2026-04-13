@@ -1,7 +1,6 @@
 package domain;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
@@ -10,25 +9,16 @@ public class Student {
     private String cpf;
     private String contact;
     private LocalDate birthDate;
-    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private boolean active;
-
-    /*construtor sem dados, gera objetos sem dados*/
-    public Student() {
-        this.name = "";
-        this.cpf = "";
-        this.contact = "";
-        this.birthDate = LocalDate.of(2000, Month.JANUARY, 1);
-        this.active = false;
-    }
     
     /*construtor com dados, gera objetos com dados*/
-    public Student(String name, String cpf, String contact, LocalDate birthDate, boolean active) {
+    public Student(String name, String cpf, String contact, LocalDate birthDate) {
         this.name = name;
         this.cpf = cpf;
         this.contact = contact;
         this.birthDate = birthDate;
-        this.active = active;
+        this.active = true;
     }
     
     /*setters*/
@@ -55,7 +45,11 @@ public class Student {
     public String getFormattedCpf() { 
         return this.cpf.replaceAll("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4");
     }
-
+    
+    public String getFormattedBirthDate() {
+        return birthDate.format(dateFormatter);
+    }
+    
     public String getContact() { return contact; }
 
     public LocalDate getBirthDate() { return birthDate; }
