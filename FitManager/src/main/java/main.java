@@ -7,10 +7,6 @@ public class Main {
         UserInterface ui = new UserInterface();
         FitManager fitManager = new FitManager();
         MainMenu mainMenu = new MainMenu(ui, fitManager);
-        
-        boolean running = true;
-        while (running) {
-            running = mainMenu.show();
-        }
+        mainMenu.start();
     }
 }
