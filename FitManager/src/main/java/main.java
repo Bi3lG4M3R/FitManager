@@ -1,6 +1,6 @@
 import application.FitManager;
 import ui.UserInterface;
-import ui.MainMenu;
+import ui.menus.MainMenu;
 
 public class Main {
     public static void main(String[] args) {
