@@ -14,7 +14,7 @@ public enum PlanType {
         this.description = description;
     }
     
-    public int getValueOpcao(){ return option; }
+    public int getValueOption(){ return option; }
 
     public String getDescription() { return description; }
 }
