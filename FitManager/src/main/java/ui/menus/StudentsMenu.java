@@ -1,10 +1,13 @@
 package ui.menus;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+
 import ui.UserInterface;
 import ui.enums.StudentMenuEnum;
 import application.FitManager;
 import application.OperationResult;
+import domain.Student;
 
 public class StudentsMenu{
     
@@ -78,7 +81,28 @@ public class StudentsMenu{
                 break;
 
                 case VIEW_ALL_STUDENTS:
-                    fitManager.listStudents();
+                    ArrayList<Student> studentList = fitManager.listStudents();
+                    if(studentList.isEmpty()){
+                        ui.showMessage("Nenhum aluno cadastrado.");
+                    } else {
+                        ui.showMessage("Histórico de Alunos:");
+                        for(Student student : studentList){
+                            String studentNameList = student.getName();
+                            String studentCpfList = student.getCpf();
+                            String studentContactList = student.getContact();
+                            LocalDate studentBirthDateList = student.getBirthDate();
+
+                            ui.showMessage(
+                                "Nome do aluno - " + studentNameList + "\n" +
+                                "CPF: " + studentCpfList + "\n" +
+                                "Contato: " + studentContactList + "\n" +
+                                "Data de nascimento: " + studentBirthDateList + "\n" +
+                                "----------------------------------"
+                            );
+                            
+
+                        }
+                    }
                 break;
 
                 case BACK:

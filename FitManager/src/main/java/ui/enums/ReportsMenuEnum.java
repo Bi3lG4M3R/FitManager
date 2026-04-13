@@ -4,10 +4,13 @@ package ui.enums;
 
 public enum ReportsMenuEnum {
 
-    VIEW_ACTIVE_STUDENTS (1, "Alunos com matrícula ativa"),
-    PENDING_PAYMENTS_ENROLLMENTS (2, "Matrículas com saldo pendente"),
-    VIEW_ALL_ENROLLMENTS (3, "Todas as matrículas"),
-    BACK (4, "Voltar ao menu principal");
+
+    VIEW_PENDING_PAYMENTS_ENROLLMENTS (1, "Listar matrículas com saldo pendente"),
+    CONSULT_STUDENT_BY_CPF (2, "Consultar aluno por CPF"),
+    CONSULT_PLAN_BY_NAME (3, "Consultar plano por nome"),
+    CONSULT_ACTIVE_ENROLLMENTS_BY_STUDENT_CPF (4, "Consultar matrícula ativas de um aluno"),
+    BACK (5, "Voltar ao menu principal");
+
 
 
     private final int option;
