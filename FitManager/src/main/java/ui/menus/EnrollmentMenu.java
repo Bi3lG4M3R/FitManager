@@ -122,19 +122,11 @@ public class EnrollmentMenu {
                             LocalDate endDateHistory = enrollment.getEndDate();
                             String status = enrollment.getStatus().toString();
 
-                            ui.showMessage(
-                                "Matrícula - " + code + "\n" +
-                                "Nome do aluno: " + studentName + "\n" +
-                                "Plano: " + planNameHistory + "\n" +
-                                "Data de início: " + startDateHistory + "\n" +
-                                "Data de término: " + endDateHistory + "\n" +
-                                "Status: " + status + "\n" +
-                                "-----------------------------"
-                            );
+                            ui.showEnrollment(code, studentName, planNameHistory, startDateHistory, endDateHistory, status);
 
-                            
                         }
                     }
+                    ui.showMessage("Histórico de matrículas exibido com sucesso.");
                 break;
 
 

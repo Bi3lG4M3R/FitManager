@@ -2,8 +2,9 @@ package ui.menus;
 
 import ui.UserInterface;
 import ui.enums.ReportsMenuEnum;
-import domain.plan.PlanType;
 import domain.plan.Plan;
+import domain.Student;
+import domain.Enrollment;
 
 import java.util.ArrayList;
 
@@ -78,18 +79,63 @@ public class ReportsMenu{
                 break;
 
                 case CONSULT_STUDENT_BY_CPF:
+                        String cpfToSearch = ui.getInput("Digite o CPF do aluno a ser consultado: ");
+                        Student student = fitManager.findStudentByCpf(cpfToSearch);
+                        if(student == null){
+                            ui.showError("Aluno não encontrado.");
+                        } else {
+                            String studentNameList = student.getName();
+                            String studentCpfList = student.getCpf();
+                            String studentContactList = student.getContact();
+                            ui.showMessage(
+                                "Nome do aluno: " + studentNameList + "\n" +
+                                "CPF: " + studentCpfList + "\n" +
+                                "Contato: " + studentContactList + "\n" +
+                                "----------------------------------"
+                            );
+                        }
                 break;
 
-                case CONSULT_PLAN_BY_NAME:
+                case CONSULT_PLAN_BY_NAME: 
+                        String planNameToSearch = ui.getInput("Digite o nome do plano a ser consultado: ");
+                        Plan plan = fitManager.findPlanByName(planNameToSearch);
+                        if(plan == null){
+                            ui.showError("Plano não encontrado.");
+                        } else {
+                            String planNameList = plan.getName();
+                            String planDescriptionList = plan.getDescription();
+                            String planTypeList = plan.getType().getDescription(); 
+                            int planMinDurationList = plan.getMinDurationMonths();
+                            double planPricePerMonthList = plan.getPricePerMonth();
+
+                            ui.showMessage(
+                                "Nome do plano - " + planNameList + "\n" +
+                                "Descrição: " + planDescriptionList + "\n" +
+                                "Tipo: " + planTypeList + "\n" +
+                                "Duração mínima: " + planMinDurationList + " meses\n" +
+                                "Preço por mês: R$ " + String.format("%.2f", planPricePerMonthList) + "\n" +
+                                "----------------------------------"
+                            );
+                        }
                 break;
 
                 case CONSULT_ACTIVE_ENROLLMENTS_BY_STUDENT_CPF:
+                    String cpfToSearchEnrollments = ui.getInput("Digite o CPF do aluno para consultar suas matrículas ativas: ");
+                    Enrollment activeEnrollment = fitManager.findActiveEnrollment(cpfToSearchEnrollments);
+                    if(activeEnrollment == null){
+                        ui.showError("Nenhuma matrícula ativa encontrada para o aluno informado.");
+                    } else {
+                        ui.showMessage("Matrícula ativa encontrada para o aluno informado.");
+                    }
                 break;
 
 
                 case BACK:
                     ui.showMessage("Voltando ao menu principal...");
                 break;
+
+                default:
+                    ui.showError("Opção inexistente. Selecione uma das opçãoes acima.");
             }
         }while(optionSelected != ReportsMenuEnum.BACK.getOptionNumber());
     }

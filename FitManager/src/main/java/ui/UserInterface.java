@@ -28,6 +28,17 @@ public class UserInterface {
         }
     }
 
+    public void showEnrollment(int code, String studentName, String planNameHistory, LocalDate startDateHistory, LocalDate endDateHistory, String status){
+        showMessage("Matrícula - " + code + "\n" +
+                    "Nome do aluno: " + studentName + "\n" +
+                    "Plano: " + planNameHistory + "\n" +
+                    "Data de início: " + startDateHistory + "\n" +
+                    "Data de término: " + endDateHistory + "\n" +
+                    "Status: " + status + "\n" +
+                    "-----------------------------");
+
+    }
+
     // Recebe a entrada do usuário como String
     public String getInput(String prompt){
         showMessage(prompt);
@@ -67,6 +78,7 @@ public class UserInterface {
             }
         }
     }
+
 
 
 
