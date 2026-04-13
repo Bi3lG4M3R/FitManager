@@ -1,16 +1,12 @@
 import application.FitManager;
-import ui.UserInterface;
 import ui.MainMenu;
+import ui.UserInterface;
 
 public class Main {
     public static void main(String[] args) {
         UserInterface ui = new UserInterface();
         FitManager fitManager = new FitManager();
         MainMenu mainMenu = new MainMenu(ui, fitManager);
-        
-        boolean running = true;
-        while (running) {
-            running = mainMenu.show();
-        }
+        mainMenu.start();
     }
 }
