@@ -90,7 +90,9 @@ public class EnrollmentMenu {
 
                 case CANCEL_ENROLLMENT:
                     int enrollmentCodeToCancel = ui.getInputInt("Digite o número de matrícula a ser cancelada: ");
-                    OperationResult resultCancelEnrollment = fitManager.cancelEnrollment(enrollmentCodeToCancel);
+                    String cancelReason = ui.getInput("Digite o motivo do cancelamento: ");
+                    OperationResult resultCancelEnrollment = fitManager.cancelEnrollment(enrollmentCodeToCancel, cancelReason);
+                    
                     if(resultCancelEnrollment.getSuccess())
                         ui.showMessage(resultCancelEnrollment.getMessage());
                     else
@@ -99,7 +101,7 @@ public class EnrollmentMenu {
 
                 case CHECK_ACTIVE_ENROLLMENT:
                     String studentCpfToCheck = ui.getInput("Digite o CPF do aluno para consultar a matrícula: ");
-                    OperationResult resultCheckEnrollment = fitManager.checkActiveEnrollment(studentCpfToCheck);
+                    OperationResult resultCheckEnrollment = fitManager.hasActiveEnrollment(studentCpfToCheck);
                     if(resultCheckEnrollment.getSuccess())
                         ui.showMessage(resultCheckEnrollment.getMessage());
                     else
@@ -107,8 +109,32 @@ public class EnrollmentMenu {
                 break;
 
                 case VIEW_HISTORY:
-                    ui.showMessage("Funcionalidade de histórico de matrículas ainda não implementada.");
-                    ArrayList<Enrollment> enrollmentHistory = fitManager.listEnrollment();
+                    ArrayList<Enrollment> enrollmentHistory = fitManager.listEnrollments();
+                    if(enrollmentHistory.isEmpty()){
+                        ui.showMessage("Nenhuma matrícula encontrada.");
+                    } else {
+                        ui.showMessage("Histórico de Matrículas:");
+                        for(Enrollment enrollment : enrollmentHistory){
+                            int code = enrollment.getCode();
+                            String studentName = enrollment.getStudent().getName();
+                            String planNameHistory = enrollment.getPlan().getDescription();
+                            LocalDate startDateHistory = enrollment.getStartDate();
+                            LocalDate endDateHistory = enrollment.getEndDate();
+                            String status = enrollment.getStatus().toString();
+
+                            ui.showMessage(
+                                "Matrícula - " + code + "\n" +
+                                "Nome do aluno: " + studentName + "\n" +
+                                "Plano: " + planNameHistory + "\n" +
+                                "Data de início: " + startDateHistory + "\n" +
+                                "Data de término: " + endDateHistory + "\n" +
+                                "Status: " + status + "\n" +
+                                "-----------------------------"
+                            );
+
+                            
+                        }
+                    }
                 break;
 
 
@@ -121,9 +147,6 @@ public class EnrollmentMenu {
 
             }
 
-
-
-            
         }while(optionSelected != EnrollmentMenuEnum.BACK.getOptionNumber());
 
 

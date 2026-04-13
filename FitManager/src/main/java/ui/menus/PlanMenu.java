@@ -2,7 +2,11 @@ package ui.menus;
 
 import ui.UserInterface;
 import ui.enums.PlanMenuEnum;
+import domain.Enrollment;
 import domain.plan.PlanType;
+
+import java.util.ArrayList;
+
 import application.FitManager;
 import application.OperationResult;
 
@@ -101,7 +105,30 @@ public class PlanMenu{
 
 
                 case VIEW_ALL:
-                    fitManager.listPlans();
+                    ArrayList<Enrollment> planList = fitManager.listEnrollments();
+                    if(planList.isEmpty()){
+                        ui.showMessage("Nenhuma matrícula encontrada.");
+                    } else {
+                        ui.showMessage("Histórico de Matrículas:");
+                        for(Enrollment plan : planList){
+                            String planNameList = plan.getPlan().getName();
+                            String planDescriptionList = plan.getPlan().getDescription();
+                            String planTypeList = plan.getPlan().getType().getDescription(); 
+                            int planMinDurationList = plan.getPlan().getMinDurationMonths();
+                            double planPricePerMonthList = plan.getPlan().getPricePerMonth();
+
+                            ui.showMessage(
+                                "Nome do plano - " + planNameList + "\n" +
+                                "Descrição: " + planDescriptionList + "\n" +
+                                "Tipo: " + planTypeList + "\n" +
+                                "Duração mínima: " + planMinDurationList + " meses\n" +
+                                "Preço por mês: R$ " + String.format("%.2f", planPricePerMonthList) + "\n" +
+                                "-------------------------------"
+                            );
+                            
+
+                        }
+                    }
                 break;
 
 
