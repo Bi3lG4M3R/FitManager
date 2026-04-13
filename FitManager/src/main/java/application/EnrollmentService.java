@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.time.LocalDate;
 
 public class EnrollmentService {
-    private ArrayList<Enrollment> enrollments; 
+    private ArrayList<Enrollment> enrollments = new ArrayList<>(); 
     static int nextCode;
     public OperationResult enroll(Student student, Plan plan, LocalDate startDate, 
             int duration, double amount, PaymentType paymentType, String paymentDescription){
