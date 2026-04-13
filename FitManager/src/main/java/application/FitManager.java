@@ -23,57 +23,50 @@ public class FitManager {
         return studentService.registerStudent(name, cpf, contact, birthDate);
     }
 
-    public Student findStudentByCpf(String cpf) {
-        return studentService.findByCpf(cpf);
-    }
+    public Student findStudentByCpf(String cpf) { return studentService.findByCpf(cpf); }
 
     public OperationResult removeStudent(String cpf) {
         Student student = studentService.findByCpf(cpf);
-        if (student == null) {
-            return new OperationResult(false, "Aluno não encontrado.");
-        }
-        if (enrollmentService.hasActiveEnrollment(student.getCpf())) {
+        if(enrollmentService.hasActiveEnrollment(student.getCpf())) {
             return new OperationResult(false, "Não é possível remover/inativar um aluno com matrícula ativa.");
         }
         return studentService.removeStudent(student.getCpf());
     }
 
-    public ArrayList<Student> listStudents() {
-        return studentService.listStudents();
-    }
+    public ArrayList<Student> listStudents() { return studentService.listStudents(); }
 
     public OperationResult registerPlan(String name, String description, PlanType type, int minDurationMonths, double pricePerMonth) {
         return planService.registerPlan(name, description, type, minDurationMonths, pricePerMonth);
     }
 
-    public Plan findPlanByName(String name) {
-        return PlanService.findByName(name);
-    }
+    public Plan findPlanByName(String name) { return PlanService.findByName(name); }
 
     public OperationResult updatePlanPrice(String name, double newPrice) {
         return planService.updatePrice(name, newPrice);
     }
 
-    public ArrayList<Plan> listPlans() {
-        return planService.listPlans();
-    }
+    public ArrayList<Plan> listPlans() { return planService.listPlans(); }
 
     public OperationResult enrollStudent(String cpf, String planName, LocalDate startDate, int durationMonths,
                                          double initialAmount, PaymentType paymentType, String paymentDescription) {
         Student student = studentService.findByCpf(cpf);
-        if (student == null) {
+        if(student == null) {
             return new OperationResult(false, "Aluno não encontrado.");
         }
         Plan plan = PlanService.findByName(planName);
-        if (plan == null) {
+        if(plan == null) {
             return new OperationResult(false, "Plano não encontrado.");
         }
-        if (enrollmentService.hasActiveEnrollment(student.getCpf())) {
+        if(enrollmentService.hasActiveEnrollment(student.getCpf())) {
             return new OperationResult(false, "O aluno já possui matrícula ativa.");
         }
-        if (initialAmount <= 0) {
+        if(initialAmount <= 0) {
             return new OperationResult(false, "A matrícula exige pagamento inicial maior que zero.");
         }
+        if(!student.isActive()){
+            return new OperationResult(false, "O aluno inativo não pode ser matriculado.");
+        }
+        
         return enrollmentService.enroll(student, plan, startDate, durationMonths, initialAmount, paymentType, paymentDescription);
     }
 
@@ -81,35 +74,9 @@ public class FitManager {
         return enrollmentService.registerPayment(date, code, amount, paymentType, paymentDescription);
     }
 
-    public OperationResult cancel(int code, String reason) {
-        return enrollmentService.cancel(code, reason);
-    }
+    public OperationResult cancelEnrollment(int code, String reason) { return enrollmentService.cancel(code, reason); }
 
-    public Enrollment findActiveEnrollment(String cpf) {
-        return enrollmentService.findActiveByStudent(cpf);
-    }
+    public Enrollment findActiveEnrollment(String cpf) { return enrollmentService.findActiveByStudent(cpf); }
 
-    public ArrayList<Enrollment> listEnrollments() {
-        return enrollmentService.listEnrollments();
-    }
-
-    public ArrayList<Student> listStudentsWithActiveEnrollment() {
-        ArrayList<Student> result = new ArrayList<>();
-        for (Student student : studentService.listStudents()) {
-            if (enrollmentService.hasActiveEnrollment(student.getCpf())) {
-                result.add(student);
-            }
-        }
-        return result;
-    }
-
-    public ArrayList<Enrollment> listEnrollmentsWithPendingBalance() {
-        ArrayList<Enrollment> result = new ArrayList<>();
-        for (Enrollment enrollment : enrollmentService.listEnrollments()) {
-            if (enrollment.calculateBalance() > 0) {
-                result.add(enrollment);
-            }
-        }
-        return result;
-    }
+    public ArrayList<Enrollment> listEnrollments() { return enrollmentService.listEnrollments(); }
 }
