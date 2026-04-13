@@ -18,6 +18,8 @@ public class OperationResult {
     
     public void isSuccess(){ this.success = true; }
 
+    public boolean getSuccess() { return success; }
+
     public String getMessage() { return message; }
 
     public Object getData() { return data; }
