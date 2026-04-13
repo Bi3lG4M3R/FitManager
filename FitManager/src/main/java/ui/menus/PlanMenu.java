@@ -2,8 +2,8 @@ package ui.menus;
 
 import ui.UserInterface;
 import ui.enums.PlanMenuEnum;
-import domain.Enrollment;
 import domain.plan.PlanType;
+import domain.plan.Plan;
 
 import java.util.ArrayList;
 
@@ -12,8 +12,8 @@ import application.OperationResult;
 
 public class PlanMenu{
     
-    private UserInterface ui;
-    private FitManager fitManager;
+    private final UserInterface ui;
+    private final FitManager fitManager;
 
     // Construtor
     public PlanMenu(UserInterface ui, FitManager fitManager){
@@ -51,10 +51,10 @@ public class PlanMenu{
                     String planDescription = ui.getInput("Digite a descrição do plano:");
 
                     ui.showMenu("Tipos de planos disponiveis", new String[] {
-                        PlanType.MONTHLY.getValueOpcao() + " - " + PlanType.MONTHLY.getDescription(),
-                        PlanType.QUARTERLY.getValueOpcao() + " - " + PlanType.QUARTERLY.getDescription(),
-                        PlanType.SEMI_ANNUAL.getValueOpcao() + " - " + PlanType.SEMI_ANNUAL.getDescription(),
-                        PlanType.ANNUAL.getValueOpcao() + " - " + PlanType.ANNUAL.getDescription()
+                        PlanType.MONTHLY.getValueOption() + " - " + PlanType.MONTHLY.getDescription(),
+                        PlanType.QUARTERLY.getValueOption() + " - " + PlanType.QUARTERLY.getDescription(),
+                        PlanType.SEMI_ANNUAL.getValueOption() + " - " + PlanType.SEMI_ANNUAL.getDescription(),
+                        PlanType.ANNUAL.getValueOption() + " - " + PlanType.ANNUAL.getDescription()
                     });
 
                     int selectedPlan = ui.getInputInt("Selecione o tipo do plano: ");
@@ -105,17 +105,17 @@ public class PlanMenu{
 
 
                 case VIEW_ALL:
-                    ArrayList<Enrollment> planList = fitManager.listEnrollments();
+                    ArrayList<Plan> planList = fitManager.listPlans();
                     if(planList.isEmpty()){
-                        ui.showMessage("Nenhuma matrícula encontrada.");
+                        ui.showMessage("Nenhum plano cadastrado.");
                     } else {
-                        ui.showMessage("Histórico de Matrículas:");
-                        for(Enrollment plan : planList){
-                            String planNameList = plan.getPlan().getName();
-                            String planDescriptionList = plan.getPlan().getDescription();
-                            String planTypeList = plan.getPlan().getType().getDescription(); 
-                            int planMinDurationList = plan.getPlan().getMinDurationMonths();
-                            double planPricePerMonthList = plan.getPlan().getPricePerMonth();
+                        ui.showMessage("Histórico de Planos:");
+                        for(Plan plan : planList){
+                            String planNameList = plan.getName();
+                            String planDescriptionList = plan.getDescription();
+                            String planTypeList = plan.getType().getDescription(); 
+                            int planMinDurationList = plan.getMinDurationMonths();
+                            double planPricePerMonthList = plan.getPricePerMonth();
 
                             ui.showMessage(
                                 "Nome do plano - " + planNameList + "\n" +
@@ -123,7 +123,7 @@ public class PlanMenu{
                                 "Tipo: " + planTypeList + "\n" +
                                 "Duração mínima: " + planMinDurationList + " meses\n" +
                                 "Preço por mês: R$ " + String.format("%.2f", planPricePerMonthList) + "\n" +
-                                "-------------------------------"
+                                "----------------------------------"
                             );
                             
 

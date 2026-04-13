@@ -2,8 +2,9 @@ package ui;
 
 import java.util.Scanner;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import domain.Student;
+
 
 public class UserInterface {
 
@@ -56,10 +57,10 @@ public class UserInterface {
     }
 
     public LocalDate getInputDate(String prompt){
-        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/mm/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/mm/yyyy");
         while (true) {
             try {
-                LocalDate date = LocalDate.parse(getInput(prompt), Student.dateFormatter);
+                LocalDate date = LocalDate.parse(getInput(prompt), formatter);
                 return date;
             } catch (DateTimeParseException error) {
                 showError("Entrada inválida. Por favor, digite uma data no formato dd/mm/yyyy.");
