@@ -76,14 +76,20 @@ public class PlanMenu{
 
 
                 case CHECK_BY_NAME:
-                    planName = ui.getInput("Digite o nome do plano a ser consultado: ");
-                    OperationResult resultFind = fitManager.findPlanByName(planName);
-                    if(resultFind.getSuccess()){
-                        ui.showMessage(resultFind.getMessage());
-                        // Mostrar detalhes do plano encontrado
+                    String planNameToSearch = ui.getInput("Digite o nome do plano a ser consultado: ");
+                    Plan planFound = fitManager.findPlanByName(planNameToSearch);
+                    if(planFound == null){
+                        ui.showError("Plano não encontrado.");
                     } else {
-                        ui.showError("Erro ao buscar plano: " + resultFind.getMessage());
+                        String planNameList = planFound.getName();
+                        String planDescriptionList = planFound.getDescription();
+                        String planTypeList = planFound.getType().getDescription(); 
+                        int planMinDurationList = planFound.getMinDurationMonths();
+                        double planPricePerMonthList = planFound.getPricePerMonth();
+
+                        ui.showPlan(planNameList, planDescriptionList, planTypeList, planMinDurationList, planPricePerMonthList);
                     }
+
                 break;
 
 
@@ -117,16 +123,7 @@ public class PlanMenu{
                             int planMinDurationList = plan.getMinDurationMonths();
                             double planPricePerMonthList = plan.getPricePerMonth();
 
-                            ui.showMessage(
-                                "Nome do plano - " + planNameList + "\n" +
-                                "Descrição: " + planDescriptionList + "\n" +
-                                "Tipo: " + planTypeList + "\n" +
-                                "Duração mínima: " + planMinDurationList + " meses\n" +
-                                "Preço por mês: R$ " + String.format("%.2f", planPricePerMonthList) + "\n" +
-                                "----------------------------------"
-                            );
-                            
-
+                            ui.showPlan(planNameList, planDescriptionList, planTypeList, planMinDurationList, planPricePerMonthList);
                         }
                     }
                 break;

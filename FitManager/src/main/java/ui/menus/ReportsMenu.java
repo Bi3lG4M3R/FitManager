@@ -97,26 +97,7 @@ public class ReportsMenu{
                 break;
 
                 case CONSULT_PLAN_BY_NAME: 
-                        String planNameToSearch = ui.getInput("Digite o nome do plano a ser consultado: ");
-                        Plan plan = fitManager.findPlanByName(planNameToSearch);
-                        if(plan == null){
-                            ui.showError("Plano não encontrado.");
-                        } else {
-                            String planNameList = plan.getName();
-                            String planDescriptionList = plan.getDescription();
-                            String planTypeList = plan.getType().getDescription(); 
-                            int planMinDurationList = plan.getMinDurationMonths();
-                            double planPricePerMonthList = plan.getPricePerMonth();
-
-                            ui.showMessage(
-                                "Nome do plano - " + planNameList + "\n" +
-                                "Descrição: " + planDescriptionList + "\n" +
-                                "Tipo: " + planTypeList + "\n" +
-                                "Duração mínima: " + planMinDurationList + " meses\n" +
-                                "Preço por mês: R$ " + String.format("%.2f", planPricePerMonthList) + "\n" +
-                                "----------------------------------"
-                            );
-                        }
+                        
                 break;
 
                 case CONSULT_ACTIVE_ENROLLMENTS_BY_STUDENT_CPF:

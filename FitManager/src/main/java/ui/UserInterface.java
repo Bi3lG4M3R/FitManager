@@ -39,6 +39,17 @@ public class UserInterface {
 
     }
 
+    public void showPlan(String planNameList, String planDescriptionList, String planTypeList, int planMinDurationList, double planPricePerMonthList){
+        showMessage(
+            "Nome do plano - " + planNameList + "\n" +
+            "Descrição: " + planDescriptionList + "\n" +
+            "Tipo: " + planTypeList + "\n" +
+            "Duração mínima: " + planMinDurationList + " meses\n" +
+            "Preço por mês: R$ " + String.format("%.2f", planPricePerMonthList) + "\n" +
+            "----------------------------------"
+        );
+    }
+
     // Recebe a entrada do usuário como String
     public String getInput(String prompt){
         showMessage(prompt);
