@@ -79,4 +79,14 @@ public class FitManager {
     public Enrollment findActiveEnrollment(String cpf) { return enrollmentService.findActiveByStudent(cpf); }
 
     public ArrayList<Enrollment> listEnrollments() { return enrollmentService.listEnrollments(); }
+
+    public OperationResult hasActiveEnrollment(String cpf) {
+        if(studentService.findByCpf(cpf) == null) {
+            return new OperationResult(false, "Aluno não encontrado.");
+        }
+        if(!enrollmentService.hasActiveEnrollment(cpf)) {
+            return new OperationResult(false, "Aluno não possui matrícula ativa.");
+        }
+        return new OperationResult(true, "Aluno possui matrícula ativa.");
+    }
 }
