@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.time.LocalDate;
 
 public class EnrollmentService {
-    public ArrayList<Enrollment> enrollments; 
+    private ArrayList<Enrollment> enrollments; 
     static int nextCode;
     public OperationResult enroll(Student student, Plan plan, LocalDate startDate, 
             int duration, double amount, PaymentType paymentType, String paymentDescription){
@@ -95,4 +95,5 @@ public class EnrollmentService {
         Enrollment enrollment = enrollments.get(index);
         return enrollment.getStatus() == EnrollmentStatus.ACTIVE;
     }
+    
 }   
