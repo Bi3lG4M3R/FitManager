@@ -1,5 +1,7 @@
 package domain.payment;
 
+import ui.enums.StudentMenuEnum;
+
 public enum PaymentType {
     PIX(1, "O método escolhido foi o Pix"),
     CREDIT_CARD(2, "O método escolhido foi o Cartão de Crédito"),
@@ -17,4 +19,13 @@ public enum PaymentType {
     public int getValueOpcao(){ return option; }
 
     public String getDescription() { return description; }
+
+    public static PaymentType selectFromInt(int option) {
+        for (PaymentType paymentOption : PaymentType.values()) {
+            if (paymentOption.getValueOpcao() == option){
+                return paymentOption;
+            }
+        }
+        return null; // caso a opcao nao exista devolve null
+    }
 }

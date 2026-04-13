@@ -78,9 +78,6 @@ public class ReportsMenu{
                     
                 break;
 
-                case CONSULT_STUDENT_BY_CPF:
-                        
-                break;
 
                 case CONSULT_PLAN_BY_NAME: 
                         
