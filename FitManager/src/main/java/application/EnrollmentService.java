@@ -68,7 +68,7 @@ public class EnrollmentService {
         return null;
     } 
     
-    public ArrayList<Enrollment> listEnrollment(){
+    public ArrayList<Enrollment> listEnrollments(){
         return enrollments;
     }
     
