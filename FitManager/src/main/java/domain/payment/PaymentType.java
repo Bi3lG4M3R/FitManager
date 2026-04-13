@@ -1,7 +1,5 @@
 package domain.payment;
 
-import ui.enums.StudentMenuEnum;
-
 public enum PaymentType {
     PIX(1, "O método escolhido foi o Pix"),
     CREDIT_CARD(2, "O método escolhido foi o Cartão de Crédito"),

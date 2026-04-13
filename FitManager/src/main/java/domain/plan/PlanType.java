@@ -1,6 +1,5 @@
 package domain.plan;
 
-import ui.enums.StudentMenuEnum;
 
 public enum PlanType {
     MONTHLY(1, "Mensal"),
