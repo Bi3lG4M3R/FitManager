@@ -7,13 +7,12 @@ import ui.UserInterface;
 import ui.enums.EnrollmentMenuEnum;
 import application.FitManager;
 import application.OperationResult;
-import application.EnrollmentService;
 import domain.Enrollment;
 import domain.payment.PaymentType;
 
 public class EnrollmentMenu {
-    private UserInterface ui;
-    private FitManager fitManager;
+    private final UserInterface ui;
+    private final FitManager fitManager;
 
     // Construtor
     public EnrollmentMenu(UserInterface ui, FitManager fitManager){
