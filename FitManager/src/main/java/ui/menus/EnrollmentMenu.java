@@ -1,11 +1,14 @@
 package ui.menus;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+
 import ui.UserInterface;
 import ui.enums.EnrollmentMenuEnum;
-import ui.enums.StudentMenuEnum;
 import application.FitManager;
 import application.OperationResult;
+import application.EnrollmentService;
+import domain.Enrollment;
 import domain.payment.PaymentType;
 
 public class EnrollmentMenu {
@@ -56,7 +59,7 @@ public class EnrollmentMenu {
                         PaymentType.DEBIT_CARD.getValueOpcao() + " - " + PaymentType.DEBIT_CARD.getDescription(),
                         PaymentType.CASH.getValueOpcao() + " - " + PaymentType.CASH.getDescription()
                     });
-                    PaymentType paymentType = selectFromInt(ui.getInputInt("Selecione a forma de pagamento: "));
+                    PaymentType paymentType = PaymentType.selectFromInt(ui.getInputInt("Selecione a forma de pagamento: "));
 
                     OperationResult resultRegisterEnrollment = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType, paymentType.getDescription());
                     
@@ -76,7 +79,7 @@ public class EnrollmentMenu {
                         PaymentType.DEBIT_CARD.getValueOpcao() + " - " + PaymentType.DEBIT_CARD.getDescription(),
                         PaymentType.CASH.getValueOpcao() + " - " + PaymentType.CASH.getDescription()
                     });
-                    PaymentType registerPaymentType = selectFromInt(ui.getInputInt("Selecione a forma de pagamento: "));
+                    PaymentType registerPaymentType = PaymentType.selectFromInt(ui.getInputInt("Selecione a forma de pagamento: "));
                     
                     OperationResult resultPayment = fitManager.registerPayment(enrollmentCode, amount, registerPaymentType, registerPaymentType.getDescription());
                     if(resultPayment.getSuccess())
@@ -105,6 +108,7 @@ public class EnrollmentMenu {
 
                 case VIEW_HISTORY:
                     ui.showMessage("Funcionalidade de histórico de matrículas ainda não implementada.");
+                    ArrayList<Enrollment> enrollmentHistory = fitManager.listEnrollment();
                 break;
 
 
