@@ -79,21 +79,7 @@ public class ReportsMenu{
                 break;
 
                 case CONSULT_STUDENT_BY_CPF:
-                        String cpfToSearch = ui.getInput("Digite o CPF do aluno a ser consultado: ");
-                        Student student = fitManager.findStudentByCpf(cpfToSearch);
-                        if(student == null){
-                            ui.showError("Aluno não encontrado.");
-                        } else {
-                            String studentNameList = student.getName();
-                            String studentCpfList = student.getCpf();
-                            String studentContactList = student.getContact();
-                            ui.showMessage(
-                                "Nome do aluno: " + studentNameList + "\n" +
-                                "CPF: " + studentCpfList + "\n" +
-                                "Contato: " + studentContactList + "\n" +
-                                "----------------------------------"
-                            );
-                        }
+                        
                 break;
 
                 case CONSULT_PLAN_BY_NAME: 

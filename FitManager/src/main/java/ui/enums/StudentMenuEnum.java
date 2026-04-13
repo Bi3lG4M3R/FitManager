@@ -6,10 +6,9 @@ public enum StudentMenuEnum {
 
     REGISTER_STUDENT (1, "Cadastrar novo aluno"),
     SEARCH_BY_CPF (2, "Buscar por CPF"),
-    EDIT_STUDENT (3, "Editar cadastro"),
-    DELETE_STUDENT (4, "Excluir aluno"),
-    VIEW_ALL_STUDENTS (5, "Listar todos alunos"),
-    BACK (6, "Voltar ao menu principal");
+    DELETE_STUDENT (3, "Excluir aluno"),
+    VIEW_ALL_STUDENTS (4, "Listar todos alunos"),
+    BACK (5, "Voltar ao menu principal");
 
     private final int option;
     private final String description;

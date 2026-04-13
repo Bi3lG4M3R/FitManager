@@ -50,6 +50,16 @@ public class UserInterface {
         );
     }
 
+    public void showStudent(String studentNameList, String studentCpfList, String studentContactList, LocalDate studentBirthDateList){
+        showMessage(
+            "Nome do aluno - " + studentNameList + "\n" +
+            "CPF: " + studentCpfList + "\n" +
+            "Contato: " + studentContactList + "\n" +
+            "Data de nascimento: " + studentBirthDateList + "\n" +
+            "----------------------------------"
+        );
+    }
+
     // Recebe a entrada do usuário como String
     public String getInput(String prompt){
         showMessage(prompt);

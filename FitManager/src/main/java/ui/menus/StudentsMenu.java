@@ -55,19 +55,16 @@ public class StudentsMenu{
 
                 case SEARCH_BY_CPF:
                     String cpfToSearch = ui.getInput("Digite o CPF do aluno a ser consultado: ");
-                    OperationResult resultFind = fitManager.findStudentByCpf(cpfToSearch);
-                    if(resultFind.getSuccess()){
-                        ui.showMessage(resultFind.getMessage());
+                    Student studentFound = fitManager.findStudentByCpf(cpfToSearch);
+                    if(studentFound == null){
+                        ui.showError("Aluno não encontrado.");
                     } else {
-                        ui.showMessage("Erro ao buscar aluno: " + resultFind.getMessage());
+                        String studentNameList = studentFound.getName();
+                        String studentCpfList = studentFound.getCpf();
+                        String studentContactList = studentFound.getContact();
+                        LocalDate studentBirthDateList = studentFound.getBirthDate();
+                        ui.showStudent(studentNameList, studentCpfList, studentContactList, studentBirthDateList);
                     }
-                break;
-
-                
-                case EDIT_STUDENT:
-                    ui.showMessage("Funcionalidade em desenvolvimento. Em breve será possível editar o cadastro do aluno.");
-                    //String cpfToEdit = ui.getInput("Digite o CPF do aluno que o cadastro será editado: ");
-                    //fitManager.updateStudent(cpfToEdit);
                 break;
 
                 case DELETE_STUDENT:
@@ -92,14 +89,7 @@ public class StudentsMenu{
                             String studentContactList = student.getContact();
                             LocalDate studentBirthDateList = student.getBirthDate();
 
-                            ui.showMessage(
-                                "Nome do aluno - " + studentNameList + "\n" +
-                                "CPF: " + studentCpfList + "\n" +
-                                "Contato: " + studentContactList + "\n" +
-                                "Data de nascimento: " + studentBirthDateList + "\n" +
-                                "----------------------------------"
-                            );
-                            
+                            ui.showStudent(studentNameList, studentCpfList, studentContactList, studentBirthDateList);
 
                         }
                     }
