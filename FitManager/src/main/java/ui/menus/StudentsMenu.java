@@ -3,11 +3,11 @@ package ui.menus;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import ui.UserInterface;
-import ui.enums.StudentMenuEnum;
 import application.FitManager;
 import application.OperationResult;
 import domain.Student;
+import ui.UserInterface;
+import ui.enums.StudentMenuEnum;
 
 public class StudentsMenu{
     
@@ -46,7 +46,7 @@ public class StudentsMenu{
                     LocalDate studentBirthDate = ui.getInputDate("Digite a data de nascimento do aluno (dd/mm/aaaa): ");
                     
                     OperationResult resultRegister = fitManager.registerStudent(studentName, studentCpf, studentContact, studentBirthDate);
-                    if(resultRegister.getSuccess()){
+                    if(resultRegister.isSuccess()){
                         ui.showMessage(resultRegister.getMessage());
                     } else {
                         ui.showMessage("Erro ao cadastrar aluno: " + resultRegister.getMessage());
@@ -70,7 +70,7 @@ public class StudentsMenu{
                 case DELETE_STUDENT:
                     String cpfToDelete = ui.getInput("Digite o CPF do aluno a ser excluído: ");
                     OperationResult resultDelete = fitManager.removeStudent(cpfToDelete);
-                    if(resultDelete.getSuccess()){
+                    if(resultDelete.isSuccess()){
                         ui.showMessage(resultDelete.getMessage());
                     } else {
                         ui.showMessage("Erro ao excluir aluno: " + resultDelete.getMessage());

@@ -73,8 +73,8 @@ public class FitManager {
         return enrollmentService.enroll(student, plan, startDate, durationMonths, initialAmount, paymentType, paymentDescription);
     }
 
-    public OperationResult registerPayment(LocalDate date, int code, double amount, PaymentType paymentType, String paymentDescription) {
-        return enrollmentService.registerPayment(date, code, amount, paymentType, paymentDescription);
+    public OperationResult registerPayment(int code, double amount, PaymentType paymentType, String paymentDescription) {
+        return enrollmentService.registerPayment(code, amount, paymentType, paymentDescription);
     }
 
     public OperationResult cancelEnrollment(int code, String reason) { return enrollmentService.cancel(code, reason); }

@@ -45,20 +45,20 @@ public class EnrollmentMenu {
                     LocalDate startDate = ui.getInputDate("Digite a data de início da matrícula (dd/mm/aaaa): ");
                     int durationMonths = ui.getInputInt("Digite a duração da matrícula (numero de meses): ");
                     double initialPayment = ui.getInputDouble("Digite o valor do pagamento inicial: ");
+                    PaymentType paymentType;
 
-                    // Possibilidade de criar um metodo para mini menus como pagamento e planos
-                    // para evitar semelhaça com a exibiçao dos menus principais
-
-                    //OBS: é possivel de deixar o codigo mais limpo construindo a string com um for
-                    //antes de chamar a função (autorização para alteração pendente)
-                    ui.showMenu("Formas de pagamento", new String[] {
-                        PaymentType.PIX.getValueOpcao() + " - "  + PaymentType.PIX.getDescription(),
-                        PaymentType.CREDIT_CARD.getValueOpcao() + " - " + PaymentType.CREDIT_CARD.getDescription(),
-                        PaymentType.DEBIT_CARD.getValueOpcao() + " - " + PaymentType.DEBIT_CARD.getDescription(),
-                        PaymentType.CASH.getValueOpcao() + " - " + PaymentType.CASH.getDescription()
-                    });
-                    PaymentType paymentType = PaymentType.selectFromInt(ui.getInputInt("Selecione a forma de pagamento: "));
-
+                    do{
+                        ui.showMenu("Formas de pagamento", new String[] {
+                            PaymentType.PIX.getValueOpcao() + " - "  + PaymentType.PIX.getDescription(),
+                            PaymentType.CREDIT_CARD.getValueOpcao() + " - " + PaymentType.CREDIT_CARD.getDescription(),
+                            PaymentType.DEBIT_CARD.getValueOpcao() + " - " + PaymentType.DEBIT_CARD.getDescription(),
+                            PaymentType.CASH.getValueOpcao() + " - " + PaymentType.CASH.getDescription()
+                        });
+                        paymentType = PaymentType.selectFromInt(ui.getInputInt("Selecione a forma de pagamento: "));
+                        if(paymentType == null){
+                            ui.showError("Opção de pagamento inválida. Por favor, selecione uma opção válida.");
+                        }
+                    } while(paymentType == null);
                     OperationResult resultRegisterEnrollment = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType, paymentType.getDescription());
                     
                     if(resultRegisterEnrollment.isSuccess())

@@ -1,9 +1,9 @@
 package ui;
 
-import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Scanner;
 
 
 public class UserInterface {
@@ -107,6 +107,7 @@ public class UserInterface {
             }
         }
     }
+    
 
     public LocalDate getInputDate(String prompt){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");

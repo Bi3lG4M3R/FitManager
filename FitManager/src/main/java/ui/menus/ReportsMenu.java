@@ -1,12 +1,12 @@
 package ui.menus;
 
-import java.util.ArrayList;
 import java.time.LocalDate;
+import java.util.ArrayList;
+
+import application.FitManager;
+import domain.Enrollment;
 import ui.UserInterface;
 import ui.enums.ReportsMenuEnum;
-import domain.Enrollment;
-import domain.EnrollmentStatus;
-import application.FitManager;
 
 public class ReportsMenu{
     
@@ -86,9 +86,9 @@ public class ReportsMenu{
                                 LocalDate startDate = enrollment.getStartDate();
                                 LocalDate endDate = enrollment.getEndDate();
                                 int durationMonths = enrollment.getDurationMonths();
-                                EnrollmentStatus status = enrollment.getStatus();
+                                String status = enrollment.getStatus().toString();
 
-                                ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, planName);
+                                ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, status);
                                 }
                             }
                             ui.showMessage("Fim da lista de matriculas ativas."); 
@@ -111,14 +111,14 @@ public class ReportsMenu{
                                 LocalDate startDate = enrollment.getStartDate();
                                 LocalDate endDate = enrollment.getEndDate();
                                 int durationMonths = enrollment.getDurationMonths();
-                                EnrollmentStatus status = enrollment.getStatus();
+                                String status = enrollment.getStatus().toString();
 
-                                if(status == EnrollmentStatus.CANCELLED){
+                                if(status.equals("CANCELLED")){
                                     endDate = enrollment.getCancellationDate();
                                     String cancellationReason = enrollment.getCancellationReason();
-                                    ui.showCancelledEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, planName, cancellationReason);
+                                    ui.showCancelledEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, status, cancellationReason);
                                 }else{
-                                    ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, planName);
+                                    ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, status);
                                 }
 
                             }
