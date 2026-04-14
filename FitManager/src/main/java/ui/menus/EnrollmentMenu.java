@@ -2,12 +2,13 @@ package ui.menus;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import ui.UserInterface;
-import ui.enums.EnrollmentMenuEnum;
+
 import application.FitManager;
 import application.OperationResult;
 import domain.Enrollment;
 import domain.payment.PaymentType;
+import ui.UserInterface;
+import ui.enums.EnrollmentMenuEnum;
 
 public class EnrollmentMenu {
     private final UserInterface ui;
@@ -45,20 +46,7 @@ public class EnrollmentMenu {
                     LocalDate startDate = ui.getInputDate("Digite a data de início da matrícula (dd/mm/aaaa): ");
                     int durationMonths = ui.getInputInt("Digite a duração da matrícula (numero de meses): ");
                     double initialPayment = ui.getInputDouble("Digite o valor do pagamento inicial: ");
-                    PaymentType paymentType;
-
-                    do{
-                        ui.showMenu("Formas de pagamento", new String[] {
-                            PaymentType.PIX.getValueOpcao() + " - "  + PaymentType.PIX.getDescription(),
-                            PaymentType.CREDIT_CARD.getValueOpcao() + " - " + PaymentType.CREDIT_CARD.getDescription(),
-                            PaymentType.DEBIT_CARD.getValueOpcao() + " - " + PaymentType.DEBIT_CARD.getDescription(),
-                            PaymentType.CASH.getValueOpcao() + " - " + PaymentType.CASH.getDescription()
-                        });
-                        paymentType = PaymentType.selectFromInt(ui.getInputInt("Selecione a forma de pagamento: "));
-                        if(paymentType == null){
-                            ui.showError("Opção de pagamento inválida. Por favor, selecione uma opção válida.");
-                        }
-                    } while(paymentType == null);
+                    PaymentType paymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
                     OperationResult resultRegisterEnrollment = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType, paymentType.getDescription());
                     
                     if(resultRegisterEnrollment.isSuccess())
@@ -99,11 +87,13 @@ public class EnrollmentMenu {
 
                 case CHECK_ACTIVE_ENROLLMENT:
                     String studentCpfToCheck = ui.getInput("Digite o CPF do aluno para consultar a matrícula: ");
-                    OperationResult resultCheckEnrollment = fitManager.hasActiveEnrollment(studentCpfToCheck);
-                    if(resultCheckEnrollment.isSuccess())
+                    OperationResult resultCheckEnrollment = fitManager.findActiveEnrollment(studentCpfToCheck);
+                    if(resultCheckEnrollment.isSuccess()){
                         ui.showMessage(resultCheckEnrollment.getMessage());
-                    else
+                        ui.showEnrollment((Enrollment) resultCheckEnrollment.getData());
+                    } else {
                         ui.showError("Erro ao consultar matrícula: " + resultCheckEnrollment.getMessage());
+                    }
                 break;
 
                 case VIEW_HISTORY:

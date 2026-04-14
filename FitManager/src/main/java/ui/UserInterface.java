@@ -5,12 +5,16 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
+import domain.Enrollment;
+import domain.payment.PaymentType;
+import domain.plan.PlanType;
+
 
 public class UserInterface {
 
-    private Scanner input = new Scanner(System.in);
+    private final Scanner input = new Scanner(System.in);
 
-        // Mostra uma mensagem para o usuário
+    // METODOS PARA MOSTRAR INFORMAÇÕES PARA O USUÁRIO
     public void showMessage(String message){
         System.out.println(message);
     }
@@ -38,6 +42,21 @@ public class UserInterface {
             "Duração da matrícula: " + durationMonths + " meses\n" +
             "Valor total do plano: R$ " + String.format("%.2f", totalPrice) + "\n" +
             "Status: " + status + "\n" +
+            "----------------------------------"
+                );
+
+    }
+
+    public void showEnrollment(Enrollment enrollment){
+        showMessage(
+            "Código de matrícula: " + enrollment.getCode() + "\n" +
+            "Nome do aluno: " + enrollment.getStudent().getName() + "\n" +
+            "Plano escolhido: " + enrollment.getPlan().getDescription() + "\n" +
+            "Data de início: " + enrollment.getStartDate() + "\n" +
+            "Data de término: " + enrollment.getEndDate() + "\n" +
+            "Duração da matrícula: " + enrollment.getDurationMonths() + " meses\n" +
+            "Valor total do plano: R$ " + String.format("%.2f", enrollment.getTotalPrice()) + "\n" +
+            "Status: " + enrollment.getStatus() + "\n" +
             "----------------------------------"
                 );
 
@@ -80,7 +99,21 @@ public class UserInterface {
         );
     }
 
-    // Recebe a entrada do usuário como String
+    public void showPlanTypeOptions(){
+        showMessage("Tipos de planos disponíveis:");
+        for (PlanType type : PlanType.values()) {
+            showMessage(type.getValueOption() + " - " + type.getDescription());
+        }
+    }
+
+    public void showPaymentTypeOptions(){
+        showMessage("Formas de pagamento disponíveis:");
+        for (PaymentType type : PaymentType.values()) {
+            showMessage(type.getValueOpcao() + " - " + type.getDescription());
+        }
+    }
+
+    // METODOS PARA RECEBER INFORMAÇÕES DO USUÁRIO
     public String getInput(String prompt){
         showMessage(prompt);
         return this.input.nextLine();
@@ -120,6 +153,44 @@ public class UserInterface {
             }
         }
     }
+
+    public PlanType getInputPlanType(String prompt){
+        PlanType planType = null;
+        
+        do { 
+            try {
+                showPlanTypeOptions();
+                int selectedPlan = getInputInt(prompt);
+                planType = PlanType.selectFromInt(selectedPlan);
+                if (planType == null) {
+                    showError("Opção inválida. Por favor, selecione um tipo de plano válido.");
+                }
+            } catch (NumberFormatException error) {
+                showError("Entrada inválida. Por favor, digite um número inteiro correspondente ao tipo de plano.");
+            }
+        } while (planType == null);
+        return planType;
+    }
+
+    public PaymentType getInputPaymentType(String prompt){
+        PaymentType paymentType = null;
+        
+        do { 
+            try {
+                showPaymentTypeOptions();
+                int selectedPayment = getInputInt(prompt);
+                paymentType = PaymentType.selectFromInt(selectedPayment);
+                if (paymentType == null) {
+                    showError("Opção inválida. Por favor, selecione uma forma de pagamento válida.");
+                }
+            } catch (NumberFormatException error) {
+                showError("Entrada inválida. Por favor, digite um número inteiro correspondente a forma de pagamento.");
+            }
+        } while (paymentType == null);
+        return paymentType;
+    }
+
+    
 
 
 

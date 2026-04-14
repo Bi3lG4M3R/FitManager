@@ -1,8 +1,8 @@
-package main.java.main;
+
 
 import application.FitManager;
-import ui.MainMenu;
 import ui.UserInterface;
+import ui.menus.MainMenu;
 
 
 public class Main {

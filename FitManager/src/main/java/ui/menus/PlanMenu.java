@@ -1,12 +1,13 @@
 package ui.menus;
 
-import ui.UserInterface;
-import ui.enums.PlanMenuEnum;
-import domain.plan.PlanType;
-import domain.plan.Plan;
 import java.util.ArrayList;
+
 import application.FitManager;
 import application.OperationResult;
+import domain.plan.Plan;
+import domain.plan.PlanType;
+import ui.UserInterface;
+import ui.enums.PlanMenuEnum;
 
 public class PlanMenu{
     
@@ -47,23 +48,15 @@ public class PlanMenu{
                     planName = ui.getInput("Digite o nome do plano: ");
 
                     String planDescription = ui.getInput("Digite a descrição do plano:");
-
-                    ui.showMenu("Tipos de planos disponiveis", new String[] {
-                        PlanType.MONTHLY.getValueOption() + " - " + PlanType.MONTHLY.getDescription(),
-                        PlanType.QUARTERLY.getValueOption() + " - " + PlanType.QUARTERLY.getDescription(),
-                        PlanType.SEMI_ANNUAL.getValueOption() + " - " + PlanType.SEMI_ANNUAL.getDescription(),
-                        PlanType.ANNUAL.getValueOption() + " - " + PlanType.ANNUAL.getDescription()
-                    });
-
-                    int selectedPlan = ui.getInputInt("Selecione o tipo do plano: ");
-                    PlanType planType = PlanType.selectFromInt(selectedPlan);
+                    
+                    PlanType planType = ui.getInputPlanType("Selecione o tipo do plano: ");
 
                     double planPrice = ui.getInputDouble("Digite o preço do plano: ");
 
                     int planDuration = ui.getInputInt("Digite a duração minima do plano (em meses): ");
 
-                    OperationResult resultRegister = fitManager.registerPlan(planName, planDescription, planType, planPrice, planDuration);
-                    if(resultRegister.getSuccess())
+                    OperationResult resultRegister = fitManager.registerPlan(planName, planDescription, planType, planDuration, planPrice);
+                    if(resultRegister.isSuccess())
                         ui.showMessage(resultRegister.getMessage());
                      else 
                         ui.showError("Erro ao registrar plano: " + resultRegister.getMessage());
@@ -97,8 +90,8 @@ public class PlanMenu{
                 case CHANGE_PRICE:
                     planName = ui.getInput("Digite o nome do plano a ser alterado: ");
                     double newPrice = ui.getInputDouble("Digite o novo preço do plano: ");
-                    OperationResult resultUpdate = fitManager.updatePlan(planName, newPrice);
-                    if(resultUpdate.getSuccess())
+                    OperationResult resultUpdate = fitManager.updatePlanPrice(planName, newPrice);
+                    if(resultUpdate.isSuccess())
                         ui.showMessage(resultUpdate.getMessage());
                     else
                         ui.showError("Erro ao atualizar preço do plano: " + resultUpdate.getMessage());
