@@ -28,14 +28,34 @@ public class UserInterface {
         }
     }
 
-    public void showEnrollment(int code, String studentName, String planNameHistory, LocalDate startDateHistory, LocalDate endDateHistory, String status){
-        showMessage("Matrícula - " + code + "\n" +
-                    "Nome do aluno: " + studentName + "\n" +
-                    "Plano: " + planNameHistory + "\n" +
-                    "Data de início: " + startDateHistory + "\n" +
-                    "Data de término: " + endDateHistory + "\n" +
-                    "Status: " + status + "\n" +
-                    "-----------------------------");
+    public void showEnrollment(int code, String studentName, String planName, LocalDate startDate, LocalDate endDate, int durationMonths, double totalPrice, String status){
+        showMessage(
+            "Código de matrícula: " + code + "\n" +
+            "Nome do aluno: " + studentName + "\n" +
+            "Plano escolhido: " + planName + "\n" +
+            "Data de início: " + startDate + "\n" +
+            "Data de término: " + endDate + "\n" +
+            "Duração da matrícula: " + durationMonths + " meses\n" +
+            "Valor total do plano: R$ " + String.format("%.2f", totalPrice) + "\n" +
+            "Status: " + status + "\n" +
+            "----------------------------------"
+                );
+
+    }
+
+    public void showCancelledEnrollment(int code, String studentName, String planName, LocalDate startDate, LocalDate endDate, int durationMonths, double totalPrice, String status, String cancellationReason){
+        showMessage(
+            "Código de matrícula: " + code + "\n" +
+            "Nome do aluno: " + studentName + "\n" +
+            "Plano escolhido: " + planName + "\n" +
+            "Data de início: " + startDate + "\n" +
+            "Data de término: " + endDate + "\n" +
+            "Duração da matrícula: " + durationMonths + " meses\n" +
+            "Valor total do plano: R$ " + String.format("%.2f", totalPrice) + "\n" +
+            "Status: " + status + "\n" +
+            "Motivo da cancelamento: " + cancellationReason + "\n" +
+            "----------------------------------"
+                );
 
     }
 

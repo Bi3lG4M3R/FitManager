@@ -7,10 +7,9 @@ import domain.plan.Plan;
 import domain.payment.*;
 import java.util.ArrayList;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class EnrollmentService {
-    private ArrayList<Enrollment> enrollments; 
+    private ArrayList<Enrollment> enrollments = new ArrayList<>(); 
     static int nextCode;
     public OperationResult enroll(Student student, Plan plan, LocalDate startDate, 
             int duration, double amount, PaymentType paymentType, String paymentDescription){
@@ -29,9 +28,8 @@ public class EnrollmentService {
         
     }
     
-    public OperationResult registerPayment(int code, double amount, PaymentType paymentType, String paymentDescription){
+    public OperationResult registerPayment(LocalDate date, int code, double amount, PaymentType paymentType, String paymentDescription){
         int index=0;
-        LocalDate date = LocalDate.now();
         while( index < enrollments.size() && enrollments.get(index).getCode()!=code){
             index++;
         }
@@ -70,7 +68,7 @@ public class EnrollmentService {
         return null;
     } 
     
-    public ArrayList<Enrollment> listEnrollment(){
+    public ArrayList<Enrollment> listEnrollments(){
         return enrollments;
     }
     

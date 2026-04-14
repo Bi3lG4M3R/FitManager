@@ -27,6 +27,9 @@ public class FitManager {
 
     public OperationResult removeStudent(String cpf) {
         Student student = studentService.findByCpf(cpf);
+        if(student == null){
+            return new OperationResult(false, "Não foi possível encontrar o aluno.");
+        }
         if(enrollmentService.hasActiveEnrollment(student.getCpf())) {
             return new OperationResult(false, "Não é possível remover/inativar um aluno com matrícula ativa.");
         }
@@ -70,8 +73,8 @@ public class FitManager {
         return enrollmentService.enroll(student, plan, startDate, durationMonths, initialAmount, paymentType, paymentDescription);
     }
 
-    public OperationResult registerPayment(int code, double amount, PaymentType paymentType, String paymentDescription) {
-        return enrollmentService.registerPayment(code, amount, paymentType, paymentDescription);
+    public OperationResult registerPayment(LocalDate date, int code, double amount, PaymentType paymentType, String paymentDescription) {
+        return enrollmentService.registerPayment(date, code, amount, paymentType, paymentDescription);
     }
 
     public OperationResult cancelEnrollment(int code, String reason) { return enrollmentService.cancel(code, reason); }
@@ -79,14 +82,4 @@ public class FitManager {
     public Enrollment findActiveEnrollment(String cpf) { return enrollmentService.findActiveByStudent(cpf); }
 
     public ArrayList<Enrollment> listEnrollments() { return enrollmentService.listEnrollments(); }
-
-    public OperationResult hasActiveEnrollment(String cpf) {
-        if(studentService.findByCpf(cpf) == null) {
-            return new OperationResult(false, "Aluno não encontrado.");
-        }
-        if(!enrollmentService.hasActiveEnrollment(cpf)) {
-            return new OperationResult(false, "Aluno não possui matrícula ativa.");
-        }
-        return new OperationResult(true, "Aluno possui matrícula ativa.");
-    }
 }

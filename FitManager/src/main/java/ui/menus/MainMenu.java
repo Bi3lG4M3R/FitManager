@@ -4,13 +4,15 @@ import ui.UserInterface;
 import ui.enums.MainMenuEnum;
 import ui.menus.PlanMenu;
 import ui.menus.StudentsMenu;
+import ui.menus.EnrollmentMenu;
+import ui.menus.ReportsMenu;
 
 import application.FitManager;
 
 public class MainMenu{
     
-    private UserInterface ui;
-    private FitManager fitManager;
+    private final UserInterface ui;
+    private final FitManager fitManager;
 
 
     // Construtor
@@ -58,7 +60,8 @@ public class MainMenu{
                 break;
 
                 case REPORTS:
-                    
+                    ReportsMenu reportsMenu = new ReportsMenu(ui, fitManager);
+                    reportsMenu.run();
                 break;
 
                 case EXIT:

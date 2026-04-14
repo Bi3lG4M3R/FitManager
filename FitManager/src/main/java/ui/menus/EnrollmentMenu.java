@@ -2,7 +2,6 @@ package ui.menus;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-
 import ui.UserInterface;
 import ui.enums.EnrollmentMenuEnum;
 import application.FitManager;
@@ -62,7 +61,7 @@ public class EnrollmentMenu {
 
                     OperationResult resultRegisterEnrollment = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType, paymentType.getDescription());
                     
-                    if(resultRegisterEnrollment.getSuccess())
+                    if(resultRegisterEnrollment.isSuccess())
                         ui.showMessage(resultRegisterEnrollment.getMessage());
                     else
                         ui.showError("Erro ao registrar matrícula: " + resultRegisterEnrollment.getMessage());
@@ -81,7 +80,7 @@ public class EnrollmentMenu {
                     PaymentType registerPaymentType = PaymentType.selectFromInt(ui.getInputInt("Selecione a forma de pagamento: "));
                     
                     OperationResult resultPayment = fitManager.registerPayment(enrollmentCode, amount, registerPaymentType, registerPaymentType.getDescription());
-                    if(resultPayment.getSuccess())
+                    if(resultPayment.isSuccess())
                         ui.showMessage(resultPayment.getMessage());
                     else
                         ui.showError("Erro ao registrar pagamento: " + resultPayment.getMessage());
@@ -92,7 +91,7 @@ public class EnrollmentMenu {
                     String cancelReason = ui.getInput("Digite o motivo do cancelamento: ");
                     OperationResult resultCancelEnrollment = fitManager.cancelEnrollment(enrollmentCodeToCancel, cancelReason);
                     
-                    if(resultCancelEnrollment.getSuccess())
+                    if(resultCancelEnrollment.isSuccess())
                         ui.showMessage(resultCancelEnrollment.getMessage());
                     else
                         ui.showError("Erro ao cancelar matrícula: " + resultCancelEnrollment.getMessage());
@@ -101,7 +100,7 @@ public class EnrollmentMenu {
                 case CHECK_ACTIVE_ENROLLMENT:
                     String studentCpfToCheck = ui.getInput("Digite o CPF do aluno para consultar a matrícula: ");
                     OperationResult resultCheckEnrollment = fitManager.hasActiveEnrollment(studentCpfToCheck);
-                    if(resultCheckEnrollment.getSuccess())
+                    if(resultCheckEnrollment.isSuccess())
                         ui.showMessage(resultCheckEnrollment.getMessage());
                     else
                         ui.showError("Erro ao consultar matrícula: " + resultCheckEnrollment.getMessage());
@@ -119,9 +118,12 @@ public class EnrollmentMenu {
                             String planNameHistory = enrollment.getPlan().getDescription();
                             LocalDate startDateHistory = enrollment.getStartDate();
                             LocalDate endDateHistory = enrollment.getEndDate();
+                            int durationMonthsHistory = enrollment.getDurationMonths();
+                            double totalPrice = enrollment.getTotalPrice();
+
                             String status = enrollment.getStatus().toString();
 
-                            ui.showEnrollment(code, studentName, planNameHistory, startDateHistory, endDateHistory, status);
+                            ui.showEnrollment(code, studentName, planNameHistory, startDateHistory, endDateHistory, durationMonthsHistory, totalPrice, status);
 
                         }
                     }

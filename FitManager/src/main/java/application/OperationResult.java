@@ -16,9 +16,7 @@ public class OperationResult {
         this.data = data;
     }
     
-    public void isSuccess(){ this.success = true; }
-
-    public boolean getSuccess() { return success; }
+    public boolean isSuccess(){ return this.success; }
 
     public String getMessage() { return message; }
 

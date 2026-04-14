@@ -17,13 +17,4 @@ public enum PaymentType {
     public int getValueOpcao(){ return option; }
 
     public String getDescription() { return description; }
-
-    public static PaymentType selectFromInt(int option) {
-        for (PaymentType paymentOption : PaymentType.values()) {
-            if (paymentOption.getValueOpcao() == option){
-                return paymentOption;
-            }
-        }
-        return null; // caso a opcao nao exista devolve null
-    }
 }

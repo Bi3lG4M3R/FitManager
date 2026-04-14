@@ -1,6 +1,5 @@
 package domain.plan;
 
-
 public enum PlanType {
     MONTHLY(1, "Mensal"),
     QUARTERLY(2, "Trimestral"),
@@ -18,13 +17,4 @@ public enum PlanType {
     public int getValueOption(){ return option; }
 
     public String getDescription() { return description; }
-
-    public static PlanType selectFromInt(int option) {
-        for (PlanType planOption : PlanType.values()) {
-            if (planOption.getValueOption() == option){
-                return planOption;
-            }
-        }
-        return null; // caso a opcao nao exista devolve null
-    }
 }

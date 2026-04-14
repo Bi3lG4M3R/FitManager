@@ -1,15 +1,12 @@
 package ui.menus;
 
+import java.util.ArrayList;
+import java.time.LocalDate;
 import ui.UserInterface;
 import ui.enums.ReportsMenuEnum;
-import domain.plan.Plan;
-import domain.Student;
 import domain.Enrollment;
-
-import java.util.ArrayList;
-
+import domain.EnrollmentStatus;
 import application.FitManager;
-import application.OperationResult;
 
 public class ReportsMenu{
     
@@ -27,7 +24,7 @@ public class ReportsMenu{
     public void run(){
         int optionSelected;
         
-        String planName;
+        
         //  String array para armazenar as opções dos menus
         String[] menuOptions = new String[ReportsMenuEnum.values().length];
 
@@ -46,53 +43,90 @@ public class ReportsMenu{
             switch(ReportsMenuEnum.selectFromInt(optionSelected)) {
 
 
-                case VIEW_ALL_PLANS:
-                    ArrayList<Plan> planList = fitManager.listPlans();
-                    if(planList.isEmpty()){
-                        ui.showMessage("Nenhum plano cadastrado.");
+                case ACTIVE_ENROLLMENTS_STUDENTS:
+                    boolean hasActiveEnrollments = false;
+                    ArrayList<Enrollment> activeEnrollments = fitManager.listEnrollments();
+                    if(activeEnrollments.isEmpty()){
+                        ui.showError("Não há matriculas cadastradas.");
                     } else {
-                        ui.showMessage("Histórico de Planos:");
-                        for(Plan plan : planList){
-                            String planNameList = plan.getName();
-                            String planDescriptionList = plan.getDescription();
-                            String planTypeList = plan.getType().getDescription(); 
-                            int planMinDurationList = plan.getMinDurationMonths();
-                            double planPricePerMonthList = plan.getPricePerMonth();
-
-                            ui.showMessage(
-                                "Nome do plano - " + planNameList + "\n" +
-                                "Descrição: " + planDescriptionList + "\n" +
-                                "Tipo: " + planTypeList + "\n" +
-                                "Duração mínima: " + planMinDurationList + " meses\n" +
-                                "Preço por mês: R$ " + String.format("%.2f", planPricePerMonthList) + "\n" +
-                                "----------------------------------"
-                            );
-                            
-
+                        ui.showMessage("Histórico de Matrículas Ativas:");
+                        for(Enrollment enrollment : activeEnrollments){
+                            if(enrollment.getStatus() == domain.EnrollmentStatus.ACTIVE){
+                                hasActiveEnrollments = true;
+                                String studentName = enrollment.getStudent().getName();
+                                String planName = enrollment.getPlan().getName();
+                                
+                                ui.showMessage(
+                                    "Aluno: " + studentName + "\n" +
+                                    "Plano: " + planName + "\n" +
+                                    "----------------------------------"
+                                );
+                            }
+                            if(hasActiveEnrollments){
+                                ui.showMessage("Fim da lista de matriculas ativas.");
+                            }else{
+                                ui.showError("Não há matriculas ativas cadastradas.");
+                            }
                         }
                     }
                 break;
 
-
-                case VIEW_PENDING_PAYMENTS_ENROLLMENTS:
-                    
-                break;
-
-
-                case CONSULT_PLAN_BY_NAME: 
-                        
-                break;
-
-                case CONSULT_ACTIVE_ENROLLMENTS_BY_STUDENT_CPF:
-                    String cpfToSearchEnrollments = ui.getInput("Digite o CPF do aluno para consultar suas matrículas ativas: ");
-                    Enrollment activeEnrollment = fitManager.findActiveEnrollment(cpfToSearchEnrollments);
-                    if(activeEnrollment == null){
-                        ui.showError("Nenhuma matrícula ativa encontrada para o aluno informado.");
+                case PENDING_PAYMENTS_ENROLLMENTS:
+                    ArrayList<Enrollment> pendingPaymentsEnrollments = fitManager.listEnrollments();
+                    if(pendingPaymentsEnrollments.isEmpty()){
+                        ui.showError("Não há matriculas cadastradas.");
                     } else {
-                        ui.showMessage("Matrícula ativa encontrada para o aluno informado.");
+                        ui.showMessage("Lista de matriculas com pagamentos pendentes:");
+                        for(Enrollment enrollment : pendingPaymentsEnrollments){
+                                if(enrollment.getStatus() == domain.EnrollmentStatus.ACTIVE && enrollment.calculateTotalPaid() < enrollment.getTotalPrice()){
+                                int code = enrollment.getCode();
+                                String studentName = enrollment.getStudent().getName();
+                                String planName = enrollment.getPlan().getName();
+                                double totalPrice = enrollment.getTotalPrice();
+                                LocalDate startDate = enrollment.getStartDate();
+                                LocalDate endDate = enrollment.getEndDate();
+                                int durationMonths = enrollment.getDurationMonths();
+                                EnrollmentStatus status = enrollment.getStatus();
+
+                                ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, planName);
+                                }
+                            }
+                            ui.showMessage("Fim da lista de matriculas ativas."); 
                     }
                 break;
 
+
+                case ALL_ENROLLMENTS: 
+                    ArrayList<Enrollment> allEnrollments = fitManager.listEnrollments();
+                    if(allEnrollments.isEmpty()){
+                        ui.showError("Não há matriculas cadastradas.");
+                    } else {
+                        ui.showMessage("Histórico de Matrículas:");
+                        for(Enrollment enrollment : allEnrollments){
+                                
+                                int code = enrollment.getCode();
+                                String studentName = enrollment.getStudent().getName();
+                                String planName = enrollment.getPlan().getName();
+                                double totalPrice = enrollment.getTotalPrice();
+                                LocalDate startDate = enrollment.getStartDate();
+                                LocalDate endDate = enrollment.getEndDate();
+                                int durationMonths = enrollment.getDurationMonths();
+                                EnrollmentStatus status = enrollment.getStatus();
+
+                                if(status == EnrollmentStatus.CANCELLED){
+                                    endDate = enrollment.getCancellationDate();
+                                    String cancellationReason = enrollment.getCancellationReason();
+                                    ui.showCancelledEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, planName, cancellationReason);
+                                }else{
+                                    ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, planName);
+                                }
+
+                            }
+                            
+                            ui.showMessage("Fim da lista de matriculas ativas."); 
+                    }
+                    
+                break;
 
                 case BACK:
                     ui.showMessage("Voltando ao menu principal...");

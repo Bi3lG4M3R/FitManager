@@ -4,9 +4,7 @@ import ui.UserInterface;
 import ui.enums.PlanMenuEnum;
 import domain.plan.PlanType;
 import domain.plan.Plan;
-
 import java.util.ArrayList;
-
 import application.FitManager;
 import application.OperationResult;
 

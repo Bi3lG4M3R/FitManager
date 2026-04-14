@@ -11,8 +11,8 @@ import domain.Student;
 
 public class StudentsMenu{
     
-    private UserInterface ui;
-    private FitManager fitManager;
+    private final UserInterface ui;
+    private final FitManager fitManager;
 
     // Construtor
     public StudentsMenu(UserInterface ui, FitManager fitManager){
