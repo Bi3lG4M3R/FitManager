@@ -1,127 +1,65 @@
 package ui;
 
 import java.util.Scanner;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-
 
 public class UserInterface {
+    private final Scanner scanner;
 
-    private Scanner input = new Scanner(System.in);
-
-        // Mostra uma mensagem para o usuário
-    public void showMessage(String message){
-        System.out.println(message);
+    public UserInterface() {
+        this.scanner = new Scanner(System.in);
     }
 
-    // Mostra uma mensagem de erro para o usuário
-    public void showError(String error){
-        System.out.println("ERRO: " + error);
-    }
-
-
-    public void showMenu(String tittle, String[] options){
-        showMessage("==== " + tittle + " ====");
-        for(int i = 0; i < options.length; i++){
-            showMessage((i + 1) + " - " + options[i]);
+    public int showMenu(String title, String[] options) {
+        System.out.println();
+        System.out.println(title);
+        for (int i = 0; i < options.length; i++) {
+            System.out.println((i + 1) + " - " + options[i]);
         }
+        return readInt("Escolha uma opção: ");
     }
 
-    public void showEnrollment(int code, String studentName, String planName, LocalDate startDate, LocalDate endDate, int durationMonths, double totalPrice, String status){
-        showMessage(
-            "Código de matrícula: " + code + "\n" +
-            "Nome do aluno: " + studentName + "\n" +
-            "Plano escolhido: " + planName + "\n" +
-            "Data de início: " + startDate + "\n" +
-            "Data de término: " + endDate + "\n" +
-            "Duração da matrícula: " + durationMonths + " meses\n" +
-            "Valor total do plano: R$ " + String.format("%.2f", totalPrice) + "\n" +
-            "Status: " + status + "\n" +
-            "----------------------------------"
-                );
-
+    public String getInput(String prompt) {
+        System.out.print(prompt);
+        return scanner.nextLine();
     }
 
-    public void showCancelledEnrollment(int code, String studentName, String planName, LocalDate startDate, LocalDate endDate, int durationMonths, double totalPrice, String status, String cancellationReason){
-        showMessage(
-            "Código de matrícula: " + code + "\n" +
-            "Nome do aluno: " + studentName + "\n" +
-            "Plano escolhido: " + planName + "\n" +
-            "Data de início: " + startDate + "\n" +
-            "Data de término: " + endDate + "\n" +
-            "Duração da matrícula: " + durationMonths + " meses\n" +
-            "Valor total do plano: R$ " + String.format("%.2f", totalPrice) + "\n" +
-            "Status: " + status + "\n" +
-            "Motivo da cancelamento: " + cancellationReason + "\n" +
-            "----------------------------------"
-                );
-
+    public void showMessage(String msg) {
+        System.out.println("\n " + msg);
     }
 
-    public void showPlan(String planNameList, String planDescriptionList, String planTypeList, int planMinDurationList, double planPricePerMonthList){
-        showMessage(
-            "Nome do plano - " + planNameList + "\n" +
-            "Descrição: " + planDescriptionList + "\n" +
-            "Tipo: " + planTypeList + "\n" +
-            "Duração mínima: " + planMinDurationList + " meses\n" +
-            "Preço por mês: R$ " + String.format("%.2f", planPricePerMonthList) + "\n" +
-            "----------------------------------"
-        );
+    public void showError(String msg) {
+        System.out.println("\n " + msg);
     }
 
-    public void showStudent(String studentNameList, String studentCpfList, String studentContactList, LocalDate studentBirthDateList){
-        showMessage(
-            "Nome do aluno - " + studentNameList + "\n" +
-            "CPF: " + studentCpfList + "\n" +
-            "Contato: " + studentContactList + "\n" +
-            "Data de nascimento: " + studentBirthDateList + "\n" +
-            "----------------------------------"
-        );
+    public void showLine(String msg) {
+        System.out.println(msg);
     }
 
-    // Recebe a entrada do usuário como String
-    public String getInput(String prompt){
-        showMessage(prompt);
-        return this.input.nextLine();
+    public void pressEnterToContinue() {
+        System.out.print("\nPressione Enter para continuar...");
+        scanner.nextLine();
     }
 
-    public int getInputInt(String prompt){
+    public int readInt(String prompt) {
         while (true) {
             try {
-                int value = Integer.parseInt(getInput(prompt));
-                return value;
-            } catch (NumberFormatException error) {
-                showError("Entrada inválida. Por favor, digite um número inteiro.");
+                System.out.print(prompt);
+                return Integer.parseInt(scanner.nextLine().trim());
+            } catch (NumberFormatException e) {
+                showError("Digite um número inteiro válido.");
             }
         }
     }
 
-    public double getInputDouble(String prompt){
+    public double readDouble(String prompt) {
         while (true) {
             try {
-                double value = Double.parseDouble(getInput(prompt));
-                return value;
-            } catch (NumberFormatException error) {
-                showError("Entrada inválida. Por favor, digite um número decimal.");
+                System.out.print(prompt);
+                String raw = scanner.nextLine().trim().replace(',', '.');
+                return Double.parseDouble(raw);
+            } catch (NumberFormatException e) {
+                showError("Digite um número válido.");
             }
         }
     }
-
-    public LocalDate getInputDate(String prompt){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        while (true) {
-            try {
-                LocalDate date = LocalDate.parse(getInput(prompt).trim(), formatter);
-                return date;
-            } catch (DateTimeParseException error) {
-                showError("Entrada inválida. Por favor, digite uma data no formato dd/MM/yyyy.");
-            }
-        }
-    }
-
-
-
-
-
 }
