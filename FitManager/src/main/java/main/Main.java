@@ -3,7 +3,7 @@ package main.java.main;
 import application.FitManager;
 import ui.MainMenu;
 import ui.UserInterface;
-import ui.UserInterface;
+
 
 public class Main {
     public static void main(String[] args) {
