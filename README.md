@@ -2,71 +2,32 @@
   <img src="https://i.imgur.com/7RagzNi.png" width="300"/>
 </p>
 
-# 💪 O que é a FitManager?
+# FitManager
 
-É um Sistema de gerenciamento para academias desenvolvido como parte da disciplina "Programação Orientada a Objetos" da Univerdade Federal de Mato Grosso do Sul da cidade Três Lagoas-MS, mistrada pelo Doutor Humberto Lidio Antonelli.
+## Descrição do Projeto
 
-## 📌 Sobre o projeto
+Sistema de gerenciamento de academias que permite controlar alunos, planos, matrículas e pagamentos.
 
-O **FitManager** é um sistema que simula o funcionamento básico de uma academia, permitindo o gerenciamento de alunos, planos, matrículas e pagamentos.
+## Integrantes do Grupo
 
-Esta primeira etapa tem como foco principal a **estruturação do sistema utilizando Programação Orientada a Objetos (POO)** e a organização em camadas, preparando o projeto para evoluções futuras.
+- Matheus Henrique dos Santos Gomes
+- Gabriel Richard Zambianchi de Oliveira
+- Matheus Mandarini
 
----
+## Como compilar e executar
 
-Partes implementadas:
+### Compilar:
 
-### 📦 Domain
+```bash
+mvn clean compile
+```
 
-Responsável por representar as entidades do sistema:
+### Executar:
 
-- `Student`
-- `Plan`
-- `Enrollment`
-- `Payment`
-- Enums:
-  - `PlanType`
-  - `PaymentType`
-  - `EnrollmentStatus`
+```bash
+mvn exec:java
+```
 
-### ⚙️ Application
+## Versão do Java
 
-Responsável pela lógica de aplicação e orquestração:
-
-- `EnrollmentService`
-- `OperationResult`
-
----
-
-## 🧠 Decisões de projeto
-
-### 🔹 Uso de `OperationResult`
-
-Todas as operações retornam um objeto padronizado contendo:
-
-- `success`: indica se a operação foi bem-sucedida
-- `message`: mensagem descritiva
-- `data`: informação adicional (atualmente usando `LocalDate`)
-
-Essa abordagem evita uso de exceções para fluxo normal e padroniza o tratamento de erros.
-
----
-
-### 🔹 Preparação para evolução
-
-O projeto já foi estruturado pensando nas próximas etapas:
-
-- Uso de enums (`PlanType`, `PaymentType`) → futura evolução para herança
-- `OperationResult` → preparado para uso com generics
-- Separação em pacotes (`domain`, `application`) → facilita manutenção
-
----
-
-## 🛠 Tecnologias utilizadas
-
-- Java 17+
-- API `java.time` (LocalDate)
-- Estruturas de dados:
-  - `ArrayList`
-
----
+Java 25

@@ -1,4 +1,4 @@
-package main.java.main;
+package main;
 
 import application.FitManager;
 import ui.MainMenu;
