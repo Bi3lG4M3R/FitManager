@@ -5,8 +5,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import domain.plan.Plan;
+
 import domain.payment.Payment;
+import domain.plan.Plan;
 
 public class Enrollment {
     private int code;
