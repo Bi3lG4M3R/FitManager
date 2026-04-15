@@ -22,7 +22,7 @@ public class ReportsMenu{
 
 
     public void run(){
-        int optionSelected;
+        ReportsMenuEnum optionSelected;
         
         
         //  String array para armazenar as opções dos menus
@@ -36,11 +36,15 @@ public class ReportsMenu{
 
 
         do{ 
-            ui.showMenu("RELATÓRIOS", menuOptions);
 
-            optionSelected = ui.getInputInt("Selecione uma opção: ");
+            do{
+                ui.showMenu("RELATÓRIOS", menuOptions);
+                optionSelected = ReportsMenuEnum.selectFromInt(ui.getInputInt("Selecione uma opção: "));
+                if(optionSelected == null)
+                    ui.showError("Opção inexistente. Selecione uma das opções acima.");
+            }while(optionSelected == null);
 
-            switch(ReportsMenuEnum.selectFromInt(optionSelected)) {
+            switch(optionSelected) {
 
 
                 case ACTIVE_ENROLLMENTS_STUDENTS:
@@ -128,14 +132,8 @@ public class ReportsMenu{
                     
                 break;
 
-                case BACK:
-                    ui.showMessage("Voltando ao menu principal...");
-                break;
-
-                default:
-                    ui.showError("Opção inexistente. Selecione uma das opçãoes acima.");
             }
-        }while(optionSelected != ReportsMenuEnum.BACK.getOptionNumber());
+        }while(optionSelected != ReportsMenuEnum.BACK);
     }
 
 }

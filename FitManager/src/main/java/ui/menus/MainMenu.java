@@ -19,7 +19,7 @@ public class MainMenu{
 
 
     public void start(){
-        int optionSelected;
+        MainMenuEnum optionSelected = null;
 
         //  String array para armazenar as opções dos menus
         String[] menuOptions = new String[MainMenuEnum.values().length];
@@ -33,13 +33,17 @@ public class MainMenu{
         // Execução do menu 
         do { 
 
-            ui.showMenu("Menu Principal", menuOptions);
-            optionSelected = ui.getInputInt("Selecione uma opção: ");
-            
+            do{
+                ui.showMenu("Menu Principal", menuOptions);
+                optionSelected = MainMenuEnum.selectFromInt(ui.getInputInt("Selecione uma opção: "));
+                if(optionSelected == null){
+                    ui.showError("Opção inexistente. Selecione uma das opções acima.");
+                }
+            }while(optionSelected == null);
             
 
             
-            switch(MainMenuEnum.selectFromInt(optionSelected)){
+            switch(optionSelected){
                 
                 case MANAGE_STUDENTS:
                     StudentsMenu studentsMenu = new StudentsMenu(ui, fitManager);
@@ -65,13 +69,9 @@ public class MainMenu{
                     ui.showMessage("Saindo do programa...");
                 break;
 
-                case null:
-                     ui.showError("Opção inexistente. Selecione uma das opçãoes acima.");
-                break;
-
             }
 
-        } while (optionSelected != MainMenuEnum.EXIT.getOptionNumber());
+        }while(optionSelected != MainMenuEnum.EXIT);
 
 
     }

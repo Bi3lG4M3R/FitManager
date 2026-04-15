@@ -21,7 +21,7 @@ public class EnrollmentMenu {
     }
 
     public void run(){
-        int optionSelected;
+        EnrollmentMenuEnum optionSelected = null;
 
         //  String array para armazenar as opções dos menus
         String[] menuOptions = new String[EnrollmentMenuEnum.values().length];
@@ -34,11 +34,16 @@ public class EnrollmentMenu {
 
 
         do { 
-            ui.showMenu("GERENCIAR MATRÍCULAS", menuOptions);
 
-            optionSelected = ui.getInputInt("Selecione uma opção: ");
+            do{
+                ui.showMenu("GERENCIAR MATRÍCULAS", menuOptions);
+                optionSelected = EnrollmentMenuEnum.selectFromInt(ui.getInputInt("Selecione uma opção: "));
+                if(optionSelected == null)
+                    ui.showError("Opção inexistente. Selecione uma das opções acima.");  
+            }while(optionSelected == null);
+            
 
-            switch(EnrollmentMenuEnum.selectFromInt(optionSelected)){
+            switch(optionSelected){
 
                 case REGISTER_ENROLLMENT:
                     String studentCpf = ui.getInput("Digite o CPF do aluno: ");
@@ -126,12 +131,9 @@ public class EnrollmentMenu {
                     ui.showMessage("Voltando ao menu principal...");
                 break;
 
-                default:
-                    ui.showError("Opção inválida. Por favor, selecione uma opção válida.");
-
             }
 
-        }while(optionSelected != EnrollmentMenuEnum.BACK.getOptionNumber());
+        }while(optionSelected != EnrollmentMenuEnum.BACK);
 
 
     }

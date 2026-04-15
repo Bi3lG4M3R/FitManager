@@ -23,7 +23,7 @@ public class PlanMenu{
 
 
     public void run(){
-        int optionSelected;
+        PlanMenuEnum optionSelected;
         
         String planName;
         //  String array para armazenar as opções dos menus
@@ -37,11 +37,16 @@ public class PlanMenu{
 
 
         do{ 
-            ui.showMenu("GERENCIAR PLANOS", menuOptions);
+            
+            do{
+                ui.showMenu("GERENCIAR PLANOS", menuOptions);
+                optionSelected = PlanMenuEnum.selectFromInt(ui.getInputInt("Selecione uma opção: "));
+                if(optionSelected == null)
+                    ui.showError("Opção inexistente. Selecione uma das opções acima.");  
+            }while(optionSelected == null);
 
-            optionSelected = ui.getInputInt("Selecione uma opção: ");
 
-            switch(PlanMenuEnum.selectFromInt(optionSelected)){
+            switch(optionSelected){
 
 
                 case REGISTER_NEW_PLAN:
@@ -120,14 +125,11 @@ public class PlanMenu{
                 break;
 
 
-
-
-
                 case BACK:
                     ui.showMessage("Voltando ao menu principal...");
                 break;
             }
-        }while(optionSelected != PlanMenuEnum.BACK.getOptionNumber());
+        }while(optionSelected != PlanMenuEnum.BACK);
     }
 
 }

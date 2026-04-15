@@ -22,7 +22,7 @@ public class StudentsMenu{
 
 
     public void run(){
-        int optionSelected;
+        StudentMenuEnum optionSelected;
 
         //  String array para armazenar as opções dos menus
         String[] menuOptions = new String[StudentMenuEnum.values().length];
@@ -33,11 +33,16 @@ public class StudentsMenu{
         }
 
         do{ 
-            ui.showMenu("GERENCIAR ALUNOS", menuOptions);
 
-            optionSelected = ui.getInputInt("Selecione uma opção: ");
+            do{
+                ui.showMenu("GERENCIAR ALUNOS", menuOptions);
+                optionSelected = StudentMenuEnum.selectFromInt(ui.getInputInt("Selecione uma opção: "));
+                if(optionSelected == null)
+                    ui.showError("Opção inexistente. Selecione uma das opções acima.");
+            }while(optionSelected == null);
 
-            switch(StudentMenuEnum.selectFromInt(optionSelected)){
+
+            switch(optionSelected){
 
                 case REGISTER_STUDENT:
                     String studentName = ui.getInput("Digite o nome do aluno: ");
@@ -104,7 +109,7 @@ public class StudentsMenu{
                 break;
             }
 
-        }while(optionSelected != StudentMenuEnum.BACK.getOptionNumber());
+        }while(optionSelected != StudentMenuEnum.BACK);
 
     }
 
