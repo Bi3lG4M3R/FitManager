@@ -1,0 +1,383 @@
+@startuml FitManager
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam packageStyle rectangle
+hide empty members
+
+' =========================
+' ENTRY POINT
+' =========================
+package "Entry Point" #LightYellow {
+  class Main {
+    +main(args: String[]): void
+  }
+}
+
+' =========================
+' USER INTERFACE
+' =========================
+package "Interface do Usuario (UI)" as UI #PapayaWhip {
+
+  class UserInterface {
+    -input: Scanner
+    +showMessage(message: String): void
+    +showError(error: String): void
+    +showMenu(title: String, options: String[]): void
+    +showEnrollment(...): void
+    +showCancelledEnrollment(...): void
+    +showPlan(...): void
+    +showStudent(...): void
+    +showPlanTypeOptions(): void
+    +showPaymentTypeOptions(): void
+    +getInput(prompt: String): String
+    +getInputInt(prompt: String): int
+    +getInputDouble(prompt: String): double
+    +getInputDate(prompt: String): LocalDate
+    +getInputPlanType(prompt: String): PlanType
+    +getInputPaymentType(prompt: String): PaymentType
+  }
+
+  class MainMenu {
+    -ui: UserInterface
+    -fitManager: FitManager
+    +start(): void
+  }
+
+  class StudentsMenu {
+    -ui: UserInterface
+    -fitManager: FitManager
+    +run(): void
+  }
+
+  class PlanMenu {
+    -ui: UserInterface
+    -fitManager: FitManager
+    +run(): void
+  }
+
+  class EnrollmentMenu {
+    -ui: UserInterface
+    -fitManager: FitManager
+    +run(): void
+  }
+
+  class ReportsMenu {
+    -ui: UserInterface
+    -fitManager: FitManager
+    +run(): void
+  }
+
+  enum MainMenuEnum {
+    MANAGE_STUDENTS
+    MANAGE_PLANS
+    MANAGE_ENROLLMENTS
+    REPORTS
+    EXIT
+  }
+
+  enum StudentMenuEnum {
+    REGISTER_STUDENT
+    SEARCH_BY_CPF
+    DELETE_STUDENT
+    VIEW_ALL_STUDENTS
+    BACK
+  }
+
+  enum PlanMenuEnum {
+    REGISTER_NEW_PLAN
+    CHECK_BY_NAME
+    CHANGE_PRICE
+    VIEW_ALL
+    BACK
+  }
+
+  enum EnrollmentMenuEnum {
+    REGISTER_ENROLLMENT
+    REGISTER_PAYMENT
+    CANCEL_ENROLLMENT
+    CHECK_ACTIVE_ENROLLMENT
+    VIEW_HISTORY
+    BACK
+  }
+
+  enum ReportsMenuEnum {
+    ACTIVE_ENROLLMENTS_STUDENTS
+    PENDING_PAYMENTS_ENROLLMENTS
+    ALL_ENROLLMENTS
+    BACK
+  }
+}
+
+' =========================
+' APPLICATION
+' =========================
+package "Aplicacao" as APP #MistyRose {
+
+  class FitManager {
+    -studentService: StudentService
+    -planService: PlanService
+    -enrollmentService: EnrollmentService
+
+    +registerStudent(...): OperationResult
+    +findStudentByCpf(cpf: String): Student
+    +removeStudent(cpf: String): OperationResult
+    +listStudents(): ArrayList<Student>
+
+    +registerPlan(...): OperationResult
+    +findPlanByName(name: String): Plan
+    +updatePlanPrice(name: String, newPrice: double): OperationResult
+    +listPlans(): ArrayList<Plan>
+
+    +enrollStudent(...): OperationResult
+    +registerPayment(...): OperationResult
+    +cancelEnrollment(code: int, reason: String): OperationResult
+    +findActiveEnrollment(cpf: String): OperationResult
+    +listEnrollments(): ArrayList<Enrollment>
+  }
+
+  class StudentService {
+    -students: ArrayList<Student>
+    +registerStudent(...): OperationResult
+    +findByCpf(cpf: String): Student
+    +removeStudent(cpf: String): OperationResult
+    +listStudents(): ArrayList<Student>
+    +cpfExists(cpf: String): boolean
+  }
+
+  class PlanService {
+    -{static} plans: ArrayList<Plan>
+    +PlanService()
+    +listPlans(): ArrayList<Plan>
+    +{static} findByName(name: String): Plan
+    +nameExists(name: String): boolean
+    +registerPlan(...): OperationResult
+    +updatePrice(name: String, newPrice: double): OperationResult
+  }
+
+  class EnrollmentService {
+    -enrollments: ArrayList<Enrollment>
+    -{static} nextCode: int
+    +enroll(...): OperationResult
+    +registerPayment(...): OperationResult
+    +findActiveByStudent(cpf: String): Enrollment
+    +findByCode(code: int): Enrollment
+    +listEnrollments(): ArrayList<Enrollment>
+    +cancel(code: int, reason: String): OperationResult
+    +hasActiveEnrollment(cpf: String): boolean
+  }
+
+  class OperationResult {
+    -success: boolean
+    -message: String
+    -data: Object
+    +OperationResult(success: boolean, message: String)
+    +OperationResult(success: boolean, message: String, data: Object)
+    +isSuccess(): boolean
+    +getMessage(): String
+    +getData(): Object
+  }
+}
+
+' =========================
+' DOMAIN
+' =========================
+package "Dominio" as DOM #PowderBlue {
+
+  class Student {
+    -name: String
+    -cpf: String
+    -contact: String
+    -birthDate: LocalDate
+    -active: boolean
+    -{static} dateFormatter: DateTimeFormatter
+    +Student(...)
+    +setName(name: String): void
+    +setCpf(cpf: String): void
+    +setContact(contact: String): void
+    +setBirthDate(birthDate: LocalDate): void
+    +activate(): void
+    +deactivate(): void
+    +getName(): String
+    +getCpf(): String
+    +getFormattedCpf(): String
+    +getFormattedBirthDate(): String
+    +getContact(): String
+    +getBirthDate(): LocalDate
+    +isActive(): boolean
+    +{static} validateCpf(cpf: String): boolean
+    +calculateAge(): int
+  }
+
+  class Plan {
+    -name: String
+    -description: String
+    -type: PlanType
+    -minDurationMonths: int
+    -pricePerMonth: double
+    +Plan()
+    +Plan(...)
+    +setName(name: String): void
+    +setDescription(description: String): void
+    +setType(type: PlanType): void
+    +setMinDurationMonths(minDurationMonths: int): void
+    +updatePrice(newPrice: double): void
+    +getName(): String
+    +getDescription(): String
+    +getType(): PlanType
+    +getMinDurationMonths(): int
+    +getPricePerMonth(): double
+    +calculateTotalPrice(months: int): double
+  }
+
+  enum PlanType {
+    MONTHLY
+    QUARTERLY
+    SEMI_ANNUAL
+    ANNUAL
+  }
+
+  class Enrollment {
+    -code: int
+    -student: Student
+    -plan: Plan
+    -startDate: LocalDate
+    -endDate: LocalDate
+    -durationMonths: int
+    -totalPrice: double
+    -status: EnrollmentStatus
+    -payments: ArrayList<Payment>
+    -cancellationDate: LocalDate
+    -cancellationReason: String
+    +Enrollment(...)
+    +registerPayment(payment: Payment): void
+    +calculateTotalPaid(): double
+    +calculateBalance(): double
+    +cancel(reason: String): void
+    +getMonthsUsed(): long
+    +getCode(): int
+    +getStudent(): Student
+    +getPlan(): Plan
+    +getStartDate(): LocalDate
+    +getEndDate(): LocalDate
+    +getDurationMonths(): int
+    +getTotalPrice(): double
+    +getStatus(): EnrollmentStatus
+    +getPayments(): List<Payment>
+    +getCancellationDate(): LocalDate
+    +getCancellationReason(): String
+  }
+
+  class Payment {
+    -date: LocalDate
+    -dateFormatter: DateTimeFormatter
+    -amount: double
+    -type: PaymentType
+    -description: String
+    +Payment()
+    +Payment(...)
+    +setDate(date: LocalDate): void
+    +setAmount(amount: double): void
+    +setType(type: PaymentType): void
+    +setDescription(description: String): void
+    +getDate(): LocalDate
+    +getAmount(): double
+    +getType(): PaymentType
+    +getDescription(): String
+  }
+
+  enum PaymentType {
+    PIX
+    CREDIT_CARD
+    DEBIT_CARD
+    CASH
+  }
+
+  enum EnrollmentStatus {
+    ACTIVE
+    CANCELLED
+  }
+}
+
+' =========================
+' RELATIONS
+' =========================
+
+top to bottom direction
+UI -[hidden]down-> APP
+APP -[hidden]down-> DOM
+
+' Layout helpers (UI)
+UserInterface -[hidden]right- MainMenu
+MainMenu -[hidden]right- StudentsMenu
+StudentsMenu -[hidden]right- PlanMenu
+PlanMenu -[hidden]right- EnrollmentMenu
+EnrollmentMenu -[hidden]right- ReportsMenu
+
+MainMenuEnum -[hidden]right- StudentMenuEnum
+StudentMenuEnum -[hidden]right- PlanMenuEnum
+PlanMenuEnum -[hidden]right- EnrollmentMenuEnum
+EnrollmentMenuEnum -[hidden]right- ReportsMenuEnum
+
+' Layout helpers (Application)
+FitManager -[hidden]down- StudentService
+StudentService -[hidden]right- PlanService
+PlanService -[hidden]right- EnrollmentService
+FitManager -[hidden]right- OperationResult
+
+' Layout helpers (Domain)
+Student -[hidden]right- Enrollment
+Enrollment -[hidden]right- Plan
+Enrollment -[hidden]down- Payment
+PlanType -[hidden]right- PaymentType
+PaymentType -[hidden]right- EnrollmentStatus
+
+Main --> MainMenu
+Main --> UserInterface
+Main --> FitManager
+
+MainMenu --> UserInterface
+MainMenu --> FitManager
+MainMenu --> StudentsMenu
+MainMenu --> PlanMenu
+MainMenu --> EnrollmentMenu
+MainMenu --> ReportsMenu
+
+StudentsMenu --> UserInterface
+StudentsMenu --> FitManager
+PlanMenu --> UserInterface
+PlanMenu --> FitManager
+EnrollmentMenu --> UserInterface
+EnrollmentMenu --> FitManager
+ReportsMenu --> UserInterface
+ReportsMenu --> FitManager
+
+MainMenu --> MainMenuEnum
+StudentsMenu --> StudentMenuEnum
+PlanMenu --> PlanMenuEnum
+EnrollmentMenu --> EnrollmentMenuEnum
+ReportsMenu --> ReportsMenuEnum
+
+FitManager *-- StudentService
+FitManager *-- PlanService
+FitManager *-- EnrollmentService
+FitManager --> OperationResult
+
+StudentService "1" o-- "0..*" Student
+PlanService "1" o-- "0..*" Plan
+EnrollmentService "1" o-- "0..*" Enrollment
+
+Enrollment "0..*" --> "1" Student
+Enrollment "0..*" --> "1" Plan
+Enrollment "1" *-- "0..*" Payment
+Enrollment --> EnrollmentStatus
+Plan --> PlanType
+Payment --> PaymentType
+
+note as NoteLayers
+  UI depende de Application e de Domain para acessar tipos de dados e Enums
+  (PlanType, PaymentType, Student, Plan, Enrollment).
+end note
+
+APP .. NoteLayers
+
+@enduml
