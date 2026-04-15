@@ -1,3 +1,4 @@
+package main;
 
 import application.FitManager;
 import ui.UserInterface;
