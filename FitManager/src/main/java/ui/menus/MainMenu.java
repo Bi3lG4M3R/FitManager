@@ -1,13 +1,8 @@
 package ui.menus;
 
+import application.FitManager;
 import ui.UserInterface;
 import ui.enums.MainMenuEnum;
-import ui.menus.PlanMenu;
-import ui.menus.StudentsMenu;
-import ui.menus.EnrollmentMenu;
-import ui.menus.ReportsMenu;
-
-import application.FitManager;
 
 public class MainMenu{
     
@@ -37,9 +32,11 @@ public class MainMenu{
 
         // Execução do menu 
         do { 
-            ui.showMenu("Menu Principal", menuOptions);
 
+            ui.showMenu("Menu Principal", menuOptions);
             optionSelected = ui.getInputInt("Selecione uma opção: ");
+            
+            
 
             
             switch(MainMenuEnum.selectFromInt(optionSelected)){
@@ -68,9 +65,10 @@ public class MainMenu{
                     ui.showMessage("Saindo do programa...");
                 break;
 
-                default:
-                    ui.showError("Opção inexistente. Selecione uma das opçãoes acima.");
+                case null:
+                     ui.showError("Opção inexistente. Selecione uma das opçãoes acima.");
                 break;
+
             }
 
         } while (optionSelected != MainMenuEnum.EXIT.getOptionNumber());

@@ -1,5 +1,4 @@
 
-
 import application.FitManager;
 import ui.UserInterface;
 import ui.menus.MainMenu;

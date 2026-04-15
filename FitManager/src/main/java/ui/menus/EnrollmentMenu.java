@@ -116,8 +116,9 @@ public class EnrollmentMenu {
                             ui.showEnrollment(code, studentName, planNameHistory, startDateHistory, endDateHistory, durationMonthsHistory, totalPrice, status);
 
                         }
+                        ui.showMessage("Histórico de matrículas exibido com sucesso.");
                     }
-                    ui.showMessage("Histórico de matrículas exibido com sucesso.");
+                    
                 break;
 
 

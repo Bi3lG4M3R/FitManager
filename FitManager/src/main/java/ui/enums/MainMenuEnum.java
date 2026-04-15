@@ -29,7 +29,7 @@ public enum MainMenuEnum {
         return description;
     }
 
-    // Metodo para selecionar uma opcao do menu a partir de um int
+
     public static MainMenuEnum selectFromInt(int option) {
         for (MainMenuEnum menuOp : MainMenuEnum.values()) {
             if (menuOp.getOptionNumber() == option) {
