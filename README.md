@@ -12,7 +12,7 @@ Sistema de gerenciamento de academias que permite controlar alunos, planos, matr
 
 - Matheus Henrique dos Santos Gomes
 - Gabriel Richard Zambianchi de Oliveira
-- Matheus Mandarini
+- Matheus Mandarini de Menezes
 
 ## Como compilar e executar
 
