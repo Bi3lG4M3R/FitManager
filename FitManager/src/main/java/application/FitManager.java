@@ -1,12 +1,13 @@
 package application;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+
 import domain.Enrollment;
+import domain.Student;
 import domain.payment.PaymentType;
 import domain.plan.Plan;
 import domain.plan.PlanType;
-import domain.Student;
-import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class FitManager {
     private final StudentService studentService;
@@ -73,13 +74,27 @@ public class FitManager {
         return enrollmentService.enroll(student, plan, startDate, durationMonths, initialAmount, paymentType, paymentDescription);
     }
 
-    public OperationResult registerPayment(LocalDate date, int code, double amount, PaymentType paymentType, String paymentDescription) {
-        return enrollmentService.registerPayment(date, code, amount, paymentType, paymentDescription);
+    public OperationResult registerPayment(int code, double amount, PaymentType paymentType, String paymentDescription) {
+        return enrollmentService.registerPayment(code, amount, paymentType, paymentDescription);
     }
 
     public OperationResult cancelEnrollment(int code, String reason) { return enrollmentService.cancel(code, reason); }
 
-    public Enrollment findActiveEnrollment(String cpf) { return enrollmentService.findActiveByStudent(cpf); }
+    public OperationResult findActiveEnrollment(String cpf) {
+        if(studentService.findByCpf(cpf) == null) {
+            return new OperationResult(false, "Aluno não encontrado.");
+        }
+
+        if(studentService.findByCpf(cpf).isActive() == false){
+            return new OperationResult(false, "Aluno inativo não possui matrícula ativa.");
+        }
+
+        if(enrollmentService.hasActiveEnrollment(cpf) == false) {
+            return new OperationResult(false, "Nenhuma matrícula ativa encontrada para este aluno.");
+        }
+        return new OperationResult(true, "Matrícula ativa encontrada.", enrollmentService.findActiveByStudent(cpf)); 
+    
+        }
 
     public ArrayList<Enrollment> listEnrollments() { return enrollmentService.listEnrollments(); }
 }

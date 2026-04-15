@@ -1,8 +1,8 @@
 /FitManager/target/
-<<<<<<< HEAD
-/FitManager1/nbproject/private/
-/FitManager/nbproject/
-=======
 /Fitmanager/.idea/
 /Fitmanager/.vscode/
->>>>>>> 732efee3190b70482e2667c5c520e9cd0661ccb8
+/FitManager1/nbproject/private/
+/FitManager/nbproject/
+/JavaApplication2/nbproject/private/
+/FitManager/build/
+/FitManager/dist/

@@ -17,4 +17,13 @@ public enum PlanType {
     public int getValueOption(){ return option; }
 
     public String getDescription() { return description; }
+
+    public static PlanType selectFromInt(int option) {
+        for (PlanType planType : PlanType.values()) {
+            if (planType.getValueOption() == option){
+                return planType;
+            }
+        }
+        return null; // caso a opcao nao exista devolve null
+    }
 }

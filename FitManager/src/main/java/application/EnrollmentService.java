@@ -1,12 +1,14 @@
 package application;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+
 import domain.Enrollment;
 import domain.EnrollmentStatus;
 import domain.Student;
+import domain.payment.Payment;
+import domain.payment.PaymentType;
 import domain.plan.Plan;
-import domain.payment.*;
-import java.util.ArrayList;
-import java.time.LocalDate;
 
 public class EnrollmentService {
     private ArrayList<Enrollment> enrollments = new ArrayList<>(); 
@@ -28,7 +30,7 @@ public class EnrollmentService {
         
     }
     
-    public OperationResult registerPayment(LocalDate date, int code, double amount, PaymentType paymentType, String paymentDescription){
+    public OperationResult registerPayment(int code, double amount, PaymentType paymentType, String paymentDescription){
         int index=0;
         while( index < enrollments.size() && enrollments.get(index).getCode()!=code){
             index++;
@@ -41,7 +43,7 @@ public class EnrollmentService {
         if(enrollment.getStatus() != EnrollmentStatus.ACTIVE || amount <= 0){
             return new OperationResult(false, "Erro");
         }
-        Payment payment = new Payment(date, amount, paymentType, paymentDescription);
+        Payment payment = new Payment(LocalDate.now(), amount, paymentType, paymentDescription);
         enrollment.registerPayment(payment);
         
         return new OperationResult(true, "Pagamento Registrado", payment);

@@ -1,9 +1,9 @@
 package main;
 
 import application.FitManager;
-import ui.MainMenu;
 import ui.UserInterface;
-import ui.UserInterface;
+import ui.menus.MainMenu;
+
 
 public class Main {
     public static void main(String[] args) {
