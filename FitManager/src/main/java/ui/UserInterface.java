@@ -72,7 +72,7 @@ public class UserInterface {
             "Duração da matrícula: " + durationMonths + " meses\n" +
             "Valor total do plano: R$ " + String.format("%.2f", totalPrice) + "\n" +
             "Status: " + status + "\n" +
-            "Motivo da cancelamento: " + cancellationReason + "\n" +
+            "Motivo de cancelamento: " + cancellationReason + "\n" +
             "----------------------------------"
                 );
 

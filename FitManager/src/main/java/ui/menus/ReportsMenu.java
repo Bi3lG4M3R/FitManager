@@ -66,11 +66,11 @@ public class ReportsMenu{
                                     "----------------------------------"
                                 );
                             }
-                            if(hasActiveEnrollments){
-                                ui.showMessage("Fim da lista de matriculas ativas.");
-                            }else{
-                                ui.showError("Não há matriculas ativas cadastradas.");
-                            }
+                        }
+                        if(hasActiveEnrollments){
+                            ui.showMessage("Fim da lista de matriculas ativas.");
+                        }else{
+                            ui.showError("Não há matriculas ativas cadastradas.");
                         }
                     }
                 break;
