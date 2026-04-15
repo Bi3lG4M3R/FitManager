@@ -10,7 +10,7 @@ O sistema foi estruturado seguindo os princípios de Programação Orientada a O
 
 - Matheus Henrique dos Santos Gomes: desenvolvimento das classes mais desacopladas do núcleo do sistema, focando na modelagem do domínio e estrutura base.
 - Gabriel Richard Zambianchi de Oliveira: implementação dos menus e da interação com o usuário (camada de interface).
-- Matheus Mandarini de Menezes: responsável pela integração entre as classes, com foco nas partes centrais do sistema, especialmente relacionadas às matrículas (Enrollment).
+- Matheus Mandarini: responsável pela integração entre as classes, com foco nas partes centrais do sistema, especialmente relacionadas às matrículas (Enrollment).
 
 ## Decisões de projeto
 
@@ -54,7 +54,14 @@ O sistema foi estruturado seguindo os princípios de Programação Orientada a O
 - Decisão: separar o sistema em UI, Application e Domain.
 - Alternativas: concentrar toda a lógica em uma única camada.
 - Motivo: facilitar manutenção e evolução do sistema.
-- Impacto: organização e escalabilidade.
+- Impacto: código mais organizado e escalável.
+
+### Uso de enums nos menus
+
+- Decisão: utilizar enums para representar as opções de menus.
+- Alternativas: utilizar valores numéricos (int) diretamente nas estruturas de decisão.
+- Motivo: melhorar a legibilidade do código, evitar o uso de valores "mágicos" e facilitar futuras alterações na interface do sistema. Além disso, essa abordagem prepara o sistema para uma possível migração para interface gráfica, onde as ações podem ser associadas diretamente a constantes bem definidas.
+- Impacto: maior clareza no código da camada de interface, redução de erros relacionados a opções inválidas e maior facilidade de manutenção e evolução do sistema.
 
 ## Regras de negócio implementadas
 
@@ -82,8 +89,19 @@ O sistema foi estruturado seguindo os princípios de Programação Orientada a O
 - Impedir remoção de aluno com matrícula ativa
   → Implementado em FitManager.removeStudent()
 
+### Regras não implementadas
+
+- Validação completa do CPF (dígitos verificadores)
+  → Não implementada devido à priorização das funcionalidades principais.
+
+## Funcionalidades extras
+
+Não foram implementadas funcionalidades extras nesta etapa.
+
 ## Dificuldades e aprendizados
 
-Durante o desenvolvimento, a principal dificuldade foi organizar corretamente as responsabilidades entre as camadas, especialmente separar o que deveria ficar nos serviços e no FitManager. Também houve desafios na integração entre as classes, principalmente envolvendo matrículas e pagamentos. Outra dificuldade foi estruturar a interação via menus sem misturar lógica de negócio com interface.
+Durante o desenvolvimento, a principal dificuldade foi organizar corretamente as responsabilidades entre as camadas, especialmente separar o que deveria ficar nos serviços e no FitManager. Também houve desafios na integração entre as classes, principalmente envolvendo matrículas e pagamentos.
 
-Como aprendizado, nós compreendemos melhor a importância da separação de responsabilidades e da organização do código. Caso o projeto fosse reiniciado, seria feita uma definição mais detalhada das responsabilidades antes da implementação, a fim de evitar retrabalho.
+Outra dificuldade foi estruturar a interação via menus sem misturar lógica de negócio com interface.
+
+Como aprendizado, o grupo compreendeu melhor a importância da separação de responsabilidades e da organização do código. A utilização de enums nos menus também reforçou a importância de escrever código preparado para futuras evoluções. Caso o projeto fosse reiniciado, seria feita uma definição mais detalhada da arquitetura antes da implementação, a fim de evitar retrabalho.
