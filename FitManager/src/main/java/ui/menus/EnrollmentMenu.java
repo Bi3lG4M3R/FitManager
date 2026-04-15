@@ -63,15 +63,8 @@ public class EnrollmentMenu {
                 case REGISTER_PAYMENT:
                     int enrollmentCode = ui.getInputInt("Digite o número de matrícula a realizar pagamento: ");
                     double amount = ui.getInputDouble("Valor do pagamento: ");
-
-                    ui.showMenu("Formas de pagamento", new String[] {
-                        PaymentType.PIX.getValueOpcao() + " - "  + PaymentType.PIX.getDescription(),
-                        PaymentType.CREDIT_CARD.getValueOpcao() + " - " + PaymentType.CREDIT_CARD.getDescription(),
-                        PaymentType.DEBIT_CARD.getValueOpcao() + " - " + PaymentType.DEBIT_CARD.getDescription(),
-                        PaymentType.CASH.getValueOpcao() + " - " + PaymentType.CASH.getDescription()
-                    });
-                    PaymentType registerPaymentType = PaymentType.selectFromInt(ui.getInputInt("Selecione a forma de pagamento: "));
-                    
+                    PaymentType registerPaymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
+        
                     OperationResult resultPayment = fitManager.registerPayment(enrollmentCode, amount, registerPaymentType, registerPaymentType.getDescription());
                     if(resultPayment.isSuccess())
                         ui.showMessage(resultPayment.getMessage());

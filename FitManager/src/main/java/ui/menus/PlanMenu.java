@@ -51,13 +51,9 @@ public class PlanMenu{
 
                 case REGISTER_NEW_PLAN:
                     planName = ui.getInput("Digite o nome do plano: ");
-
                     String planDescription = ui.getInput("Digite a descrição do plano:");
-                    
                     PlanType planType = ui.getInputPlanType("Selecione o tipo do plano: ");
-
                     double planPrice = ui.getInputDouble("Digite o preço do plano: ");
-
                     int planDuration = ui.getInputInt("Digite a duração minima do plano (em meses): ");
 
                     OperationResult resultRegister = fitManager.registerPlan(planName, planDescription, planType, planDuration, planPrice);
