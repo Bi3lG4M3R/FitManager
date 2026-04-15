@@ -8,7 +8,7 @@ public enum ReportsMenuEnum {
     PENDING_PAYMENTS_ENROLLMENTS (2, "Listar matrículas com saldo pendente"),
     ALL_ENROLLMENTS (3, "Listar todas as matrículas"),
     
-    BACK (5, "Voltar ao menu principal");
+    BACK (4, "Voltar ao menu principal");
 
 
 
