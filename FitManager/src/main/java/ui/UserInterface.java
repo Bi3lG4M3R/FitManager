@@ -174,7 +174,6 @@ public class UserInterface {
 
     public PaymentType getInputPaymentType(String prompt){
         PaymentType paymentType = null;
-        
         do { 
             try {
                 showPaymentTypeOptions();
