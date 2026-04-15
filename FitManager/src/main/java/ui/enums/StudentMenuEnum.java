@@ -1,0 +1,40 @@
+package ui.enums;
+
+/* Menu para gerenciar alunos */
+
+public enum StudentMenuEnum {
+
+    REGISTER_STUDENT (1, "Cadastrar novo aluno"),
+    SEARCH_BY_CPF (2, "Buscar por CPF"),
+    DELETE_STUDENT (3, "Excluir aluno"),
+    VIEW_ALL_STUDENTS (4, "Listar todos alunos"),
+    BACK (5, "Voltar ao menu principal");
+
+    private final int option;
+    private final String description;
+
+    StudentMenuEnum(int option, String description) {
+        this.option = option;
+        this.description = description;
+    }
+
+
+    // Getters
+    public int getOptionNumber() {
+        return option;
+    }
+
+    public String getOptionDescription() {
+        return description;
+    }
+
+    // Metodo responsalvel por retornar um enum a partir de um inteiro
+    public static StudentMenuEnum selectFromInt(int option) {
+        for (StudentMenuEnum menuOp : StudentMenuEnum.values()) {
+            if (menuOp.getOptionNumber() == option){
+                return menuOp;
+            }
+        }
+        return null; // caso a opcao nao exista devolve null
+    }
+}   
