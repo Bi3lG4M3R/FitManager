@@ -1,6 +1,5 @@
 package application;
 
-import application.OperationResult;
 import domain.plan.Plan;
 import domain.plan.PlanType;
 import java.util.ArrayList;
