@@ -1,7 +1,6 @@
 package application;
 
-import domain.plan.Plan;
-import domain.plan.PlanType;
+import domain.plan.*;
 import java.util.ArrayList;
 
 public class PlanService {
@@ -27,7 +26,7 @@ public class PlanService {
     public boolean nameExists(String name){ return findByName(name) != null; }
     
     public OperationResult registerPlan(String name, String description, PlanType type, int minDurationMonths, double pricePerMonth) {
-        if(name.isEmpty() || nameExists(name)){
+        if(name.isBlank() || nameExists(name)){
             return new OperationResult(false, "Nome inválido ou já existente.");
         }
         if(description.isEmpty()){
@@ -42,8 +41,29 @@ public class PlanService {
         if(pricePerMonth <= 0){
             return new OperationResult(false, "Preço inválido.");
         }
-
-        Plan temporary = new Plan(name, description, type, minDurationMonths, pricePerMonth);
+        
+        Plan temporary;
+        switch(type){
+            case MONTHLY:
+                temporary = new PlanMonthly(name, description, minDurationMonths, pricePerMonth);
+            break;
+            
+            case QUARTERLY:
+                temporary = new PlanQuarterly(name, description, minDurationMonths, pricePerMonth);
+            break;
+            
+            case SEMI_ANNUAL:
+                temporary = new PlanSemiAnnual(name, description, minDurationMonths, pricePerMonth);
+            break;
+            
+            case ANNUAL:
+                temporary = new PlanAnnual(name, description, minDurationMonths, pricePerMonth);
+            break;
+            
+            default:
+                return new OperationResult(false, "Tipo inválido");
+        }
+        
         this.plans.add(temporary);
         return new OperationResult(true, "O plano " + name + " foi criado com sucesso.", temporary);
     }
