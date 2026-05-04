@@ -2,7 +2,7 @@ package domain.payment;
 
 import java.time.LocalDate;
 
-class CashPayment extends Payment {
+public class CashPayment extends Payment {
     private double amountReceived;
 
     /* A validação amountReceived >= amount é feita no EnrollmentService,
