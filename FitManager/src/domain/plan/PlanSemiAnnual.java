@@ -11,6 +11,10 @@ public class PlanSemiAnnual extends Plan {
     
     @Override
     public double calculateTotalPrice(int months){
-        return this.getPricePerMonth() * months * 0.95;
+        if(months == super.getMinDurationMonths()){
+            return this.getPricePerMonth() * months;
+        }
+        
+        return this.getPricePerMonth() * months * 0.90;
     }
 }

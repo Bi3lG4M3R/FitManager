@@ -11,6 +11,10 @@ public class PlanQuarterly extends Plan {
     
     @Override
     public double calculateTotalPrice(int months){
-        return this.getPricePerMonth() * months * 0.98;
+        if(months == super.getMinDurationMonths()){
+            return this.getPricePerMonth() * months;
+        }
+        
+        return this.getPricePerMonth() * months * 0.95;
     }
 }
