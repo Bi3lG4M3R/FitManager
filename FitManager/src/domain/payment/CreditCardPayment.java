@@ -2,7 +2,7 @@ package domain.payment;
 
 import java.time.LocalDate;
 
-public class CreditCardPayment extends Payment {
+class CreditCardPayment extends Payment {
     private static final double PROCESSING_FEE_RATE = 0.025; // 2,5%
 
     private int installments;

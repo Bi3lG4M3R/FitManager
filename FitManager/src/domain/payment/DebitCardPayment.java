@@ -2,7 +2,7 @@ package domain.payment;
 
 import java.time.LocalDate;
 
-public class DebitCardPayment extends Payment {
+class DebitCardPayment extends Payment {
     private String cardLastDigits;
 
     public DebitCardPayment(LocalDate date, double amount, String description,

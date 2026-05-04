@@ -2,7 +2,7 @@ package domain.payment;
 
 import java.time.LocalDate;
 
-public class CashPayment extends Payment {
+class CashPayment extends Payment {
     private double amountReceived;
 
     /* A validação amountReceived >= amount é feita no EnrollmentService,
@@ -16,14 +16,14 @@ public class CashPayment extends Payment {
     public double getAmountReceived() { return amountReceived; }
 
     /* Método exclusivo de CashPayment — não pertence ao contrato de Payment
-     pois troco não faz sentido para os outros tipos.
+     pois troco não faz sentido para os outros tipos.*/
     public double getChange() {
         return amountReceived - getAmount();
     }
 
     @Override
     public double getProcessingFee() {
-        return 0.0; // Dinheiro não tem taxa
+        return 0.0; /* Dinheiro não tem taxa*/
     }
 
     @Override

@@ -2,7 +2,7 @@ package domain.payment;
 
 import java.time.LocalDate;
 
-public class PixPayment extends Payment {
+class PixPayment extends Payment {
     private String pixKey;
 
     public PixPayment(LocalDate date, double amount, String description, String pixKey) {
