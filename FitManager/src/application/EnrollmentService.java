@@ -83,7 +83,7 @@ public class EnrollmentService {
             return new OperationResult(false, "Matricula ja cancelada.");
         }
         enrollment.cancel(reason);
-        return new OperationResult(true, "Matricula  cancelada!!");
+        return new OperationResult(true, "Matricula  cancelada!!", enrollment.getPlan().getCancellationFee(enrollment));
     }
     
     public boolean hasActiveEnrollment(String cpf){
