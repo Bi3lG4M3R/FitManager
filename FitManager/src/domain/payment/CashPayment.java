@@ -1,18 +1,36 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Other/File.java to edit this template
- */
+package domain.payment;
 
-/**
- *
- * @author Diore
- */
-public class CashPayment {
+import java.time.LocalDate;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        // TODO code application logic here
+public class CashPayment extends Payment {
+    private double amountReceived;
+
+    /* A validação amountReceived >= amount é feita no EnrollmentService,
+    antes de chamar este construtor, seguindo o padrão OperationResult do projeto.*/
+    public CashPayment(LocalDate date, double amount, String description,
+                       double amountReceived) {
+        super(date, amount, description);
+        this.amountReceived = amountReceived;
+    }
+
+    public double getAmountReceived() { return amountReceived; }
+
+    /* Método exclusivo de CashPayment — não pertence ao contrato de Payment
+     pois troco não faz sentido para os outros tipos.
+    public double getChange() {
+        return amountReceived - getAmount();
+    }
+
+    @Override
+    public double getProcessingFee() {
+        return 0.0; // Dinheiro não tem taxa
+    }
+
+    @Override
+    public String getPaymentSummary() {
+        return String.format(
+            "Tipo: Dinheiro | Data: %s | Valor: R$ %.2f | Recebido: R$ %.2f | Troco: R$ %.2f | Desc: %s",
+            getFormattedDate(), getAmount(), amountReceived, getChange(), getDescription()
+        );
     }
 }
