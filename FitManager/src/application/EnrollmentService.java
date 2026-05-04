@@ -83,7 +83,11 @@ public class EnrollmentService {
             return new OperationResult(false, "Matricula ja cancelada.");
         }
         enrollment.cancel(reason);
-        return new OperationResult(true, "Matricula  cancelada!!");
+        double balanceMonthsUsed = enrollment.calculateBalanceForMonthsUsed();
+        if(balanceMonthsUsed > 0.0)
+            return new OperationResult(true, "Matricula  cancelada!!", enrollment.getPlan().getCancellationFee(enrollment) + balanceMonthsUsed);
+
+        return new OperationResult(true, "Matricula  cancelada!!", enrollment.getPlan().getCancellationFee(enrollment));
     }
     
     public boolean hasActiveEnrollment(String cpf){

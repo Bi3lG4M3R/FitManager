@@ -1,25 +1,16 @@
 package domain.plan;
 
-public class Plan {
+import domain.Enrollment;
+
+public abstract class Plan {
     private String name;
     private String description;
-    private PlanType type;
     private int minDurationMonths;
     private double pricePerMonth;
-
-    /*contrutores*/
-    public Plan() {
-        this.name = "";
-        this.description = "";
-        this.type = PlanType.MONTHLY;
-        this.minDurationMonths = 3;
-        this.pricePerMonth = 150.00;
-    }
     
-    public Plan(String name, String description, PlanType type, int minDurationMonths, double pricePerMonth) {
+    public Plan(String name, String description, int minDurationMonths, double pricePerMonth) {
         this.name = name;
         this.description = description;
-        this.type = type;
         this.minDurationMonths = minDurationMonths;
         this.pricePerMonth = pricePerMonth;
     }
@@ -28,8 +19,6 @@ public class Plan {
     public void setName(String name) { this.name = name; }
     
     public void setDescription(String description) { this.description = description; }
-
-    public void setType(PlanType type) { this.type = type; }
 
     public void setMinDurationMonths(int minDurationMonths) { this.minDurationMonths = minDurationMonths; }
 
@@ -40,11 +29,13 @@ public class Plan {
 
     public String getDescription() { return description; }
 
-    public PlanType getType() { return type; }
+    public abstract PlanType getType();
 
     public int getMinDurationMonths() { return minDurationMonths; }
 
     public double getPricePerMonth() { return pricePerMonth; }
     
-    public double calculateTotalPrice(int months){ return months * this.pricePerMonth; }
+    public abstract double calculateTotalPrice(int months);
+    
+    public double getCancellationFee(Enrollment enrollment) { return 0.0; };
 }
