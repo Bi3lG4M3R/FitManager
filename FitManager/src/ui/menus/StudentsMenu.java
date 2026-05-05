@@ -65,9 +65,9 @@ public class StudentsMenu{
                         ui.showError("Aluno não encontrado.");
                     } else {
                         String studentNameList = studentFound.getName();
-                        String studentCpfList = studentFound.getCpf();
+                        String studentCpfList = studentFound.getFormattedCpf();
                         String studentContactList = studentFound.getContact();
-                        LocalDate studentBirthDateList = studentFound.getBirthDate();
+                        String studentBirthDateList = studentFound.getFormattedBirthDate();
                         ui.showStudent(studentNameList, studentCpfList, studentContactList, studentBirthDateList);
                     }
                 break;
@@ -90,9 +90,9 @@ public class StudentsMenu{
                         ui.showMessage("Histórico de Alunos:");
                         for(Student student : studentList){
                             String studentNameList = student.getName();
-                            String studentCpfList = student.getCpf();
+                            String studentCpfList = student.getFormattedCpf();
                             String studentContactList = student.getContact();
-                            LocalDate studentBirthDateList = student.getBirthDate();
+                            String studentBirthDateList = student.getFormattedBirthDate();
 
                             ui.showStudent(studentNameList, studentCpfList, studentContactList, studentBirthDateList);
 

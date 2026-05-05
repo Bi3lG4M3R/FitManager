@@ -43,8 +43,22 @@ public class UserInterface {
             "Valor total do plano: R$ " + String.format("%.2f", totalPrice) + "\n" +
             "Status: " + status + "\n" +
             "----------------------------------"
-                );
-
+        );
+    }
+    
+    public void showEnrollment(int code, String studentName, String planName, LocalDate startDate, LocalDate endDate, int durationMonths, double totalPrice, double pendingAmount, String status){
+        showMessage(
+            "Código de matrícula: " + code + "\n" +
+            "Nome do aluno: " + studentName + "\n" +
+            "Plano escolhido: " + planName + "\n" +
+            "Data de início: " + startDate + "\n" +
+            "Data de término: " + endDate + "\n" +
+            "Duração da matrícula: " + durationMonths + " meses\n" +
+            "Valor total do plano: R$ " + String.format("%.2f", totalPrice) + "\n" +
+            "Valor pendente de pagamento: R$ " + String.format("%.2f", pendingAmount) + "\n" +
+            "Status: " + status + "\n" +
+            "----------------------------------"
+        );
     }
 
     public void showEnrollment(Enrollment enrollment){
@@ -56,10 +70,9 @@ public class UserInterface {
             "Data de término: " + enrollment.getEndDate() + "\n" +
             "Duração da matrícula: " + enrollment.getDurationMonths() + " meses\n" +
             "Valor total do plano: R$ " + String.format("%.2f", enrollment.getTotalPrice()) + "\n" +
-            "Status: " + enrollment.getStatus() + "\n" +
+            "Status: " + enrollment.getStatus().getDescription() + "\n" +
             "----------------------------------"
-                );
-
+        );
     }
 
     public void showCancelledEnrollment(int code, String studentName, String planName, LocalDate startDate, LocalDate endDate, int durationMonths, double totalPrice, String status, String cancellationReason){
@@ -74,7 +87,7 @@ public class UserInterface {
             "Status: " + status + "\n" +
             "Motivo de cancelamento: " + cancellationReason + "\n" +
             "----------------------------------"
-                );
+        );
 
     }
 
@@ -89,7 +102,7 @@ public class UserInterface {
         );
     }
 
-    public void showStudent(String studentNameList, String studentCpfList, String studentContactList, LocalDate studentBirthDateList){
+    public void showStudent(String studentNameList, String studentCpfList, String studentContactList, String studentBirthDateList){
         showMessage(
             "Nome do aluno - " + studentNameList + "\n" +
             "CPF: " + studentCpfList + "\n" +

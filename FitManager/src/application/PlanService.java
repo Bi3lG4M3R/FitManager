@@ -45,18 +45,30 @@ public class PlanService {
         Plan temporary;
         switch(type){
             case MONTHLY:
+                if(minDurationMonths < 1){
+                    return new OperationResult(false, "Duração mínima inválida.");
+                }
                 temporary = new PlanMonthly(name, description, minDurationMonths, pricePerMonth);
             break;
             
             case QUARTERLY:
+                if(minDurationMonths < 3){
+                    return new OperationResult(false, "Duração mínima inválida.");
+                }
                 temporary = new PlanQuarterly(name, description, minDurationMonths, pricePerMonth);
             break;
             
             case SEMI_ANNUAL:
+                if(minDurationMonths < 6){
+                    return new OperationResult(false, "Duração mínima inválida.");
+                }
                 temporary = new PlanSemiAnnual(name, description, minDurationMonths, pricePerMonth);
             break;
             
             case ANNUAL:
+                if(minDurationMonths < 12){
+                    return new OperationResult(false, "Duração mínima inválida.");
+                }
                 temporary = new PlanAnnual(name, description, minDurationMonths, pricePerMonth);
             break;
             
@@ -77,7 +89,7 @@ public class PlanService {
         
         if(planNamed != null){
             planNamed.updatePrice(newPrice);
-            return new OperationResult(true, "O valor do plano " + planNamed.getName() + "foi alterado com sucesso.", planNamed);
+            return new OperationResult(true, "O valor do plano " + planNamed.getName() + " foi alterado com sucesso.", planNamed);
         }
         return new OperationResult(false, "O plano " + name + " não foi localizado."); 
     }
