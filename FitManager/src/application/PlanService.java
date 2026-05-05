@@ -89,7 +89,7 @@ public class PlanService {
         
         if(planNamed != null){
             planNamed.updatePrice(newPrice);
-            return new OperationResult(true, "O valor do plano " + planNamed.getName() + "foi alterado com sucesso.", planNamed);
+            return new OperationResult(true, "O valor do plano " + planNamed.getName() + " foi alterado com sucesso.", planNamed);
         }
         return new OperationResult(false, "O plano " + name + " não foi localizado."); 
     }
