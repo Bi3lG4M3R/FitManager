@@ -70,7 +70,7 @@ public class UserInterface {
             "Data de término: " + enrollment.getEndDate() + "\n" +
             "Duração da matrícula: " + enrollment.getDurationMonths() + " meses\n" +
             "Valor total do plano: R$ " + String.format("%.2f", enrollment.getTotalPrice()) + "\n" +
-            "Status: " + enrollment.getStatus().getDescricao() + "\n" +
+            "Status: " + enrollment.getStatus().getDescription() + "\n" +
             "----------------------------------"
         );
     }

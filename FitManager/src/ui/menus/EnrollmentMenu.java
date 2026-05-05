@@ -109,7 +109,7 @@ public class EnrollmentMenu {
                             int durationMonthsHistory = enrollment.getDurationMonths();
                             double totalPrice = enrollment.getTotalPrice();
 
-                            String status = enrollment.getStatus().getDescricao();
+                            String status = enrollment.getStatus().getDescription();
 
                             ui.showEnrollment(code, studentName, planNameHistory, startDateHistory, endDateHistory, durationMonthsHistory, totalPrice, status);
 

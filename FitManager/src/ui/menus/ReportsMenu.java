@@ -90,7 +90,7 @@ public class ReportsMenu{
                                     LocalDate startDate = enrollment.getStartDate();
                                     LocalDate endDate = enrollment.getEndDate();
                                     int durationMonths = enrollment.getDurationMonths();
-                                    String status = enrollment.getStatus().getDescricao();
+                                    String status = enrollment.getStatus().getDescription();
 
                                     ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, enrollment.calculateBalanceForMonthsUsed(), status);
                                 }
@@ -115,7 +115,7 @@ public class ReportsMenu{
                                 LocalDate startDate = enrollment.getStartDate();
                                 LocalDate endDate = enrollment.getEndDate();
                                 int durationMonths = enrollment.getDurationMonths();
-                                String status = enrollment.getStatus().getDescricao();
+                                String status = enrollment.getStatus().getDescription();
 
                                 if(status.equals("CANCELADO")){
                                     endDate = enrollment.getCancellationDate();
