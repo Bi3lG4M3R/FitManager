@@ -82,17 +82,17 @@ public class ReportsMenu{
                     } else {
                         ui.showMessage("Lista de matriculas com pagamentos pendentes:");
                         for(Enrollment enrollment : pendingPaymentsEnrollments){
-                                if(enrollment.getStatus() == domain.EnrollmentStatus.ACTIVE && enrollment.calculateTotalPaid() < enrollment.getTotalPrice()){
-                                int code = enrollment.getCode();
-                                String studentName = enrollment.getStudent().getName();
-                                String planName = enrollment.getPlan().getName();
-                                double totalPrice = enrollment.getTotalPrice();
-                                LocalDate startDate = enrollment.getStartDate();
-                                LocalDate endDate = enrollment.getEndDate();
-                                int durationMonths = enrollment.getDurationMonths();
-                                String status = enrollment.getStatus().toString();
+                                if(enrollment.getStatus() == domain.EnrollmentStatus.ACTIVE && enrollment.calculateBalanceForMonthsUsed() > 0){
+                                    int code = enrollment.getCode();
+                                    String studentName = enrollment.getStudent().getName();
+                                    String planName = enrollment.getPlan().getName();
+                                    double totalPrice = enrollment.getTotalPrice();
+                                    LocalDate startDate = enrollment.getStartDate();
+                                    LocalDate endDate = enrollment.getEndDate();
+                                    int durationMonths = enrollment.getDurationMonths();
+                                    String status = enrollment.getStatus().getDescricao();
 
-                                ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, status);
+                                    ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, enrollment.calculateBalanceForMonthsUsed(), status);
                                 }
                             }
                             ui.showMessage("Fim da lista de matriculas ativas."); 
@@ -115,9 +115,9 @@ public class ReportsMenu{
                                 LocalDate startDate = enrollment.getStartDate();
                                 LocalDate endDate = enrollment.getEndDate();
                                 int durationMonths = enrollment.getDurationMonths();
-                                String status = enrollment.getStatus().toString();
+                                String status = enrollment.getStatus().getDescricao();
 
-                                if(status.equals("CANCELLED")){
+                                if(status.equals("CANCELADO")){
                                     endDate = enrollment.getCancellationDate();
                                     String cancellationReason = enrollment.getCancellationReason();
                                     ui.showCancelledEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, status, cancellationReason);

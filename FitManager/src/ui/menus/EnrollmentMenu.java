@@ -103,7 +103,7 @@ public class EnrollmentMenu {
                         for(Enrollment enrollment : enrollmentHistory){
                             int code = enrollment.getCode();
                             String studentName = enrollment.getStudent().getName();
-                            String planNameHistory = enrollment.getPlan().getDescription();
+                            String planNameHistory = enrollment.getPlan().getName();
                             LocalDate startDateHistory = enrollment.getStartDate();
                             LocalDate endDateHistory = enrollment.getEndDate();
                             int durationMonthsHistory = enrollment.getDurationMonths();
