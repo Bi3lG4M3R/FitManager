@@ -102,7 +102,7 @@ public class UserInterface {
         );
     }
 
-    public void showStudent(String studentNameList, String studentCpfList, String studentContactList, LocalDate studentBirthDateList){
+    public void showStudent(String studentNameList, String studentCpfList, String studentContactList, String studentBirthDateList){
         showMessage(
             "Nome do aluno - " + studentNameList + "\n" +
             "CPF: " + studentCpfList + "\n" +

@@ -36,12 +36,22 @@ public class EnrollmentService {
             index++;
         }
         if(index == enrollments.size()){
-            return new OperationResult(false, "Erro");
+            return new OperationResult(false, "Matrícula não encontrada.");
         }
         Enrollment enrollment = enrollments.get(index);
         
-        if(enrollment.getStatus() != EnrollmentStatus.ACTIVE || amount <= 0){
-            return new OperationResult(false, "Erro");
+        if(enrollment.getStatus() != EnrollmentStatus.ACTIVE){
+            return new OperationResult(false, "Não é possível registrar pagamento em uma matrícula inativa.");
+        }
+        if(amount <= 0){
+            return new OperationResult(false, "O valor do pagamento deve ser maior que zero.");
+        }
+        if (paymentType == null) {
+            return new OperationResult(false, "Tipo de pagamento inválido.");
+        }
+
+        if (paymentDescription == null || paymentDescription.isBlank()) {
+            return new OperationResult(false, "Descrição do pagamento inválida.");
         }
         Payment payment = new Payment(LocalDate.now(), amount, paymentType, paymentDescription);
         enrollment.registerPayment(payment);
