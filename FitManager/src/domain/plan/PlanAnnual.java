@@ -13,17 +13,17 @@ public class PlanAnnual extends Plan {
     
     @Override
     public double calculateTotalPrice(int months){
-        return this.getPricePerMonth() * months * 0.90;
+        if(months == super.getMinDurationMonths()){
+            return this.getPricePerMonth() * months;
+        }
+        
+        return this.getPricePerMonth() * months * 0.85;
     }
     
     @Override
     public double getCancellationFee(Enrollment enrollment){
-        int remainingMonths = enrollment.getDurationMonths() - (int) enrollment.getMonthsUsed();
+        if (enrollment.getMonthsUsed() < enrollment.getDurationMonths()/2.0) return enrollment.getTotalPrice() * 0.2;
         
-        if (remainingMonths <= 0) return 0.0;
-        
-        if (remainingMonths < 3) return this.getPricePerMonth();
-        
-        return enrollment.calculateBalance() / 2;
+        return 0.0;
     }
 }

@@ -51,14 +51,24 @@ public class EnrollmentService {
         while (index < enrollments.size() && enrollments.get(index).getCode() != code) {
             index++;
         }
-        if (index == enrollments.size()) {
-            return new OperationResult(false, "Erro");
+        if(index == enrollments.size()){
+            return new OperationResult(false, "Matrícula não encontrada.");
         }
 
         Enrollment enrollment = enrollments.get(index);
+        
+        if(enrollment.getStatus() != EnrollmentStatus.ACTIVE){
+            return new OperationResult(false, "Não é possível registrar pagamento em uma matrícula inativa.");
+        }
+        if(amount <= 0){
+            return new OperationResult(false, "O valor do pagamento deve ser maior que zero.");
+        }
+        if (paymentType == null) {
+            return new OperationResult(false, "Tipo de pagamento inválido.");
+        }
 
-        if (enrollment.getStatus() != EnrollmentStatus.ACTIVE || amount <= 0) {
-            return new OperationResult(false, "Erro");
+        if (paymentDescription == null || paymentDescription.isBlank()) {
+            return new OperationResult(false, "Descrição do pagamento inválida.");
         }
 
         /*Validação específica de dinheiro antes de criar o objeto*/
@@ -127,7 +137,11 @@ public class EnrollmentService {
             return new OperationResult(false, "Matricula ja cancelada.");
         }
         enrollment.cancel(reason);
-        return new OperationResult(true, "Matricula  cancelada!!");
+        double balanceMonthsUsed = enrollment.calculateBalanceForMonthsUsed();
+        if(balanceMonthsUsed > 0.0)
+            return new OperationResult(true, "Matricula  cancelada!!", enrollment.getPlan().getCancellationFee(enrollment) + balanceMonthsUsed);
+
+        return new OperationResult(true, "Matricula  cancelada!!", enrollment.getPlan().getCancellationFee(enrollment));
     }
 
     public boolean hasActiveEnrollment(String cpf) {

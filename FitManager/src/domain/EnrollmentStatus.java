@@ -2,5 +2,12 @@ package domain;
 
 public enum EnrollmentStatus{
     ACTIVE,
-    CANCELLED;      
+    CANCELLED;
+    
+    public String getDescription() {
+        return switch (this) {
+            case ACTIVE -> "ATIVO";
+            case CANCELLED -> "CANCELADO";
+        };
+    }
 }
