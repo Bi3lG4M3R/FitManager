@@ -14,11 +14,11 @@ public enum PaymentType {
         this.description = description;
     }
 
-    public int getOption() { return option; }
+    public int getValueOpcao() { return option; }
 
     public String getDescription() { return description; }
 
-    public static PaymentType fromInt(int option) {
+    public static PaymentType selectFromInt(int option) {
         for (PaymentType type : values()) {
             if (type.option == option) return type;
         }
