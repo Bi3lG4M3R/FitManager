@@ -1,7 +1,13 @@
 package application;
 
-import domain.plan.*;
 import java.util.ArrayList;
+
+import domain.plan.Plan;
+import domain.plan.PlanAnnual;
+import domain.plan.PlanMonthly;
+import domain.plan.PlanQuarterly;
+import domain.plan.PlanSemiAnnual;
+import domain.plan.PlanType;
 
 public class PlanService {
     private static ArrayList<Plan> plans;
@@ -77,7 +83,7 @@ public class PlanService {
         
         if(planNamed != null){
             planNamed.updatePrice(newPrice);
-            return new OperationResult(true, "O valor do plano " + planNamed.getName() + "foi alterado com sucesso.", planNamed);
+            return new OperationResult(true, "O valor do plano " + planNamed.getName() + " foi alterado com sucesso.", planNamed);
         }
         return new OperationResult(false, "O plano " + name + " não foi localizado."); 
     }

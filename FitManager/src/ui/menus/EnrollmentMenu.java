@@ -76,11 +76,27 @@ public class EnrollmentMenu {
                     int enrollmentCodeToCancel = ui.getInputInt("Digite o número de matrícula a ser cancelada: ");
                     String cancelReason = ui.getInput("Digite o motivo do cancelamento: ");
                     OperationResult resultCancelEnrollment = fitManager.cancelEnrollment(enrollmentCodeToCancel, cancelReason);
+                    Double cancelationFee;
+                    PaymentType feePaymentType;
+                    OperationResult resultFeePayment; 
+                    /* adicionar condição para cancelamento */
                     
-                    if(resultCancelEnrollment.isSuccess())
+
+                    if(resultCancelEnrollment.isSuccess()){
+                        cancelationFee = (Double) resultCancelEnrollment.getData();
+                        ui.showMessage("Taxa de cancelamento: " + String.format("%.2f", cancelationFee));
+                        /*  Realiza o pagamento da taxa de cancelamento  */
+                        feePaymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
+                        resultFeePayment = fitManager.registerPayment(enrollmentCodeToCancel, cancelationFee, feePaymentType, feePaymentType.getDescription());
+                        if(resultFeePayment.isSuccess())
+                            ui.showMessage(resultFeePayment.getMessage());
+                        else
+                            ui.showError("Erro ao registrar pagamento: " + resultFeePayment.getMessage());
+
                         ui.showMessage(resultCancelEnrollment.getMessage());
-                    else
+                    }else{
                         ui.showError("Erro ao cancelar matrícula: " + resultCancelEnrollment.getMessage());
+                    }
                 break;
 
                 case CHECK_ACTIVE_ENROLLMENT:
