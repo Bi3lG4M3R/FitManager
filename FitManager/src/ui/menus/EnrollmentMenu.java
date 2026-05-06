@@ -105,6 +105,7 @@ public class EnrollmentMenu {
                     if(resultCheckEnrollment.isSuccess()){
                         ui.showMessage(resultCheckEnrollment.getMessage());
                         ui.showEnrollment((Enrollment) resultCheckEnrollment.getData());
+                        // adicionar mostrar saldo pendente.
                     } else {
                         ui.showError("Erro ao consultar matrícula: " + resultCheckEnrollment.getMessage());
                     }

@@ -57,6 +57,7 @@ public class UserInterface {
             "Data de término: " + enrollment.getEndDate() + "\n" +
             "Duração da matrícula: " + enrollment.getDurationMonths() + " meses\n" +
             "Valor total do plano: R$ " + String.format("%.2f", enrollment.getTotalPrice()) + "\n" +
+            "Valor pendente: R$ " + String.format("%.2f", enrollment.calculateBalance()) + "\n" +
             "Status: " + enrollment.getStatus() + "\n" +
             "----------------------------------"
                 );
