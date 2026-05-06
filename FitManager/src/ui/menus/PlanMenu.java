@@ -53,8 +53,8 @@ public class PlanMenu{
                     planName = ui.getInput("Digite o nome do plano: ");
                     String planDescription = ui.getInput("Digite a descrição do plano:");
                     PlanType planType = ui.getInputPlanType("Selecione o tipo do plano: ");
-                    double planPrice = ui.getInputDouble("Digite o preço do plano: ");
-                    int planDuration = ui.getInputInt("Digite a duração minima do plano (em meses): ");
+                    double planPrice = ui.getInputDouble("Digite o preço por mês do plano: ");
+                    int planDuration = ui.getInputInt("Digite a duração mínima do plano (em meses): ");
 
                     OperationResult resultRegister = fitManager.registerPlan(planName, planDescription, planType, planDuration, planPrice);
                     if(resultRegister.isSuccess())

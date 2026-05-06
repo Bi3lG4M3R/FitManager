@@ -87,12 +87,13 @@ public class ReportsMenu{
                                 String studentName = enrollment.getStudent().getName();
                                 String planName = enrollment.getPlan().getName();
                                 double totalPrice = enrollment.getTotalPrice();
+                                double pendingAmount = enrollment.getTotalPrice() - enrollment.calculateTotalPaid();
                                 LocalDate startDate = enrollment.getStartDate();
                                 LocalDate endDate = enrollment.getEndDate();
                                 int durationMonths = enrollment.getDurationMonths();
                                 String status = enrollment.getStatus().toString();
 
-                                ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, status);
+                                ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, pendingAmount, status);
                                 }
                             }
                             ui.showMessage("Fim da lista de matriculas ativas."); 
@@ -112,6 +113,7 @@ public class ReportsMenu{
                                 String studentName = enrollment.getStudent().getName();
                                 String planName = enrollment.getPlan().getName();
                                 double totalPrice = enrollment.getTotalPrice();
+                                double pendingAmount = enrollment.getTotalPrice() - enrollment.calculateTotalPaid();
                                 LocalDate startDate = enrollment.getStartDate();
                                 LocalDate endDate = enrollment.getEndDate();
                                 int durationMonths = enrollment.getDurationMonths();
@@ -122,7 +124,7 @@ public class ReportsMenu{
                                     String cancellationReason = enrollment.getCancellationReason();
                                     ui.showCancelledEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, status, cancellationReason);
                                 }else{
-                                    ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, status);
+                                    ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, pendingAmount, status);
                                 }
 
                             }

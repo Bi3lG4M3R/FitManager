@@ -32,7 +32,7 @@ public class UserInterface {
         }
     }
 
-    public void showEnrollment(int code, String studentName, String planName, LocalDate startDate, LocalDate endDate, int durationMonths, double totalPrice, String status){
+    public void showEnrollment(int code, String studentName, String planName, LocalDate startDate, LocalDate endDate, int durationMonths, double totalPrice, double pendingAmount, String status){
         showMessage(
             "Código de matrícula: " + code + "\n" +
             "Nome do aluno: " + studentName + "\n" +
@@ -41,6 +41,7 @@ public class UserInterface {
             "Data de término: " + endDate + "\n" +
             "Duração da matrícula: " + durationMonths + " meses\n" +
             "Valor total do plano: R$ " + String.format("%.2f", totalPrice) + "\n" +
+            "Valor pendente: R$ " + String.format("%.2f", pendingAmount) + "\n" +
             "Status: " + status + "\n" +
             "----------------------------------"
                 );

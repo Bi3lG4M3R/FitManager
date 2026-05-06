@@ -108,10 +108,11 @@ public class EnrollmentMenu {
                             LocalDate endDateHistory = enrollment.getEndDate();
                             int durationMonthsHistory = enrollment.getDurationMonths();
                             double totalPrice = enrollment.getTotalPrice();
+                            double pendingAmount = enrollment.calculateBalance();
 
                             String status = enrollment.getStatus().toString();
 
-                            ui.showEnrollment(code, studentName, planNameHistory, startDateHistory, endDateHistory, durationMonthsHistory, totalPrice, status);
+                            ui.showEnrollment(code, studentName, planNameHistory, startDateHistory, endDateHistory, durationMonthsHistory, totalPrice, pendingAmount, status);
 
                         }
                         ui.showMessage("Histórico de matrículas exibido com sucesso.");
