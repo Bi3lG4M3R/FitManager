@@ -76,22 +76,20 @@ public class EnrollmentMenu {
                     int enrollmentCodeToCancel = ui.getInputInt("Digite o número de matrícula a ser cancelada: ");
                     String cancelReason = ui.getInput("Digite o motivo do cancelamento: ");
                     OperationResult findEnrollmentResult = fitManager.findEnrollmentByCode(enrollmentCodeToCancel);
-                    /* adicionar condição para cancelamento */
-                    Double cancelationFee = (Double) fitManager.calculateCancelationFee(enrollmentCodeToCancel).getData();
 
-                    // Adicionar condição para antes de cancelar a matricula, verificar se existe a taxa de cancelamento
-                    // caso exista, solicitar o pagamento da taxa e só depois realizar o cancelamento.
+                    double cancelationFee = (double) fitManager.calculateCancelationFee(enrollmentCodeToCancel).getData();
 
-                    if(findEnrollmentResult.isSuccess()){
-                        // alterar getdata
-                        if((Double) findEnrollmentResult.getData() > 0.0){
+                    if(findEnrollmentResult.isSuccess()){ // Encontrou matricula
+                        if(cancelationFee > 0.0){   // Existe taxa de cancelamento
+                                                    // Solicita pagamento
+                                                    // Realiza o cancelamento
                             ui.showMessage("Taxa de cancelamento: " + String.format("%.2f", cancelationFee));
 
-                            /*  Realiza o pagamento da taxa de cancelamento  */
+                            // Pagamento da taxa
                             PaymentType feePaymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
                             OperationResult resultFeePayment = fitManager.registerPayment(enrollmentCodeToCancel, cancelationFee, feePaymentType, feePaymentType.getDescription());
                            
-                            if(resultFeePayment.isSuccess()){   
+                            if(resultFeePayment.isSuccess()){   // Pagamento foi sucesso
                                 ui.showMessage(resultFeePayment.getMessage());
                                 OperationResult resultCancelEnrollment = fitManager.cancelEnrollment(enrollmentCodeToCancel, cancelReason);
                                 
@@ -101,9 +99,17 @@ public class EnrollmentMenu {
                                     ui.showError("Erro ao cancelar matrícula: " + resultCancelEnrollment.getMessage());
                                 }
 
-                            }else{
+                            }else{ // Pagamento falhou
                                 ui.showError("Erro ao registrar pagamento da taxa de cancelamento: " + resultFeePayment.getMessage());
                             }
+                        }else{ // Não há taxa de cancelamento
+                            // Realiza somente o cancelamento
+                            OperationResult resultCancelEnrollment = fitManager.cancelEnrollment(enrollmentCodeToCancel, cancelReason);
+                                if(resultCancelEnrollment.isSuccess()){
+                                    ui.showMessage(resultCancelEnrollment.getMessage());
+                                } else {
+                                    ui.showError("Erro ao cancelar matrícula: " + resultCancelEnrollment.getMessage());
+                                }
                         }
                     
                     }else{
