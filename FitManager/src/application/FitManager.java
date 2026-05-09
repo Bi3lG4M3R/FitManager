@@ -88,6 +88,8 @@ public class FitManager {
 
     public OperationResult cancelEnrollment(int code, String reason) { return enrollmentService.cancel(code, reason); }
 
+    public OperationResult calculateCancelationFee(int code){ return enrollmentService.calculateCancelationFee(code); }
+
     public OperationResult findActiveEnrollment(String cpf) {
         if(studentService.findByCpf(cpf) == null) {
             return new OperationResult(false, "Aluno não encontrado.");

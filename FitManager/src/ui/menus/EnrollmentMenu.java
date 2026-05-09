@@ -77,17 +77,14 @@ public class EnrollmentMenu {
                     String cancelReason = ui.getInput("Digite o motivo do cancelamento: ");
                     OperationResult findEnrollmentResult = fitManager.findEnrollmentByCode(enrollmentCodeToCancel);
                     /* adicionar condição para cancelamento */
-                    
+                    Double cancelationFee = (Double) fitManager.calculateCancelationFee(enrollmentCodeToCancel).getData();
 
                     // Adicionar condição para antes de cancelar a matricula, verificar se existe a taxa de cancelamento
                     // caso exista, solicitar o pagamento da taxa e só depois realizar o cancelamento.
-                    
+
                     if(findEnrollmentResult.isSuccess()){
                         // alterar getdata
                         if((Double) findEnrollmentResult.getData() > 0.0){
-                            Enrollment enrollmentToCancel = (Enrollment) findEnrollmentResult.getData();
-                            Double cancelationFee = fitmanager.cancelEnrollment(enrollmentCodeToCancel, cancelReason).getData();
-
                             ui.showMessage("Taxa de cancelamento: " + String.format("%.2f", cancelationFee));
 
                             /*  Realiza o pagamento da taxa de cancelamento  */

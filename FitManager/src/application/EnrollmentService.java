@@ -77,18 +77,30 @@ public class EnrollmentService {
     public OperationResult cancel(int code, String reason){
         Enrollment enrollment = findByCode(code); 
         if(enrollment==null){
-            return new OperationResult(false, "Erro.");
+            return new OperationResult(false, "Matricula não encontrada.");
         }
         if(enrollment.getStatus()!=EnrollmentStatus.ACTIVE){
             return new OperationResult(false, "Matricula ja cancelada.");
         }
         enrollment.cancel(reason);
 
+        return new OperationResult(true, "Matricula  cancelada!!", enrollment);
+    }
+
+    public OperationResult calculateCancelationFee(int code){
+        Enrollment enrollment = findByCode(code); 
+        if(enrollment==null){
+            return new OperationResult(false, "Matricula não encontrada.");
+        }
+        if(enrollment.getStatus()!=EnrollmentStatus.ACTIVE){
+            return new OperationResult(false, "Matricula ja cancelada.");
+        }
+
         double balanceMonthsUsed = enrollment.calculateBalanceForMonthsUsed();
         if(balanceMonthsUsed > 0.0)
-            return new OperationResult(true, "Matricula  cancelada!!", enrollment.getPlan().getCancellationFee(enrollment) + balanceMonthsUsed);
+            return new OperationResult(true, "Taxa de cancelamento: ", enrollment.getPlan().getCancellationFee(enrollment) + balanceMonthsUsed);
         
-        return new OperationResult(true, "Matricula  cancelada!!", enrollment.getPlan().getCancellationFee(enrollment));
+        return new OperationResult(true, "Taxa de cancelamento: ", enrollment.getPlan().getCancellationFee(enrollment));
     }
     
     public boolean hasActiveEnrollment(String cpf){
