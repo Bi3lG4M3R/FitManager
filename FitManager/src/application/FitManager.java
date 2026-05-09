@@ -78,6 +78,14 @@ public class FitManager {
         return enrollmentService.registerPayment(code, amount, paymentType, paymentDescription);
     }
 
+    // FLAG                 ENCONTRAR MATRÍCULA POR CÓDIGO PARA CANCELAMENTO   
+    public OperationResult findEnrollmentByCode(int code) { 
+        if(enrollmentService.findByCode(code) == null) {
+            return new OperationResult(false, "Matrícula não encontrada.");
+        }
+        return new OperationResult (true, "Matricula encontrada.", enrollmentService.findByCode(code)); 
+    }
+
     public OperationResult cancelEnrollment(int code, String reason) { return enrollmentService.cancel(code, reason); }
 
     public OperationResult findActiveEnrollment(String cpf) {

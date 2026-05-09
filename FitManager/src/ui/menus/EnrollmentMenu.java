@@ -75,27 +75,42 @@ public class EnrollmentMenu {
                 case CANCEL_ENROLLMENT:
                     int enrollmentCodeToCancel = ui.getInputInt("Digite o número de matrícula a ser cancelada: ");
                     String cancelReason = ui.getInput("Digite o motivo do cancelamento: ");
-                    OperationResult resultCancelEnrollment = fitManager.cancelEnrollment(enrollmentCodeToCancel, cancelReason);
-                    Double cancelationFee;
-                    PaymentType feePaymentType;
-                    OperationResult resultFeePayment; 
+                    OperationResult findEnrollmentResult = fitManager.findEnrollmentByCode(enrollmentCodeToCancel);
                     /* adicionar condição para cancelamento */
                     
 
-                    if(resultCancelEnrollment.isSuccess()){
-                        cancelationFee = (Double) resultCancelEnrollment.getData();
-                        ui.showMessage("Taxa de cancelamento: " + String.format("%.2f", cancelationFee));
-                        /*  Realiza o pagamento da taxa de cancelamento  */
-                        feePaymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
-                        resultFeePayment = fitManager.registerPayment(enrollmentCodeToCancel, cancelationFee, feePaymentType, feePaymentType.getDescription());
-                        if(resultFeePayment.isSuccess())
-                            ui.showMessage(resultFeePayment.getMessage());
-                        else
-                            ui.showError("Erro ao registrar pagamento: " + resultFeePayment.getMessage());
+                    // Adicionar condição para antes de cancelar a matricula, verificar se existe a taxa de cancelamento
+                    // caso exista, solicitar o pagamento da taxa e só depois realizar o cancelamento.
+                    
+                    if(findEnrollmentResult.isSuccess()){
+                        // alterar getdata
+                        if((Double) findEnrollmentResult.getData() > 0.0){
+                            Enrollment enrollmentToCancel = (Enrollment) findEnrollmentResult.getData();
+                            Double cancelationFee = fitmanager.cancelEnrollment(enrollmentCodeToCancel, cancelReason).getData();
 
-                        ui.showMessage(resultCancelEnrollment.getMessage());
+                            ui.showMessage("Taxa de cancelamento: " + String.format("%.2f", cancelationFee));
+
+                            /*  Realiza o pagamento da taxa de cancelamento  */
+                            PaymentType feePaymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
+                            OperationResult resultFeePayment = fitManager.registerPayment(enrollmentCodeToCancel, cancelationFee, feePaymentType, feePaymentType.getDescription());
+                           
+                            if(resultFeePayment.isSuccess()){   
+                                ui.showMessage(resultFeePayment.getMessage());
+                                OperationResult resultCancelEnrollment = fitManager.cancelEnrollment(enrollmentCodeToCancel, cancelReason);
+                                
+                                if(resultCancelEnrollment.isSuccess()){
+                                    ui.showMessage(resultCancelEnrollment.getMessage());
+                                } else {
+                                    ui.showError("Erro ao cancelar matrícula: " + resultCancelEnrollment.getMessage());
+                                }
+
+                            }else{
+                                ui.showError("Erro ao registrar pagamento da taxa de cancelamento: " + resultFeePayment.getMessage());
+                            }
+                        }
+                    
                     }else{
-                        ui.showError("Erro ao cancelar matrícula: " + resultCancelEnrollment.getMessage());
+                        ui.showError("Erro ao encontrar matrícula: " + findEnrollmentResult.getMessage());
                     }
                 break;
 
