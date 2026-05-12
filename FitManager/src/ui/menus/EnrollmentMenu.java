@@ -138,14 +138,14 @@ public class EnrollmentMenu {
                         for(Enrollment enrollment : enrollmentHistory){
                             int code = enrollment.getCode();
                             String studentName = enrollment.getStudent().getName();
-                            String planNameHistory = enrollment.getPlan().getDescription();
+                            String planNameHistory = enrollment.getPlan().getName();
                             LocalDate startDateHistory = enrollment.getStartDate();
                             LocalDate endDateHistory = enrollment.getEndDate();
                             int durationMonthsHistory = enrollment.getDurationMonths();
                             double totalPrice = enrollment.getTotalPrice();
                             double pendingAmount = enrollment.calculateBalance();
 
-                            String status = enrollment.getStatus().toString();
+                            String status = enrollment.getStatus().getDescription();
 
                             ui.showEnrollment(code, studentName, planNameHistory, startDateHistory, endDateHistory, durationMonthsHistory, totalPrice, pendingAmount, status);
 
