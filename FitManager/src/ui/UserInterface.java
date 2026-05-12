@@ -46,21 +46,7 @@ public class UserInterface {
             "----------------------------------"
         );
     }
-    
-    public void showEnrollment(int code, String studentName, String planName, LocalDate startDate, LocalDate endDate, int durationMonths, double totalPrice, double pendingAmount, String status){
-        showMessage(
-            "Código de matrícula: " + code + "\n" +
-            "Nome do aluno: " + studentName + "\n" +
-            "Plano escolhido: " + planName + "\n" +
-            "Data de início: " + startDate + "\n" +
-            "Data de término: " + endDate + "\n" +
-            "Duração da matrícula: " + durationMonths + " meses\n" +
-            "Valor total do plano: R$ " + String.format("%.2f", totalPrice) + "\n" +
-            "Valor pendente de pagamento: R$ " + String.format("%.2f", pendingAmount) + "\n" +
-            "Status: " + status + "\n" +
-            "----------------------------------"
-        );
-    }
+
 
     public void showEnrollment(Enrollment enrollment){
         showMessage(
@@ -72,7 +58,7 @@ public class UserInterface {
             "Duração da matrícula: " + enrollment.getDurationMonths() + " meses\n" +
             "Valor total do plano: R$ " + String.format("%.2f", enrollment.getTotalPrice()) + "\n" +
             "Valor pendente: R$ " + String.format("%.2f", enrollment.calculateBalance()) + "\n" +
-            "Status: " + enrollment.getStatus() + "\n" +
+            "Status: " + enrollment.getStatus().getDescription() + "\n" +
             "----------------------------------"
         );
     }

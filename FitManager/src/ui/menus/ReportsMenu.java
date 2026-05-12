@@ -87,13 +87,12 @@ public class ReportsMenu{
                                     String studentName = enrollment.getStudent().getName();
                                     String planName = enrollment.getPlan().getName();
                                     double totalPrice = enrollment.getTotalPrice();
-                                    double pendingAmount = enrollment.getTotalPrice() - enrollment.calculateTotalPaid();
-                                LocalDate startDate = enrollment.getStartDate();
+                                    LocalDate startDate = enrollment.getStartDate();
                                     LocalDate endDate = enrollment.getEndDate();
                                     int durationMonths = enrollment.getDurationMonths();
                                     String status = enrollment.getStatus().getDescription();
 
-                                    ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, enrollment.calculateBalanceForMonthsUsed(), pendingAmount, status);
+                                    ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, enrollment.calculateBalanceForMonthsUsed(), status);
                                 }
                             }
                             ui.showMessage("Fim da lista de matriculas ativas."); 
