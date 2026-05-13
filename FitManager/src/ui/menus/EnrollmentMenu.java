@@ -1,5 +1,6 @@
 package ui.menus;
 
+import java.rmi.server.Operation;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -63,13 +64,41 @@ public class EnrollmentMenu {
                 case REGISTER_PAYMENT:
                     int enrollmentCode = ui.getInputInt("Digite o número de matrícula a realizar pagamento: ");
                     double amount = ui.getInputDouble("Valor do pagamento: ");
-                    PaymentType registerPaymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
-        
-                    OperationResult resultPayment = fitManager.registerPayment(enrollmentCode, amount, registerPaymentType, registerPaymentType.getDescription());
-                    if(resultPayment.isSuccess())
-                        ui.showMessage(resultPayment.getMessage());
+                    PaymentType chosenPaymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
+                    OperationResult paymentResult;
+                    switch (chosenPaymentType){
+
+                        case PIX:
+                            ui.showMessage("Pagamento via PIX selecionado.");
+                            String pixKey = ui.getInput("Insira a chave PIX: ");
+                            
+                            paymentResult = fitManager.registerPayment(enrollmentCode, amount, chosenPaymentType, chosenPaymentType.getDescription(), pixKey, 0.0, 0, null);
+                        break; 
+                        case CREDIT_CARD:
+                            ui.showMessage("Pagamento com cartão de crédito selecionado.");
+                            int installments = ui.getInputInt("Insira o número de parcelas (máximo de 12 parcelas - digite 1 para pagamento à vista): ");
+                            String creditCardLastDigits = ui.getInput("Insira os últimos 4 dígitos do cartão: ");
+
+                            paymentResult = fitManager.registerPayment(enrollmentCode, amount, chosenPaymentType, chosenPaymentType.getDescription(), null, 0.0, installments, creditCardLastDigits);
+                        break;
+                        case DEBIT_CARD:
+                            ui.showMessage("Pagamento com cartão de débito selecionado.");
+                            String debitCardLastDigits = ui.getInput("Insira os últimos 4 dígitos do cartão: ");
+                            paymentResult = fitManager.registerPayment(enrollmentCode, amount, chosenPaymentType, chosenPaymentType.getDescription(), null, 0.0, 0, debitCardLastDigits);
+                        break;
+                        
+                        case CASH:
+                            ui.showMessage("Pagamento em dinheiro selecionado.");
+                            double amountReceived = ui.getInputDouble("Insira o valor recebido: ");
+
+                            paymentResult = fitManager.registerPayment(enrollmentCode, amount, chosenPaymentType, chosenPaymentType.getDescription(), null, amountReceived, 0, null);
+                        break;
+                    }
+
+                    if(paymentResult.isSuccess())
+                        ui.showMessage(paymentResult.getMessage());
                     else
-                        ui.showError("Erro ao registrar pagamento: " + resultPayment.getMessage());
+                        ui.showError("Erro ao registrar pagamento: " + paymentResult.getMessage());
                 break;
 
                 case CANCEL_ENROLLMENT:

@@ -74,8 +74,21 @@ public class FitManager {
         return enrollmentService.enroll(student, plan, startDate, durationMonths, initialAmount, paymentType, paymentDescription);
     }
 
-    public OperationResult registerPayment(int code, double amount, PaymentType paymentType, String paymentDescription) {
-        return enrollmentService.registerPayment(code, amount, paymentType, paymentDescription);
+    public OperationResult registerPayment(int code, double amount, PaymentType paymentType, String paymentDescription, String extraData, double amountReceived, int installments, String cardLastDigits) {
+        return enrollmentService.registerPayment(code, amount, paymentType, paymentDescription, extraData, amountReceived, installments, cardLastDigits);
+        // Anotação afim de facilitar chamada de cada tipo de pagamento no menu de matrícula.
+
+        // chamada para pix: 
+        // registerPayment(enrollmentCode, amount, PaymentType.PIX, PaymentType.PIX.getDescription(), pixKey, 0.0, 0, null);
+        
+        // chamada para cartão de crédito: 
+        // registerPayment(enrollmentCode, amount, PaymentType.CREDIT_CARD, PaymentType.CREDIT_CARD.getDescription(), null, 0.0, installments, cardLastDigits);
+       
+        // chamada para cartão de débito: 
+        // registerPayment(enrollmentCode, amount, PaymentType.DEBIT_CARD, PaymentType.DEBIT_CARD.getDescription(), null, 0.0, 0, cardLastDigits);
+        
+        // chamada para dinheiro: 
+        // registerPayment(enrollmentCode, amount, PaymentType.CASH, PaymentType.CASH.getDescription(), null, amountReceived, 0, null);
     }
 
     // FLAG                 ENCONTRAR MATRÍCULA POR CÓDIGO PARA CANCELAMENTO   
