@@ -52,7 +52,7 @@ public class FitManager {
     public ArrayList<Plan> listPlans() { return planService.listPlans(); }
 
     public OperationResult enrollStudent(String cpf, String planName, LocalDate startDate, int durationMonths,
-                                         double initialAmount, PaymentType paymentType, String paymentDescription) {
+                                         double initialAmount, PaymentType paymentType, String paymentDescription, String extraData, double amountReceived, int installments, String cardLastDigits) {
         Student student = studentService.findByCpf(cpf);
         if(student == null) {
             return new OperationResult(false, "Aluno não encontrado.");
@@ -71,7 +71,7 @@ public class FitManager {
             return new OperationResult(false, "O aluno inativo não pode ser matriculado.");
         }
         
-        return enrollmentService.enroll(student, plan, startDate, durationMonths, initialAmount, paymentType, paymentDescription);
+        return enrollmentService.enroll(student, plan, startDate, durationMonths, initialAmount, paymentType, paymentDescription, extraData, amountReceived, installments, cardLastDigits);
     }
 
     public OperationResult registerPayment(int code, double amount, PaymentType paymentType, String paymentDescription, String extraData, double amountReceived, int installments, String cardLastDigits) {

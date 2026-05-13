@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import application.FitManager;
 import application.OperationResult;
 import domain.Enrollment;
+import domain.payment.Payment;
 import domain.payment.PaymentType;
 import ui.UserInterface;
 import ui.enums.EnrollmentMenuEnum;
@@ -53,19 +54,52 @@ public class EnrollmentMenu {
                     int durationMonths = ui.getInputInt("Digite a duração da matrícula (numero de meses): ");
                     double initialPayment = ui.getInputDouble("Digite o valor do pagamento inicial: ");
                     PaymentType paymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
-                    OperationResult resultRegisterEnrollment = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType, paymentType.getDescription());
-                    
-                    if(resultRegisterEnrollment.isSuccess())
-                        ui.showMessage(resultRegisterEnrollment.getMessage());
+                    // Objeto inicializado devido a erro apontado por falta de inicialização.
+                    OperationResult registerEnrollmentResult = new OperationResult(false, "Nenhum metodo de pagamento selecionado.", null);
+
+                    switch (paymentType){
+
+                        case PIX:
+                            ui.showMessage("Pagamento via PIX selecionado.");
+                            String pixKey = ui.getInput("Insira a chave PIX: ");
+                            
+                            registerEnrollmentResult = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType, paymentType.getDescription(), pixKey, 0.0, 0, null);
+                        break; 
+                        case CREDIT_CARD:
+                            ui.showMessage("Pagamento com cartão de crédito selecionado.");
+                            int installments = ui.getInputInt("Insira o número de parcelas (máximo de 12 parcelas - digite 1 para pagamento à vista): ");
+                            String creditCardLastDigits = ui.getInput("Insira os últimos 4 dígitos do cartão: ");
+
+                            registerEnrollmentResult = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType, paymentType.getDescription(), null, 0.0, installments, creditCardLastDigits);
+                        break;
+                        case DEBIT_CARD:
+                            ui.showMessage("Pagamento com cartão de débito selecionado.");
+                            String debitCardLastDigits = ui.getInput("Insira os últimos 4 dígitos do cartão: ");
+                            
+                            registerEnrollmentResult = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType, paymentType.getDescription(), null, 0.0, 0, debitCardLastDigits);
+                        break;
+                        
+                        case CASH:
+                            ui.showMessage("Pagamento em dinheiro selecionado.");
+                            double amountReceived = ui.getInputDouble("Insira o valor recebido: ");
+
+                            registerEnrollmentResult = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType, paymentType.getDescription(), null, amountReceived, 0, null);
+                        break;
+                    }
+
+                    //OperationResult resultRegisterEnrollment = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType, paymentType.getDescription());
+
+                    if(registerEnrollmentResult.isSuccess())
+                        ui.showMessage(registerEnrollmentResult.getMessage());
                     else
-                        ui.showError("Erro ao registrar matrícula: " + resultRegisterEnrollment.getMessage());
+                        ui.showError("Erro ao registrar matrícula: " + registerEnrollmentResult.getMessage());
                 break;
 
                 case REGISTER_PAYMENT:
                     int enrollmentCode = ui.getInputInt("Digite o número de matrícula a realizar pagamento: ");
                     double amount = ui.getInputDouble("Valor do pagamento: ");
                     PaymentType chosenPaymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
-                    OperationResult paymentResult;
+                    OperationResult paymentResult; // = new OperationResult(false, "Nenhum metodo de pagamento selecionado.", null);
                     switch (chosenPaymentType){
 
                         case PIX:
@@ -95,9 +129,10 @@ public class EnrollmentMenu {
                         break;
                     }
 
-                    if(paymentResult.isSuccess())
+                    if(paymentResult.isSuccess()){
                         ui.showMessage(paymentResult.getMessage());
-                    else
+                        ui.showMessage(((Payment) paymentResult.getData()).getPaymentSummary());
+                    }else
                         ui.showError("Erro ao registrar pagamento: " + paymentResult.getMessage());
                 break;
 
@@ -118,7 +153,7 @@ public class EnrollmentMenu {
 
                                 // Pagamento da taxa
                                 PaymentType feePaymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
-                                OperationResult resultFeePayment = fitManager.registerPayment(enrollmentCodeToCancel, cancelationFee, feePaymentType, feePaymentType.getDescription());
+                                OperationResult resultFeePayment;// = fitManager.registerPayment(enrollmentCodeToCancel, cancelationFee, feePaymentType, feePaymentType.getDescription());
                             
                                 if(resultFeePayment.isSuccess()){   // Pagamento foi sucesso
                                     ui.showMessage(resultFeePayment.getMessage());
