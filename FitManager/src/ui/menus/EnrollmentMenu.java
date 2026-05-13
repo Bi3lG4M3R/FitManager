@@ -118,6 +118,7 @@ public class EnrollmentMenu {
                         case DEBIT_CARD:
                             ui.showMessage("Pagamento com cartão de débito selecionado.");
                             String debitCardLastDigits = ui.getInput("Insira os últimos 4 dígitos do cartão: ");
+                            
                             paymentResult = fitManager.registerPayment(enrollmentCode, amount, chosenPaymentType, chosenPaymentType.getDescription(), null, 0.0, 0, debitCardLastDigits);
                         break;
                         

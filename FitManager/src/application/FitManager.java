@@ -91,6 +91,27 @@ public class FitManager {
         // registerPayment(enrollmentCode, amount, PaymentType.CASH, PaymentType.CASH.getDescription(), null, amountReceived, 0, null);
     }
 
+    //Pagamento no pix
+    public OperationResult registerPayment(int code, double amount, String pixKey) {
+        return enrollmentService.registerPayment(code, amount, PaymentType.PIX, PaymentType.PIX.getDescription(), pixKey, 0.0, 0, null);
+    }
+
+    // Pagamento no cartão de crédito
+    public OperationResult registerPayment(int code, double amount, int installments, String cardLastDigits) {
+        return enrollmentService.registerPayment(code, amount, PaymentType.CREDIT_CARD, PaymentType.CREDIT_CARD.getDescription(), null, 0.0, installments, cardLastDigits);
+    }
+
+    // Pagamento no cartão de débito
+    public OperationResult registerPayment(int code, double amount, String cardLastDigits) {
+        return enrollmentService.registerPayment(code, amount, PaymentType.DEBIT_CARD, PaymentType.DEBIT_CARD.getDescription(), null, 0.0, 0, cardLastDigits);
+    }
+
+    // Pagamento em dinheiro
+    public OperationResult registerPayment(int code, double amount, double amountReceived) {
+        return enrollmentService.registerPayment(code, amount, PaymentType.CASH, PaymentType.CASH.getDescription(), null, amountReceived, 0, null);
+    }
+
+
     // FLAG                 ENCONTRAR MATRÍCULA POR CÓDIGO PARA CANCELAMENTO   
     public OperationResult findEnrollmentByCode(int code) { 
         if(enrollmentService.findByCode(code) == null) {
