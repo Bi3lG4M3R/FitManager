@@ -116,8 +116,18 @@ public class UserInterface {
 
     // METODOS PARA RECEBER INFORMAÇÕES DO USUÁRIO
     public String getInput(String prompt){
-        showMessage(prompt);
-        return this.input.nextLine();
+        String inputString = null;
+        
+        do{
+            showMessage(prompt);
+            inputString = this.input.nextLine();
+            if(inputString == null || inputString.trim().isEmpty()){
+                showError("Entrada inválida. Por favor, insira uma string não vazia.");
+            }
+        }while (inputString == null || inputString.trim().isEmpty());
+        
+        return inputString.trim();
+        // metodo .trim() utilizado para remover espaços desnecessários no início e no final da string.
     }
 
     public int getInputInt(String prompt){
@@ -137,7 +147,7 @@ public class UserInterface {
                 double value = Double.parseDouble(getInput(prompt));
                 return value;
             } catch (NumberFormatException error) {
-                showError("Entrada inválida. Por favor, digite um número decimal.");
+                showError("Entrada inválida. Por favor, digite um número decimal válido.");
             }
         }
     }

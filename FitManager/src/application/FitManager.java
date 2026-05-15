@@ -92,7 +92,7 @@ public class FitManager {
     }
 
     //Pagamento no pix
-    public OperationResult registerPayment(int code, double amount, String pixKey) {
+    public OperationResult registerPayment(String pixKey, int code, double amount) {
         return enrollmentService.registerPayment(code, amount, PaymentType.PIX, PaymentType.PIX.getDescription(), pixKey, 0.0, 0, null);
     }
 
