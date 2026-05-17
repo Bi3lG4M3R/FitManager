@@ -1,7 +1,13 @@
 package application;
 
-import domain.plan.*;
 import java.util.ArrayList;
+
+import domain.plan.Plan;
+import domain.plan.PlanAnnual;
+import domain.plan.PlanMonthly;
+import domain.plan.PlanQuarterly;
+import domain.plan.PlanSemiAnnual;
+import domain.plan.PlanType;
 
 public class PlanService {
     private static ArrayList<Plan> plans;
