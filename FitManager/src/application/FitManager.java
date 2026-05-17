@@ -28,10 +28,10 @@ public class FitManager {
 
     public OperationResult removeStudent(String cpf) {
         Student student = studentService.findByCpf(cpf);
-        if(student == null){
+        if (student == null) {
             return new OperationResult(false, "Não foi possível encontrar o aluno.");
         }
-        if(enrollmentService.hasActiveEnrollment(student.getCpf())) {
+        if (enrollmentService.hasActiveEnrollment(student.getCpf())) {
             return new OperationResult(false, "Não é possível remover/inativar um aluno com matrícula ativa.");
         }
         return studentService.removeStudent(student.getCpf());
@@ -51,61 +51,134 @@ public class FitManager {
 
     public ArrayList<Plan> listPlans() { return planService.listPlans(); }
 
-    public OperationResult enrollStudent(String cpf, String planName, LocalDate startDate, int durationMonths,
-                                         double initialAmount, PaymentType paymentType, String paymentDescription) {
+    /* ------------------------------------------------------------------ */
+    /*  enrollStudent — sobrecargas por tipo de pagamento                  */
+    /* ------------------------------------------------------------------ */
+
+    /* PIX: extraData = chave PIX */
+    public OperationResult enrollStudent(String cpf, String planName, LocalDate startDate,
+            int durationMonths, double initialAmount, PaymentType paymentType,
+            String paymentDescription, String extraData) {
+        if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
         Student student = studentService.findByCpf(cpf);
-        if(student == null) {
-            return new OperationResult(false, "Aluno não encontrado.");
-        }
         Plan plan = PlanService.findByName(planName);
-        if(plan == null) {
-            return new OperationResult(false, "Plano não encontrado.");
-        }
-        if(enrollmentService.hasActiveEnrollment(student.getCpf())) {
-            return new OperationResult(false, "O aluno já possui matrícula ativa.");
-        }
-        if(initialAmount <= 0) {
-            return new OperationResult(false, "A matrícula exige pagamento inicial maior que zero.");
-        }
-        if(!student.isActive()){
-            return new OperationResult(false, "O aluno inativo não pode ser matriculado.");
-        }
-        
-        return enrollmentService.enroll(student, plan, startDate, durationMonths, initialAmount, paymentType, paymentDescription);
+        return enrollmentService.enroll(student, plan, startDate, durationMonths,
+                initialAmount, paymentType, paymentDescription, extraData, 0.0, 1, null);
     }
 
-    public OperationResult registerPayment(int code, double amount, PaymentType paymentType, String paymentDescription) {
-        return enrollmentService.registerPayment(code, amount, paymentType, paymentDescription);
+    /* Dinheiro: amountReceived = valor entregue pelo aluno */
+    public OperationResult enrollStudent(String cpf, String planName, LocalDate startDate,
+            int durationMonths, double initialAmount, PaymentType paymentType,
+            String paymentDescription, double amountReceived) {
+        if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
+        Student student = studentService.findByCpf(cpf);
+        Plan plan = PlanService.findByName(planName);
+        return enrollmentService.enroll(student, plan, startDate, durationMonths,
+                initialAmount, paymentType, paymentDescription, null, amountReceived, 1, null);
     }
 
-    // FLAG                 ENCONTRAR MATRÍCULA POR CÓDIGO PARA CANCELAMENTO   
-    public OperationResult findEnrollmentByCode(int code) { 
-        if(enrollmentService.findByCode(code) == null) {
+    /* Débito: cardLastDigits = últimos 4 dígitos do cartão */
+    public OperationResult enrollStudent(String cpf, String planName, LocalDate startDate,
+            int durationMonths, double initialAmount, PaymentType paymentType,
+            String paymentDescription, String extraData, String cardLastDigits) {
+        if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
+        Student student = studentService.findByCpf(cpf);
+        Plan plan = PlanService.findByName(planName);
+        return enrollmentService.enroll(student, plan, startDate, durationMonths,
+                initialAmount, paymentType, paymentDescription, extraData, 0.0, 1, cardLastDigits);
+    }
+
+    /* Crédito: installments = parcelas, cardLastDigits = últimos 4 dígitos */
+    public OperationResult enrollStudent(String cpf, String planName, LocalDate startDate,
+            int durationMonths, double initialAmount, PaymentType paymentType,
+            String paymentDescription, int installments, String cardLastDigits) {
+        if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
+        Student student = studentService.findByCpf(cpf);
+        Plan plan = PlanService.findByName(planName);
+        return enrollmentService.enroll(student, plan, startDate, durationMonths,
+                initialAmount, paymentType, paymentDescription, null, 0.0, installments, cardLastDigits);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /*  registerPayment — sobrecargas por tipo de pagamento                */
+    /* ------------------------------------------------------------------ */
+
+    /* PIX: extraData = chave PIX */
+    public OperationResult registerPayment(int code, double amount, PaymentType paymentType,
+            String paymentDescription, String extraData) {
+        return enrollmentService.registerPayment(code, amount, paymentType, paymentDescription,
+                extraData, 0.0, 1, null);
+    }
+
+    /* Dinheiro: amountReceived = valor entregue pelo aluno */
+    public OperationResult registerPayment(int code, double amount, PaymentType paymentType,
+            String paymentDescription, double amountReceived) {
+        return enrollmentService.registerPayment(code, amount, paymentType, paymentDescription,
+                null, amountReceived, 1, null);
+    }
+
+    /* Débito: cardLastDigits = últimos 4 dígitos */
+    public OperationResult registerPayment(int code, double amount, PaymentType paymentType,
+            String paymentDescription, String extraData, String cardLastDigits) {
+        return enrollmentService.registerPayment(code, amount, paymentType, paymentDescription,
+                extraData, 0.0, 1, cardLastDigits);
+    }
+
+    /* Crédito: installments = parcelas, cardLastDigits = últimos 4 dígitos */
+    public OperationResult registerPayment(int code, double amount, PaymentType paymentType,
+            String paymentDescription, int installments, String cardLastDigits) {
+        return enrollmentService.registerPayment(code, amount, paymentType, paymentDescription,
+                null, 0.0, installments, cardLastDigits);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /*  Helpers de validação compartilhada entre as sobrecargas            */
+    /* ------------------------------------------------------------------ */
+
+    private boolean validate(String cpf, String planName, double initialAmount) {
+        Student student = studentService.findByCpf(cpf);
+        if (student == null || !student.isActive()) return false;
+        if (PlanService.findByName(planName) == null) return false;
+        if (enrollmentService.hasActiveEnrollment(cpf)) return false;
+        if (initialAmount <= 0) return false;
+        return true;
+    }
+
+    private OperationResult validationError(String cpf, String planName, double initialAmount) {
+        Student student = studentService.findByCpf(cpf);
+        if (student == null) return new OperationResult(false, "Aluno não encontrado.");
+        if (!student.isActive()) return new OperationResult(false, "O aluno inativo não pode ser matriculado.");
+        if (PlanService.findByName(planName) == null) return new OperationResult(false, "Plano não encontrado.");
+        if (enrollmentService.hasActiveEnrollment(cpf)) return new OperationResult(false, "O aluno já possui matrícula ativa.");
+        if (initialAmount <= 0) return new OperationResult(false, "A matrícula exige pagamento inicial maior que zero.");
+        return new OperationResult(false, "Erro de validação.");
+    }
+
+    /* ------------------------------------------------------------------ */
+
+    public OperationResult findEnrollmentByCode(int code) {
+        if (enrollmentService.findByCode(code) == null) {
             return new OperationResult(false, "Matrícula não encontrada.");
         }
-        return new OperationResult (true, "Matricula encontrada.", enrollmentService.findByCode(code)); 
+        return new OperationResult(true, "Matricula encontrada.", enrollmentService.findByCode(code));
     }
 
     public OperationResult cancelEnrollment(int code, String reason) { return enrollmentService.cancel(code, reason); }
 
-    public OperationResult calculateCancelationFee(int code){ return enrollmentService.calculateCancelationFee(code); }
-    
+    public OperationResult calculateCancelationFee(int code) { return enrollmentService.calculateCancelationFee(code); }
 
     public OperationResult findActiveEnrollment(String cpf) {
-        if(studentService.findByCpf(cpf) == null) {
+        if (studentService.findByCpf(cpf) == null) {
             return new OperationResult(false, "Aluno não encontrado.");
         }
-
-        if(studentService.findByCpf(cpf).isActive() == false){
+        if (!studentService.findByCpf(cpf).isActive()) {
             return new OperationResult(false, "Aluno inativo não possui matrícula ativa.");
         }
-
-        if(enrollmentService.hasActiveEnrollment(cpf) == false) {
+        if (!enrollmentService.hasActiveEnrollment(cpf)) {
             return new OperationResult(false, "Nenhuma matrícula ativa encontrada para este aluno.");
         }
-        return new OperationResult(true, "Matrícula ativa encontrada.", enrollmentService.findActiveByStudent(cpf)); 
-    
-        }
+        return new OperationResult(true, "Matrícula ativa encontrada.", enrollmentService.findActiveByStudent(cpf));
+    }
 
     public ArrayList<Enrollment> listEnrollments() { return enrollmentService.listEnrollments(); }
 }
