@@ -5,9 +5,8 @@ import java.util.ArrayList;
 
 import domain.Enrollment;
 import domain.Student;
-import domain.payment.PaymentType;
-import domain.plan.Plan;
-import domain.plan.PlanType;
+import domain.payment.*;
+import domain.plan.*;
 
 public class FitManager {
     private final StudentService studentService;
@@ -52,110 +51,64 @@ public class FitManager {
     public ArrayList<Plan> listPlans() { return planService.listPlans(); }
 
     /* ------------------------------------------------------------------ */
-    /*  enrollStudent — sobrecargas por tipo de pagamento                  */
+    /* enrollStudent — sobrecargas criando as instâncias corretas        */
     /* ------------------------------------------------------------------ */
 
-    /* PIX: extraData = chave PIX */
+    /* PIX */
     public OperationResult enrollStudent(String cpf, String planName, LocalDate startDate,
-            int durationMonths, double initialAmount, PaymentType paymentType,
-            String paymentDescription, String extraData) {
+            int durationMonths, String paymentDescription, double initialAmount, String pixKey) {
         if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
-        Student student = studentService.findByCpf(cpf);
-        Plan plan = PlanService.findByName(planName);
-        return enrollmentService.enroll(student, plan, startDate, durationMonths,
-                initialAmount, paymentType, paymentDescription, extraData, 0.0, 1, null);
+        
+        Payment payment = new PixPayment(startDate, initialAmount, paymentDescription, pixKey);
+        return enrollmentService.enroll(studentService.findByCpf(cpf), PlanService.findByName(planName), startDate, durationMonths, payment);
     }
 
-    /* Dinheiro: amountReceived = valor entregue pelo aluno */
+    /* Dinheiro */
     public OperationResult enrollStudent(String cpf, String planName, LocalDate startDate,
-            int durationMonths, double initialAmount, PaymentType paymentType,
-            String paymentDescription, double amountReceived) {
+            int durationMonths, double initialAmount, String paymentDescription, double amountReceived) {
         if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
-        Student student = studentService.findByCpf(cpf);
-        Plan plan = PlanService.findByName(planName);
-        return enrollmentService.enroll(student, plan, startDate, durationMonths,
-                initialAmount, paymentType, paymentDescription, null, amountReceived, 1, null);
+        
+        Payment payment = new CashPayment(startDate, initialAmount, paymentDescription, amountReceived);
+        return enrollmentService.enroll(studentService.findByCpf(cpf), PlanService.findByName(planName), startDate, durationMonths, payment);
     }
 
-    /* Débito: cardLastDigits = últimos 4 dígitos do cartão */
+    /* Débito */
     public OperationResult enrollStudent(String cpf, String planName, LocalDate startDate,
-            int durationMonths, double initialAmount, PaymentType paymentType,
-            String paymentDescription, String extraData, String cardLastDigits) {
+            int durationMonths, double initialAmount, String paymentDescription, String cardLastDigits) {
         if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
-        Student student = studentService.findByCpf(cpf);
-        Plan plan = PlanService.findByName(planName);
-        return enrollmentService.enroll(student, plan, startDate, durationMonths,
-                initialAmount, paymentType, paymentDescription, extraData, 0.0, 1, cardLastDigits);
+        
+        Payment payment = new DebitCardPayment(startDate, initialAmount, paymentDescription, cardLastDigits);
+        return enrollmentService.enroll(studentService.findByCpf(cpf), PlanService.findByName(planName), startDate, durationMonths, payment);
     }
 
-    /* Crédito: installments = parcelas, cardLastDigits = últimos 4 dígitos */
+    /* Crédito */
     public OperationResult enrollStudent(String cpf, String planName, LocalDate startDate,
-            int durationMonths, double initialAmount, PaymentType paymentType,
-            String paymentDescription, int installments, String cardLastDigits){
-
+            int durationMonths, double initialAmount, String paymentDescription, int installments, String cardLastDigits) {
         if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
-
-        Student student = studentService.findByCpf(cpf);
-        Plan plan = PlanService.findByName(planName);
-        return enrollmentService.enroll(student, plan, startDate, durationMonths,
-                initialAmount, paymentType, paymentDescription, null, 0.0, installments, cardLastDigits);
-    }
-
-    // metodo simplificado
-    public OperationResult enrollStudent(String cpf, String planName, LocalDate startDate,
-            int durationMonths, double initialAmount, PaymentType paymentType, PaymentDataMenu paymentData){
-
-        if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
-
-        Student student = studentService.findByCpf(cpf);
-        Plan plan = PlanService.findByName(planName);
-
-        return enrollmentService.enroll(student, plan, startDate, durationMonths,
-                initialAmount, paymentType, paymentType.getDescription(), 
-                paymentData.getExtraData(), paymentData.getAmountReceived(), 
-                paymentData.getInstallments(), paymentData.getCardLastDigits());
-
-    /* ------------------------------------------------------------------ */
-    /*  registerPayment — sobrecargas por tipo de pagamento                */
-    /* ------------------------------------------------------------------ */
-
-    /* PIX: extraData = chave PIX */
-    public OperationResult registerPayment(int code, double amount, PaymentType paymentType,
-            String paymentDescription, String extraData) {
-        return enrollmentService.registerPayment(code, amount, paymentType, paymentDescription,
-                                                extraData, 0.0, 1, null);
-    }
-
-    /* Dinheiro: amountReceived = valor entregue pelo aluno */
-    public OperationResult registerPayment(int code, double amount, PaymentType paymentType,
-            String paymentDescription, double amountReceived) {
-        return enrollmentService.registerPayment(code, amount, paymentType, paymentDescription,
-                                                null, amountReceived, 1, null);
-    }
-
-    /* Débito: cardLastDigits = últimos 4 dígitos */
-    public OperationResult registerPayment(int code, double amount, PaymentType paymentType,
-            String paymentDescription, String extraData, String cardLastDigits) {
-        return enrollmentService.registerPayment(code, amount, paymentType, paymentDescription,
-                                                extraData, 0.0, 1, cardLastDigits);
-    }
-
-    /* Crédito: installments = parcelas, cardLastDigits = últimos 4 dígitos */
-    public OperationResult registerPayment(int code, double amount, PaymentType paymentType,
-            String paymentDescription, int installments, String cardLastDigits) {
-        return enrollmentService.registerPayment(code, amount, paymentType, paymentDescription,
-                                                null, 0.0, installments, cardLastDigits);
-    }
-
-    public OperationResult registerPayment(int code, double amount, PaymentType paymentType, PaymentDataMenu paymentData){
-        return enrollmentService.registerPayment(code, amount, paymentType, paymentType.getDescription(),
-                                                paymentData.getExtraData(), paymentData.getAmountReceived(), 
-                                                paymentData.getInstallments(), paymentData.getCardLastDigits());
+        
+        Payment payment = new CreditCardPayment(startDate, initialAmount, paymentDescription, installments, cardLastDigits);
+        return enrollmentService.enroll(studentService.findByCpf(cpf), PlanService.findByName(planName), startDate, durationMonths, payment);
     }
 
     /* ------------------------------------------------------------------ */
-    /*  Helpers de validação compartilhada entre as sobrecargas            */
+    /* registerPayment — sobrecargas criando as instâncias corretas      */
     /* ------------------------------------------------------------------ */
+
+    public OperationResult registerPaymentPix(int code, double amount, String description, String pixKey) {
+        return enrollmentService.registerPayment(code, new PixPayment(LocalDate.now(), amount, description, pixKey));
+    }
+
+    public OperationResult registerPaymentCash(int code, double amount, String description, double amountReceived) {
+        return enrollmentService.registerPayment(code, new CashPayment(LocalDate.now(), amount, description, amountReceived));
+    }
+
+    public OperationResult registerPaymentDebit(int code, double amount, String description, String cardLastDigits) {
+        return enrollmentService.registerPayment(code, new DebitCardPayment(LocalDate.now(), amount, description, cardLastDigits));
+    }
+
+    public OperationResult registerPaymentCredit(int code, double amount, String description, int installments, String cardLastDigits) {
+        return enrollmentService.registerPayment(code, new CreditCardPayment(LocalDate.now(), amount, description, installments, cardLastDigits));
+    }
 
     private boolean validate(String cpf, String planName, double initialAmount) {
         Student student = studentService.findByCpf(cpf);
@@ -175,8 +128,6 @@ public class FitManager {
         if (initialAmount <= 0) return new OperationResult(false, "A matrícula exige pagamento inicial maior que zero.");
         return new OperationResult(false, "Erro de validação.");
     }
-
-    /* ------------------------------------------------------------------ */
 
     public OperationResult findEnrollmentByCode(int code) {
         if (enrollmentService.findByCode(code) == null) {
