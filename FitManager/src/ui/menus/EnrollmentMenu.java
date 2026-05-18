@@ -54,13 +54,13 @@ public class EnrollmentMenu {
                     double initialPayment = ui.getInputDouble("Digite o valor do pagamento inicial: ");
                     PaymentType paymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
 
-                    PaymentMenu enrollPaymentData = new PaymentMenu(ui, fitManager);
+                    PaymentDataMenu enrollPaymentData = new PaymentDataMenu(ui, fitManager);
                     OperationResult requestEnrollPaymentData = enrollPaymentData.requestPaymentData(paymentType);
 
                     if(requestEnrollPaymentData.isSuccess()){    
-                        enrollPaymentData = (PaymentMenu) requestEnrollPaymentData.getData();
-                        OperationResult enrolResult = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType, paymentType.getDescription(), enrollPaymentData.getPixKey(), enrollPaymentData.getAmountReceived(), enrollPaymentData.getInstallments(), enrollPaymentData.getCardLastDigits());
-                      
+                        enrollPaymentData = (PaymentDataMenu) requestEnrollPaymentData.getData();
+                        //OperationResult enrolResult = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType, paymentType.getDescription(), enrollPaymentData.getPixKey(), enrollPaymentData.getAmountReceived(), enrollPaymentData.getInstallments(), enrollPaymentData.getCardLastDigits());
+                        OperationResult enrolResult = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType, enrollPaymentData);
                         if(enrolResult.isSuccess())
                             ui.showMessage(enrolResult.getMessage());
                         else
@@ -75,14 +75,14 @@ public class EnrollmentMenu {
                     double amount = ui.getInputDouble("Valor do pagamento: ");
                     PaymentType chosenPaymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
                     
-                    PaymentMenu paymentData = new PaymentMenu(ui, fitManager);
+                    PaymentDataMenu paymentData = new PaymentDataMenu(ui, fitManager);
                     OperationResult requestPaymentData = paymentData.requestPaymentData(chosenPaymentType);
                     
                     if(requestPaymentData.isSuccess()){    
-                        paymentData = (PaymentMenu) requestPaymentData.getData();
-                        OperationResult paymentResult = fitManager.registerPayment(enrollmentCode, amount, chosenPaymentType, chosenPaymentType.getDescription(), paymentData.getPixKey(), paymentData.getAmountReceived(), paymentData.getInstallments(), paymentData.getCardLastDigits());
+                        paymentData = (PaymentDataMenu) requestPaymentData.getData();
+                        //OperationResult paymentResult = fitManager.registerPayment(enrollmentCode, amount, chosenPaymentType, chosenPaymentType.getDescription(), paymentData.getPixKey(), paymentData.getAmountReceived(), paymentData.getInstallments(), paymentData.getCardLastDigits());
                         //                                        .registerPayment(code, amount, paymentType, paymentDescription, extraData, amountReceived, installments, cardLastDigits);
-
+                        OperationResult paymentResult = fitManager.registerPayment(enrollmentCode, amount, chosenPaymentType, paymentData);
                         if(paymentResult.isSuccess()){
                             ui.showMessage(paymentResult.getMessage());
                             ui.showMessage(((Payment) paymentResult.getData()).getPaymentSummary());
@@ -109,13 +109,13 @@ public class EnrollmentMenu {
 
                                 // Pagamento da taxa
                                 PaymentType feePaymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
-                                PaymentMenu feePaymentData = new PaymentMenu(ui, fitManager);
+                                PaymentDataMenu feePaymentData = new PaymentDataMenu(ui, fitManager);
                                 OperationResult requestFeePaymentData = feePaymentData.requestPaymentData(feePaymentType);
                                 
                                 if(requestFeePaymentData.isSuccess()){    
-                                    feePaymentData = (PaymentMenu) requestFeePaymentData.getData();
-                                    OperationResult resultFeePayment = fitManager.registerPayment(enrollmentCodeToCancel, cancelationFee, feePaymentType, feePaymentType.getDescription(), feePaymentData.getPixKey(), feePaymentData.getAmountReceived(), feePaymentData.getInstallments(), feePaymentData.getCardLastDigits());
-                                    
+                                    feePaymentData = (PaymentDataMenu) requestFeePaymentData.getData();
+                                    //OperationResult resultFeePayment = fitManager.registerPayment(enrollmentCodeToCancel, cancelationFee, feePaymentType, feePaymentType.getDescription(), feePaymentData.getPixKey(), feePaymentData.getAmountReceived(), feePaymentData.getInstallments(), feePaymentData.getCardLastDigits());
+                                    OperationResult resultFeePayment = fitManager.registerPayment(enrollmentCodeToCancel, cancelationFee, feePaymentType, feePaymentData);
                                     if(resultFeePayment.isSuccess()){   // Pagamento foi sucesso
                                         ui.showMessage(resultFeePayment.getMessage());
                                         OperationResult resultCancelEnrollment = fitManager.cancelEnrollment(enrollmentCodeToCancel, cancelReason);
