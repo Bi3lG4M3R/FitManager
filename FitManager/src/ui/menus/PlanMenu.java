@@ -34,8 +34,6 @@ public class PlanMenu{
             menuOptions[i] = PlanMenuEnum.values()[i].getOptionNumber() + " - " + PlanMenuEnum.values()[i].getOptionDescription();
         }
 
-
-
         do{ 
             
             do{
@@ -49,9 +47,9 @@ public class PlanMenu{
                 }
             }while(optionSelected == null);
 
+            ArrayList<Plan> planList = fitManager.listPlans();
 
             switch(optionSelected){
-
 
                 case REGISTER_NEW_PLAN:
                     planName = ui.getInput("Digite o nome do plano: ");
@@ -70,11 +68,7 @@ public class PlanMenu{
                         ui.showMessage(resultRegister.getMessage());
                      else 
                         ui.showError("Erro ao registrar plano: " + resultRegister.getMessage());
-                    
                 break;
-
-
-
 
                 case CHECK_BY_NAME:
                     String planNameToSearch = ui.getInput("Digite o nome do plano a ser consultado: ");
@@ -91,15 +85,10 @@ public class PlanMenu{
 
                         ui.showPlan(planNameList, planDescriptionList, planTypeList, planMinDurationList, planPricePerMonthList);
                     }
-
                 break;
 
-
-
-
-
                 case CHANGE_PRICE:
-                    planName = ui.getInput("Digite o nome do plano a ser alterado: ");
+                    planName = ui.getInput(formatPlanList(planList) + "\nDigite o nome do plano a ser alterado: ");
                     if(planName == null) break;
                     double newPrice = ui.getInputDouble("Digite o novo preço do plano: ");
                     if(newPrice < 0) break;
@@ -110,34 +99,46 @@ public class PlanMenu{
                         ui.showError("Erro ao atualizar preço do plano: " + resultUpdate.getMessage());
                 break;
 
-
-
-
-
                 case VIEW_ALL:
-                    ArrayList<Plan> planList = fitManager.listPlans();
                     if(planList.isEmpty()){
                         ui.showMessage("Nenhum plano cadastrado.");
                     } else {
-                        ui.showMessage("Histórico de Planos:");
-                        for(Plan plan : planList){
-                            String planNameList = plan.getName();
-                            String planDescriptionList = plan.getDescription();
-                            String planTypeList = plan.getType().getDescription(); 
-                            int planMinDurationList = plan.getMinDurationMonths();
-                            double planPricePerMonthList = plan.getPricePerMonth();
+                        String result = "Histórico de Planos:\n\n";
 
-                            ui.showPlan(planNameList, planDescriptionList, planTypeList, planMinDurationList, planPricePerMonthList);
+                        for (Plan plan : planList) {
+                            result = result + "Nome: " + plan.getName() + "\n";
+                            result = result + "Descrição: " + plan.getDescription() + "\n";
+                            result = result + "Tipo: " + plan.getType().getDescription() + "\n";
+                            result = result + "Duração Mínima: " + plan.getMinDurationMonths() + " meses\n";
+                            result = result + "Preço Mensal: R$ " + plan.getPricePerMonth() + "\n";
+                            result = result + "----------------------------\n";
                         }
+
+                        ui.showMessage(result);
                     }
                 break;
-
 
                 case BACK:
                     ui.showMessage("Voltando ao menu principal...");
                 break;
             }
         }while(optionSelected != PlanMenuEnum.BACK);
+    }
+    
+    public static String formatPlanList(ArrayList<Plan> planList) {
+        if (planList.isEmpty()) {
+            return "Nenhum plano cadastrado.";
+        }
+
+        String result = "Histórico de Planos:\n\n";
+
+        for (Plan plan : planList) {
+            result = result + "Nome: " + plan.getName() + "\n";
+            result = result + "Preço Mensal: R$ " + String.format("%.2f", plan.getPricePerMonth()) + "\n";
+            result = result + "----------------------------\n";
+        }
+
+        return result;
     }
 
 }

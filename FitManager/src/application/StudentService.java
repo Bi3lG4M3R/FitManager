@@ -21,6 +21,7 @@ public class StudentService {
     }
     
     public Student findByCpf(String cpf){
+        cpf = cpf.replaceAll("\\D", "");
         for (Student comparation : students) {
             if (comparation.getCpf().equals(cpf)) {
                 return comparation;
@@ -35,7 +36,7 @@ public class StudentService {
             return new OperationResult(false, "CPF não cadastrado.");
         }
         student.deactivate();
-        return new OperationResult(true, "Estudante removido.", student);
+        return new OperationResult(true, "Estudante desativado.", student);
     }
     
     public ArrayList<Student> listStudents(){
@@ -45,4 +46,13 @@ public class StudentService {
     public boolean cpfExists(String cpf) {
         return findByCpf(cpf) != null;
     }   
+
+    OperationResult reactivateStudent(String cpf) {
+        Student student = findByCpf(cpf);
+        if (student == null) {
+            return new OperationResult(false, "CPF não cadastrado.");
+        }
+        student.activate();
+        return new OperationResult(true, "Estudante reativado.", student);
+    }
 }

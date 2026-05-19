@@ -46,6 +46,7 @@ public class EnrollmentMenu {
                 }
             }while(optionSelected == null);
             
+            ArrayList<Enrollment> enrollmentHistory = fitManager.listEnrollments();
 
             switch(optionSelected){
 
@@ -101,7 +102,7 @@ public class EnrollmentMenu {
                 break;
 
                 case REGISTER_PAYMENT:
-                    int enrollmentCode = ui.getInputInt("Digite o número de matrícula a realizar pagamento: ");
+                    int enrollmentCode = ui.getInputInt(formatEnrollmentList(enrollmentHistory) + "\nDigite o número de matrícula a realizar pagamento: ");
                     if(enrollmentCode < 0) break;
                     double amount = ui.getInputDouble("Valor do pagamento: ");
                     if(amount < 0) break;
@@ -145,7 +146,7 @@ public class EnrollmentMenu {
                 break;
 
                 case CANCEL_ENROLLMENT:
-                    int enrollmentCodeToCancel = ui.getInputInt("Digite o número de matrícula a ser cancelada: ");
+                    int enrollmentCodeToCancel = ui.getInputInt(formatEnrollmentList(enrollmentHistory) + "\nDigite o número de matrícula a ser cancelada: ");
                     if(enrollmentCodeToCancel < 0) break;
                     String cancelReason = ui.getInput("Digite o motivo do cancelamento: ");
                     if(cancelReason == null) break;
@@ -236,29 +237,7 @@ public class EnrollmentMenu {
                 break;
 
                 case VIEW_HISTORY:
-                    ArrayList<Enrollment> enrollmentHistory = fitManager.listEnrollments();
-                    if(enrollmentHistory.isEmpty()){
-                        ui.showMessage("Nenhuma matrícula encontrada.");
-                    } else {
-                        ui.showMessage("Histórico de Matrículas:");
-                        for(Enrollment enrollment : enrollmentHistory){
-                            int code = enrollment.getCode();
-                            String studentName = enrollment.getStudent().getName();
-                            String planNameHistory = enrollment.getPlan().getName();
-                            LocalDate startDateHistory = enrollment.getStartDate();
-                            LocalDate endDateHistory = enrollment.getEndDate();
-                            int durationMonthsHistory = enrollment.getDurationMonths();
-                            double totalPrice = enrollment.getTotalPrice();
-                            double pendingAmount = enrollment.calculateBalance();
-
-                            String status = enrollment.getStatus().getDescription();
-
-                            ui.showEnrollment(code, studentName, planNameHistory, startDateHistory, endDateHistory, durationMonthsHistory, totalPrice, pendingAmount, status);
-
-                        }
-                        ui.showMessage("Histórico de matrículas exibido com sucesso.");
-                    }
-                    
+                    ui.showMessage(formatEnrollmentList(enrollmentHistory));
                 break;
 
 
@@ -271,5 +250,28 @@ public class EnrollmentMenu {
         }while(optionSelected != EnrollmentMenuEnum.BACK);
 
 
+    }
+    
+    public static String formatEnrollmentList(ArrayList<Enrollment> enrollmentHistory) {
+        if (enrollmentHistory.isEmpty()) {
+            return "Nenhuma matrícula encontrada.";
+        }
+
+        String result = "Histórico de Matrículas:\n\n";
+
+        for (Enrollment enrollment : enrollmentHistory) {
+            result = result + "Código: " + enrollment.getCode() + "\n";
+            result = result + "Aluno: " + enrollment.getStudent().getName() + "\n";
+            result = result + "Plano: " + enrollment.getPlan().getName() + "\n";
+            result = result + "Início: " + enrollment.getStartDate() + "\n";
+            result = result + "Fim: " + enrollment.getEndDate() + "\n";
+            result = result + "Duração: " + enrollment.getDurationMonths() + " meses\n";
+            result = result + "Preço Total: R$ " + enrollment.getTotalPrice() + "\n";
+            result = result + "Saldo Pendente: R$ " + enrollment.calculateBalance() + "\n";
+            result = result + "Status: " + enrollment.getStatus().getDescription() + "\n";
+            result = result + "----------------------------\n";
+        }
+
+        return result;
     }
 }

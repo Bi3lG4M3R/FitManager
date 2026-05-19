@@ -20,7 +20,6 @@ public class StudentsMenu{
         this.fitManager = fitManager;
     }
 
-
     public void run(){
         StudentMenuEnum optionSelected;
 
@@ -45,6 +44,7 @@ public class StudentsMenu{
                 }
             }while(optionSelected == null);
 
+            ArrayList<Student> studentList = fitManager.listStudents();
 
             switch(optionSelected){
 
@@ -82,32 +82,29 @@ public class StudentsMenu{
                 break;
 
                 case DELETE_STUDENT:
-                    String cpfToDelete = ui.getInput("Digite o CPF do aluno a ser excluído: ");
+                    String cpfToDelete = ui.getInput("Digite o CPF do aluno a ser desativado: ");
                     if(cpfToDelete == null) break;
                     OperationResult resultDelete = fitManager.removeStudent(cpfToDelete);
                     if(resultDelete.isSuccess()){
                         ui.showMessage(resultDelete.getMessage());
                     } else {
-                        ui.showMessage("Erro ao excluir aluno: " + resultDelete.getMessage());
+                        ui.showMessage("Erro ao desativar aluno: " + resultDelete.getMessage());
+                    }
+                break;
+                
+                case ACTIVATE_STUDENT:
+                    String cpfToActivate = ui.getInput("Digite o CPF do aluno a ser reativado: ");
+                    if(cpfToActivate == null) break;
+                    OperationResult resultActivate = fitManager.activateStudent(cpfToActivate);
+                    if(resultActivate.isSuccess()){
+                        ui.showMessage(resultActivate.getMessage());
+                    } else {
+                        ui.showMessage("Erro ao excluir aluno: " + resultActivate.getMessage());
                     }
                 break;
 
                 case VIEW_ALL_STUDENTS:
-                    ArrayList<Student> studentList = fitManager.listStudents();
-                    if(studentList.isEmpty()){
-                        ui.showMessage("Nenhum aluno cadastrado.");
-                    } else {
-                        ui.showMessage("Histórico de Alunos:");
-                        for(Student student : studentList){
-                            String studentNameList = student.getName();
-                            String studentCpfList = student.getFormattedCpf();
-                            String studentContactList = student.getContact();
-                            String studentBirthDateList = student.getFormattedBirthDate();
-
-                            ui.showStudent(studentNameList, studentCpfList, studentContactList, studentBirthDateList);
-
-                        }
-                    }
+                    ui.showMessage(formatStudentList(studentList));
                 break;
 
                 case BACK:
@@ -123,4 +120,22 @@ public class StudentsMenu{
 
     }
 
+    
+    public static String formatStudentList(ArrayList<Student> studentList) {
+        if (studentList.isEmpty()) {
+            return "Nenhum aluno cadastrado.";
+        }
+
+        String result = "Histórico de Alunos:\n\n";
+
+        for (Student student : studentList) {
+            result = result + "Nome: " + student.getName() + "\n";
+            result = result + "CPF: " + student.getFormattedCpf() + "\n";
+            result = result + "Contato: " + student.getContact() + "\n";
+            result = result + "Data de Nasc.: " + student.getFormattedBirthDate() + "\n";
+            result = result + "----------------------------\n";
+        }
+
+        return result;
+    }
 }
