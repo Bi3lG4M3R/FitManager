@@ -55,14 +55,15 @@ public class PlanMenu{
 
                 case REGISTER_NEW_PLAN:
                     planName = ui.getInput("Digite o nome do plano: ");
+                    if(planName == null) break;
                     String planDescription = ui.getInput("Digite a descrição do plano:");
+                    if(planDescription == null) break;
                     PlanType planType = ui.getInputPlanType("Selecione o tipo do plano: ");
-                    if (planType == null) {
-                        ui.showMessage("Operação cancelada.");
-                        break;
-                    }
+                    if (planType == null) break;
                     double planPrice = ui.getInputDouble("Digite o preço por mês do plano: ");
+                    if(planPrice < 0) break;
                     int planDuration = ui.getInputInt("Digite a duração mínima do plano (em meses): ");
+                    if(planDuration < 0) break;
 
                     OperationResult resultRegister = fitManager.registerPlan(planName, planDescription, planType, planDuration, planPrice);
                     if(resultRegister.isSuccess())
@@ -77,6 +78,7 @@ public class PlanMenu{
 
                 case CHECK_BY_NAME:
                     String planNameToSearch = ui.getInput("Digite o nome do plano a ser consultado: ");
+                    if(planNameToSearch == null) break;
                     Plan planFound = fitManager.findPlanByName(planNameToSearch);
                     if(planFound == null){
                         ui.showError("Plano não encontrado.");
@@ -98,7 +100,9 @@ public class PlanMenu{
 
                 case CHANGE_PRICE:
                     planName = ui.getInput("Digite o nome do plano a ser alterado: ");
+                    if(planName == null) break;
                     double newPrice = ui.getInputDouble("Digite o novo preço do plano: ");
+                    if(newPrice < 0) break;
                     OperationResult resultUpdate = fitManager.updatePlanPrice(planName, newPrice);
                     if(resultUpdate.isSuccess())
                         ui.showMessage(resultUpdate.getMessage());

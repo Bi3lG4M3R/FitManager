@@ -151,6 +151,9 @@ public class JOptionPaneUI implements UserInterface {
     public String getInput(String prompt){
         while(true){
             String inputValue = JOptionPane.showInputDialog(null, prompt, "FitManager", JOptionPane.QUESTION_MESSAGE);
+            if(inputValue == null){
+                return null;
+            }
             if(inputValue != null && !inputValue.trim().isEmpty()){
                 return inputValue.trim();
             }
@@ -162,8 +165,12 @@ public class JOptionPaneUI implements UserInterface {
     @Override
     public int getInputInt(String prompt){
         while (true) {
+            String input = getInput(prompt);
+            if(input == null){
+                return -1;  // Retorna -1 quando cancelado
+            }
             try {
-                int value = Integer.parseInt(getInput(prompt));
+                int value = Integer.parseInt(input);
                 return value;
             } catch (NumberFormatException error) {
                 showError("Entrada inválida. Por favor, digite um número inteiro.");
@@ -174,8 +181,12 @@ public class JOptionPaneUI implements UserInterface {
     @Override
     public double getInputDouble(String prompt){
         while (true) {
+            String input = getInput(prompt);
+            if(input == null){
+                return -1.0;  // Retorna -1.0 quando cancelado
+            }
             try {
-                double value = Double.parseDouble(getInput(prompt));
+                double value = Double.parseDouble(input);
                 return value;
             } catch (NumberFormatException error) {
                 showError("Entrada inválida. Por favor, digite um número decimal.");
@@ -187,8 +198,12 @@ public class JOptionPaneUI implements UserInterface {
     public LocalDate getInputDate(String prompt){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         while (true) {
+            String input = getInput(prompt);
+            if(input == null){
+                return null;  // Retorna null quando cancelado
+            }
             try {
-                LocalDate date = LocalDate.parse(getInput(prompt), formatter);
+                LocalDate date = LocalDate.parse(input, formatter);
                 return date;
             } catch (DateTimeParseException error) {
                 showError("Entrada inválida. Por favor, digite uma data no formato dd/MM/yyyy.");

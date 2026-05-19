@@ -50,9 +50,13 @@ public class StudentsMenu{
 
                 case REGISTER_STUDENT:
                     String studentName = ui.getInput("Digite o nome do aluno: ");
+                    if(studentName == null) break;
                     String studentCpf = ui.getInput("Digite o CPF do aluno: ");
+                    if(studentCpf == null) break;
                     String studentContact = ui.getInput("Digite um meio de contato (E-mail ou telefone): ");
+                    if(studentContact == null) break;
                     LocalDate studentBirthDate = ui.getInputDate("Digite a data de nascimento do aluno (dd/mm/aaaa): ");
+                    if(studentBirthDate == null) break;
                     
                     OperationResult resultRegister = fitManager.registerStudent(studentName, studentCpf, studentContact, studentBirthDate);
                     if(resultRegister.isSuccess()){
@@ -64,6 +68,7 @@ public class StudentsMenu{
 
                 case SEARCH_BY_CPF:
                     String cpfToSearch = ui.getInput("Digite o CPF do aluno a ser consultado: ");
+                    if(cpfToSearch == null) break;
                     Student studentFound = fitManager.findStudentByCpf(cpfToSearch);
                     if(studentFound == null){
                         ui.showError("Aluno não encontrado.");
@@ -78,6 +83,7 @@ public class StudentsMenu{
 
                 case DELETE_STUDENT:
                     String cpfToDelete = ui.getInput("Digite o CPF do aluno a ser excluído: ");
+                    if(cpfToDelete == null) break;
                     OperationResult resultDelete = fitManager.removeStudent(cpfToDelete);
                     if(resultDelete.isSuccess()){
                         ui.showMessage(resultDelete.getMessage());

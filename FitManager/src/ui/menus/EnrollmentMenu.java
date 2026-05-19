@@ -51,10 +51,15 @@ public class EnrollmentMenu {
 
                 case REGISTER_ENROLLMENT:
                     String studentCpf = ui.getInput("Digite o CPF do aluno: ");
+                    if(studentCpf == null) break;
                     String planName = ui.getInput("Digite o nome do plano: ");
+                    if(planName == null) break;
                     LocalDate startDate = ui.getInputDate("Digite a data de início da matrícula (dd/mm/aaaa): ");
+                    if(startDate == null) break;
                     int durationMonths = ui.getInputInt("Digite a duração da matrícula (numero de meses): ");
+                    if(durationMonths < 0) break;
                     double initialPayment = ui.getInputDouble("Digite o valor do pagamento inicial: ");
+                    if(initialPayment < 0) break;
                     PaymentType paymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
                     if (paymentType == null) {
                         ui.showMessage("Operação cancelada.");
@@ -67,19 +72,24 @@ public class EnrollmentMenu {
                     switch (paymentType) {
                         case PIX:
                             String pixKey = ui.getInput("Digite a chave PIX de origem: ");
+                            if(pixKey == null) break;
                             resultRegisterEnrollment = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, paymentType.getDescription(),initialPayment, pixKey);
                             break;
                         case CASH:
                             double amountReceived = ui.getInputDouble("Valor em dinheiro entregue pelo aluno: ");
+                            if(amountReceived < 0) break;
                             resultRegisterEnrollment = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType.getDescription(), amountReceived);
                             break;
                         case DEBIT_CARD:
                             String debitLastDigits = ui.getInput("Últimos 4 dígitos do cartão de débito: ");
+                            if(debitLastDigits == null) break;
                             resultRegisterEnrollment = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType.getDescription(), debitLastDigits);
                             break;
                         case CREDIT_CARD:
                             int installments = ui.getInputInt("Quantidade de parcelas: ");
+                            if(installments < 0) break;
                             String creditLastDigits = ui.getInput("Últimos 4 dígitos do cartão de crédito: ");
+                            if(creditLastDigits == null) break;
                             resultRegisterEnrollment = fitManager.enrollStudent(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType.getDescription(), installments, creditLastDigits);
                             break;
                     }
@@ -92,7 +102,9 @@ public class EnrollmentMenu {
 
                 case REGISTER_PAYMENT:
                     int enrollmentCode = ui.getInputInt("Digite o número de matrícula a realizar pagamento: ");
+                    if(enrollmentCode < 0) break;
                     double amount = ui.getInputDouble("Valor do pagamento: ");
+                    if(amount < 0) break;
                     PaymentType registerPaymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
                     if (registerPaymentType == null) {
                         ui.showMessage("Operação cancelada.");
@@ -104,23 +116,28 @@ public class EnrollmentMenu {
                     switch (registerPaymentType) {
                         case PIX:
                             String pixKey = ui.getInput("Digite a chave PIX de origem: ");
+                            if(pixKey == null) break;
                             resultPayment = fitManager.registerPaymentPix(enrollmentCode, amount, registerPaymentType.getDescription(), pixKey);
                             break;
                         case CASH:
                             double amountReceived = ui.getInputDouble("Valor em dinheiro entregue pelo aluno: ");
+                            if(amountReceived < 0) break;
                             resultPayment = fitManager.registerPaymentCash(enrollmentCode, amount, registerPaymentType.getDescription(), amountReceived);
                             break;
                         case DEBIT_CARD:
                             String debitLastDigits = ui.getInput("Últimos 4 dígitos do cartão de débito: ");
+                            if(debitLastDigits == null) break;
                             resultPayment = fitManager.registerPaymentDebit(enrollmentCode, amount, registerPaymentType.getDescription(), debitLastDigits);
                             break;
                         case CREDIT_CARD:
                             int installments = ui.getInputInt("Quantidade de parcelas: ");
+                            if(installments < 0) break;
                             String creditLastDigits = ui.getInput("Últimos 4 dígitos do cartão de crédito: ");
+                            if(creditLastDigits == null) break;
                             resultPayment = fitManager.registerPaymentCredit(enrollmentCode, amount, registerPaymentType.getDescription(), installments, creditLastDigits);
                             break;
                     }
-
+                    
                     if(resultPayment != null && resultPayment.isSuccess())
                         ui.showMessage(resultPayment.getMessage());
                     else
@@ -129,7 +146,9 @@ public class EnrollmentMenu {
 
                 case CANCEL_ENROLLMENT:
                     int enrollmentCodeToCancel = ui.getInputInt("Digite o número de matrícula a ser cancelada: ");
+                    if(enrollmentCodeToCancel < 0) break;
                     String cancelReason = ui.getInput("Digite o motivo do cancelamento: ");
+                    if(cancelReason == null) break;
                     OperationResult findEnrollmentResult = fitManager.findEnrollmentByCode(enrollmentCodeToCancel);
 
                     if(findEnrollmentResult.isSuccess()){ // Encontrou matricula
@@ -153,24 +172,29 @@ public class EnrollmentMenu {
                                 switch (feePaymentType) {
                                     case PIX:
                                         String pixKey = ui.getInput("Digite a chave PIX de origem: ");
+                                        if(pixKey == null) break;
                                         resultFeePayment = fitManager.registerPaymentPix(enrollmentCodeToCancel, cancelationFee, "Taxa de cancelamento", pixKey);
                                         break;
                                     case CASH:
                                         double amountReceived = ui.getInputDouble("Valor em dinheiro entregue pelo aluno: ");
+                                        if(amountReceived < 0) break;
                                         resultFeePayment = fitManager.registerPaymentCash(enrollmentCodeToCancel, cancelationFee, "Taxa de cancelamento", amountReceived);
                                         break;
                                     case DEBIT_CARD:
                                         String debitLastDigits = ui.getInput("Últimos 4 dígitos do cartão de débito: ");
+                                        if(debitLastDigits == null) break;
                                         resultFeePayment = fitManager.registerPaymentDebit(enrollmentCodeToCancel, cancelationFee, "Taxa de cancelamento", debitLastDigits);
                                         break;
                                     case CREDIT_CARD:
                                         int installments = ui.getInputInt("Quantidade de parcelas: ");
+                                        if(installments < 0) break;
                                         String creditLastDigits = ui.getInput("Últimos 4 dígitos do cartão de crédito: ");
+                                        if(creditLastDigits == null) break;
                                         resultFeePayment = fitManager.registerPaymentCredit(enrollmentCodeToCancel, cancelationFee, "Taxa de cancelamento", installments, creditLastDigits);
                                         break;
                                 }
-                                
-                                if(resultFeePayment.isSuccess()){   // Pagamento foi sucesso
+
+                                if(resultFeePayment != null && resultFeePayment.isSuccess()){   // Pagamento foi sucesso
                                     ui.showMessage(resultFeePayment.getMessage());
                                     OperationResult resultCancelEnrollment = fitManager.cancelEnrollment(enrollmentCodeToCancel, cancelReason);
                                     
@@ -180,7 +204,7 @@ public class EnrollmentMenu {
                                         ui.showError("Erro ao cancelar matrícula: " + resultCancelEnrollment.getMessage());
                                     }
 
-                                }else{ // Pagamento falhou
+                                }else if(resultFeePayment != null){ // Pagamento falhou
                                     ui.showError("Erro ao registrar pagamento da taxa de cancelamento: " + resultFeePayment.getMessage());
                                 }
                             }
@@ -200,6 +224,7 @@ public class EnrollmentMenu {
 
                 case CHECK_ACTIVE_ENROLLMENT:
                     String studentCpfToCheck = ui.getInput("Digite o CPF do aluno para consultar a matrícula: ");
+                    if(studentCpfToCheck == null) break;
                     OperationResult resultCheckEnrollment = fitManager.findActiveEnrollment(studentCpfToCheck);
                     if(resultCheckEnrollment.isSuccess()){
                         ui.showMessage(resultCheckEnrollment.getMessage());
