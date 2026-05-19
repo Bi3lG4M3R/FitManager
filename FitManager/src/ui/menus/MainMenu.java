@@ -34,8 +34,8 @@ public class MainMenu{
         do { 
 
             do{
-                ui.showMenu("Menu Principal", menuOptions);
-                optionSelected = MainMenuEnum.selectFromInt(ui.getInputInt("Selecione uma opção: "));
+                int option = ui.showMenu("Menu Principal", menuOptions, "Selecione uma opção: ");
+                optionSelected = MainMenuEnum.selectFromInt(option);
                 if(optionSelected == null){
                     ui.showError("Opção inexistente. Selecione uma das opções acima.");
                 }

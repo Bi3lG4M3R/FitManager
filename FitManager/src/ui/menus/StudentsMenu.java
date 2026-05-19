@@ -35,8 +35,8 @@ public class StudentsMenu{
         do{ 
 
             do{
-                ui.showMenu("GERENCIAR ALUNOS", menuOptions);
-                optionSelected = StudentMenuEnum.selectFromInt(ui.getInputInt("Selecione uma opção: "));
+                int option = ui.showMenu("GERENCIAR ALUNOS", menuOptions, "Selecione uma opção: ");
+                optionSelected = StudentMenuEnum.selectFromInt(option);
                 if(optionSelected == null)
                     ui.showError("Opção inexistente. Selecione uma das opções acima.");
             }while(optionSelected == null);

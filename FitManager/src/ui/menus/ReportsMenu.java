@@ -38,8 +38,8 @@ public class ReportsMenu{
         do{ 
 
             do{
-                ui.showMenu("RELATÓRIOS", menuOptions);
-                optionSelected = ReportsMenuEnum.selectFromInt(ui.getInputInt("Selecione uma opção: "));
+                int option = ui.showMenu("RELATÓRIOS", menuOptions, "Selecione uma opção: ");
+                optionSelected = ReportsMenuEnum.selectFromInt(option);
                 if(optionSelected == null)
                     ui.showError("Opção inexistente. Selecione uma das opções acima.");
             }while(optionSelected == null);

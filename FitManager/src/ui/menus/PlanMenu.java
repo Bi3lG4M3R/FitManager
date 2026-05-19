@@ -39,8 +39,8 @@ public class PlanMenu{
         do{ 
             
             do{
-                ui.showMenu("GERENCIAR PLANOS", menuOptions);
-                optionSelected = PlanMenuEnum.selectFromInt(ui.getInputInt("Selecione uma opção: "));
+                int option = ui.showMenu("GERENCIAR PLANOS", menuOptions, "Selecione uma opção: ");
+                optionSelected = PlanMenuEnum.selectFromInt(option);
                 if(optionSelected == null)
                     ui.showError("Opção inexistente. Selecione uma das opções acima.");  
             }while(optionSelected == null);

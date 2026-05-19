@@ -36,8 +36,8 @@ public class EnrollmentMenu {
         do { 
 
             do{
-                ui.showMenu("GERENCIAR MATRÍCULAS", menuOptions);
-                optionSelected = EnrollmentMenuEnum.selectFromInt(ui.getInputInt("Selecione uma opção: "));
+                int option = ui.showMenu("GERENCIAR MATRÍCULAS", menuOptions, "Selecione uma opção: ");
+                optionSelected = EnrollmentMenuEnum.selectFromInt(option);
                 if(optionSelected == null)
                     ui.showError("Opção inexistente. Selecione uma das opções acima.");  
             }while(optionSelected == null);
