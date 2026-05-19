@@ -15,7 +15,7 @@ public class Student {
     /*construtor com dados, gera objetos com dados*/
     public Student(String name, String cpf, String contact, LocalDate birthDate) {
         this.name = name;
-        this.cpf = cpf;
+        setCpf(cpf);
         this.contact = contact;
         this.birthDate = birthDate;
         this.active = true;

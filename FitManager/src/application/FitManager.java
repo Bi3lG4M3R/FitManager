@@ -31,9 +31,21 @@ public class FitManager {
             return new OperationResult(false, "Não foi possível encontrar o aluno.");
         }
         if (enrollmentService.hasActiveEnrollment(student.getCpf())) {
-            return new OperationResult(false, "Não é possível remover/inativar um aluno com matrícula ativa.");
+            return new OperationResult(false, "Não é possível desativar um aluno com matrícula ativa.");
         }
         return studentService.removeStudent(student.getCpf());
+    }
+    
+    public OperationResult activateStudent(String cpf) {
+        Student student = studentService.findByCpf(cpf);
+        if (student == null) {
+            return new OperationResult(false, "Não foi possível encontrar o aluno.");
+        }
+        if (student.isActive()) {
+            return new OperationResult(false, "O aluno já está ativo no sistema.");
+        }
+
+        return studentService.reactivateStudent(student.getCpf());
     }
 
     public ArrayList<Student> listStudents() { return studentService.listStudents(); }
