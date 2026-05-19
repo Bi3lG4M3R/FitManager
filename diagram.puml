@@ -1,4 +1,5 @@
 @startuml FitManager
+scale 0.75
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
 skinparam packageStyle rectangle
@@ -18,23 +19,27 @@ package "Entry Point" #LightYellow {
 ' =========================
 package "Interface do Usuario (UI)" as UI #PapayaWhip {
 
-  class UserInterface {
-    -input: Scanner
+  interface UserInterface {
     +showMessage(message: String): void
     +showError(error: String): void
-    +showMenu(title: String, options: String[]): void
-    +showEnrollment(...): void
-    +showCancelledEnrollment(...): void
-    +showPlan(...): void
-    +showStudent(...): void
-    +showPlanTypeOptions(): void
-    +showPaymentTypeOptions(): void
+    +showMenu(title: String, options: String[], promptText: String): int
+    +showEnrollment(enrollment: Enrollment): void
+    +showCancelledEnrollment(enrollment: Enrollment): void
+    +showPlan(name: String, desc: String, type: String, minDur: int, price: double): void
+    +showStudent(name: String, cpf: String, contact: String, birth: String): void
     +getInput(prompt: String): String
     +getInputInt(prompt: String): int
     +getInputDouble(prompt: String): double
     +getInputDate(prompt: String): LocalDate
     +getInputPlanType(prompt: String): PlanType
     +getInputPaymentType(prompt: String): PaymentType
+  }
+
+  class TerminalUI {
+    -input: Scanner
+  }
+
+  class JOptionPaneUI {
   }
 
   class MainMenu {
@@ -79,6 +84,7 @@ package "Interface do Usuario (UI)" as UI #PapayaWhip {
     REGISTER_STUDENT
     SEARCH_BY_CPF
     DELETE_STUDENT
+    ACTIVATE_STUDENT
     VIEW_ALL_STUDENTS
     BACK
   }
@@ -121,6 +127,7 @@ package "Aplicacao" as APP #MistyRose {
     +registerStudent(...): OperationResult
     +findStudentByCpf(cpf: String): Student
     +removeStudent(cpf: String): OperationResult
+    +activateStudent(cpf: String): OperationResult
     +listStudents(): ArrayList<Student>
 
     +registerPlan(...): OperationResult
@@ -129,8 +136,12 @@ package "Aplicacao" as APP #MistyRose {
     +listPlans(): ArrayList<Plan>
 
     +enrollStudent(...): OperationResult
-    +registerPayment(...): OperationResult
+    +registerPaymentPix(...): OperationResult
+    +registerPaymentCash(...): OperationResult
+    +registerPaymentDebit(...): OperationResult
+    +registerPaymentCredit(...): OperationResult
     +cancelEnrollment(code: int, reason: String): OperationResult
+    +calculateCancelationFee(code: int): OperationResult
     +findActiveEnrollment(cpf: String): OperationResult
     +listEnrollments(): ArrayList<Enrollment>
   }
@@ -140,6 +151,7 @@ package "Aplicacao" as APP #MistyRose {
     +registerStudent(...): OperationResult
     +findByCpf(cpf: String): Student
     +removeStudent(cpf: String): OperationResult
+    +reactivateStudent(cpf: String): OperationResult
     +listStudents(): ArrayList<Student>
     +cpfExists(cpf: String): boolean
   }
@@ -163,6 +175,7 @@ package "Aplicacao" as APP #MistyRose {
     +findByCode(code: int): Enrollment
     +listEnrollments(): ArrayList<Enrollment>
     +cancel(code: int, reason: String): OperationResult
+    +calculateCancelationFee(code: int): OperationResult
     +hasActiveEnrollment(cpf: String): boolean
   }
 
@@ -191,41 +204,43 @@ package "Dominio" as DOM #PowderBlue {
     -active: boolean
     -{static} dateFormatter: DateTimeFormatter
     +Student(...)
-    +setName(name: String): void
-    +setCpf(cpf: String): void
-    +setContact(contact: String): void
-    +setBirthDate(birthDate: LocalDate): void
     +activate(): void
     +deactivate(): void
-    +getName(): String
-    +getCpf(): String
     +getFormattedCpf(): String
-    +getFormattedBirthDate(): String
-    +getContact(): String
-    +getBirthDate(): LocalDate
-    +isActive(): boolean
-    +{static} validateCpf(cpf: String): boolean
     +calculateAge(): int
+    +{static} validateCpf(cpf: String): boolean
   }
 
-  class Plan {
+  abstract class Plan {
     -name: String
     -description: String
-    -type: PlanType
     -minDurationMonths: int
     -pricePerMonth: double
-    +Plan()
     +Plan(...)
-    +setName(name: String): void
-    +setDescription(description: String): void
-    +setType(type: PlanType): void
-    +setMinDurationMonths(minDurationMonths: int): void
     +updatePrice(newPrice: double): void
-    +getName(): String
-    +getDescription(): String
+    +{abstract} getType(): PlanType
+    +{abstract} calculateTotalPrice(months: int): double
+    +getCancellationFee(enrollment: Enrollment): double
+  }
+
+  class PlanAnnual {
     +getType(): PlanType
-    +getMinDurationMonths(): int
-    +getPricePerMonth(): double
+    +calculateTotalPrice(months: int): double
+    +getCancellationFee(enrollment: Enrollment): double
+  }
+
+  class PlanSemiAnnual {
+    +getType(): PlanType
+    +calculateTotalPrice(months: int): double
+  }
+
+  class PlanQuarterly {
+    +getType(): PlanType
+    +calculateTotalPrice(months: int): double
+  }
+
+  class PlanMonthly {
+    +getType(): PlanType
     +calculateTotalPrice(months: int): double
   }
 
@@ -245,44 +260,57 @@ package "Dominio" as DOM #PowderBlue {
     -durationMonths: int
     -totalPrice: double
     -status: EnrollmentStatus
-    -payments: ArrayList<Payment>
     -cancellationDate: LocalDate
     -cancellationReason: String
     +Enrollment(...)
     +registerPayment(payment: Payment): void
     +calculateTotalPaid(): double
     +calculateBalance(): double
+    +calculateBalanceForMonthsUsed(): double
     +cancel(reason: String): void
     +getMonthsUsed(): long
-    +getCode(): int
-    +getStudent(): Student
-    +getPlan(): Plan
-    +getStartDate(): LocalDate
-    +getEndDate(): LocalDate
-    +getDurationMonths(): int
-    +getTotalPrice(): double
-    +getStatus(): EnrollmentStatus
-    +getPayments(): List<Payment>
-    +getCancellationDate(): LocalDate
-    +getCancellationReason(): String
   }
 
-  class Payment {
+  abstract class Payment {
     -date: LocalDate
-    -dateFormatter: DateTimeFormatter
     -amount: double
-    -type: PaymentType
     -description: String
-    +Payment()
+    -{static} DATE_FORMATTER: DateTimeFormatter
     +Payment(...)
-    +setDate(date: LocalDate): void
-    +setAmount(amount: double): void
-    +setType(type: PaymentType): void
-    +setDescription(description: String): void
-    +getDate(): LocalDate
-    +getAmount(): double
-    +getType(): PaymentType
-    +getDescription(): String
+    +{abstract} getProcessingFee(): double
+    +{abstract} getPaymentSummary(): String
+    +getFormattedDate(): String
+  }
+  
+  class CashPayment {
+    -amountReceived: double
+    +CashPayment(...)
+    +getChange(): double
+    +getProcessingFee(): double
+    +getPaymentSummary(): String
+  }
+
+  class CreditCardPayment {
+    -installments: int
+    -cardLastDigits: String
+    -{static} PROCESSING_FEE_RATE: double
+    +CreditCardPayment(...)
+    +getProcessingFee(): double
+    +getPaymentSummary(): String
+  }
+
+  class DebitCardPayment {
+    -cardLastDigits: String
+    +DebitCardPayment(...)
+    +getProcessingFee(): double
+    +getPaymentSummary(): String
+  }
+
+  class PixPayment {
+    -pixKey: String
+    +PixPayment(...)
+    +getProcessingFee(): double
+    +getPaymentSummary(): String
   }
 
   enum PaymentType {
@@ -331,8 +359,36 @@ Enrollment -[hidden]down- Payment
 PlanType -[hidden]right- PaymentType
 PaymentType -[hidden]right- EnrollmentStatus
 
+' Subclasses Layout helpers (Domain)
+PlanMonthly -[hidden]right- PlanQuarterly
+PlanQuarterly -[hidden]right- PlanSemiAnnual
+PlanSemiAnnual -[hidden]right- PlanAnnual
+
+CashPayment -[hidden]right- CreditCardPayment
+CreditCardPayment -[hidden]right- DebitCardPayment
+DebitCardPayment -[hidden]right- PixPayment
+
+' UI Realization
+TerminalUI ..|> UserInterface
+JOptionPaneUI ..|> UserInterface
+
+' Plan Inheritance
+PlanAnnual --|> Plan
+PlanSemiAnnual --|> Plan
+PlanQuarterly --|> Plan
+PlanMonthly --|> Plan
+
+' Payment Inheritance
+CashPayment --|> Payment
+CreditCardPayment --|> Payment
+DebitCardPayment --|> Payment
+PixPayment --|> Payment
+
+' Connections
 Main --> MainMenu
 Main --> UserInterface
+Main --> TerminalUI
+Main --> JOptionPaneUI
 Main --> FitManager
 
 MainMenu --> UserInterface
