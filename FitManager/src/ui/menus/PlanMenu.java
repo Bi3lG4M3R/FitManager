@@ -31,7 +31,7 @@ public class PlanMenu{
 
         //  Construção do array a partir das descrições do do enum
         for(int i = 0; i < PlanMenuEnum.values().length; i++){
-            menuOptions[i] = PlanMenuEnum.values()[i].getOptionDescription();
+            menuOptions[i] = PlanMenuEnum.values()[i].getOptionNumber() + " - " + PlanMenuEnum.values()[i].getOptionDescription();
         }
 
 
@@ -40,9 +40,13 @@ public class PlanMenu{
             
             do{
                 int option = ui.showMenu("GERENCIAR PLANOS", menuOptions, "Selecione uma opção: ");
-                optionSelected = PlanMenuEnum.selectFromInt(option);
-                if(optionSelected == null)
-                    ui.showError("Opção inexistente. Selecione uma das opções acima.");  
+                if(option == 0){
+                    optionSelected = PlanMenuEnum.BACK;
+                } else {
+                    optionSelected = PlanMenuEnum.selectFromInt(option);
+                    if(optionSelected == null)
+                        ui.showError("Opção inexistente. Selecione uma das opções acima.");  
+                }
             }while(optionSelected == null);
 
 
@@ -53,6 +57,10 @@ public class PlanMenu{
                     planName = ui.getInput("Digite o nome do plano: ");
                     String planDescription = ui.getInput("Digite a descrição do plano:");
                     PlanType planType = ui.getInputPlanType("Selecione o tipo do plano: ");
+                    if (planType == null) {
+                        ui.showMessage("Operação cancelada.");
+                        break;
+                    }
                     double planPrice = ui.getInputDouble("Digite o preço por mês do plano: ");
                     int planDuration = ui.getInputInt("Digite a duração mínima do plano (em meses): ");
 

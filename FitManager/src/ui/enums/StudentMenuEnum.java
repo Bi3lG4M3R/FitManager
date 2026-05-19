@@ -8,7 +8,7 @@ public enum StudentMenuEnum {
     SEARCH_BY_CPF (2, "Buscar por CPF"),
     DELETE_STUDENT (3, "Excluir aluno"),
     VIEW_ALL_STUDENTS (4, "Listar todos alunos"),
-    BACK (5, "Voltar ao menu principal");
+    BACK (0, "Voltar ao menu principal");
 
     private final int option;
     private final String description;

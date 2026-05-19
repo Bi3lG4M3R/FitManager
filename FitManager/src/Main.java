@@ -12,7 +12,7 @@ public class Main {
         UserInterface tempUi = new TerminalUI();
 
         tempUi.showMessage("Bem-vindo ao FitManager!");
-        String[] uiOption = {"Interação via terminal", "Interação via JOptionPane"};
+        String[] uiOption = {"1 - Interação via terminal", "2 - Interação via JOptionPane"};
         int choice;
 
         UserInterface ui = null;

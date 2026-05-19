@@ -28,7 +28,7 @@ public class EnrollmentMenu {
 
         //  Construção do array pegando as descrições do do enum
         for(int i = 0; i < EnrollmentMenuEnum.values().length; i++){
-            menuOptions[i] = EnrollmentMenuEnum.values()[i].getOptionDescription();
+            menuOptions[i] = EnrollmentMenuEnum.values()[i].getOptionNumber() + " - " + EnrollmentMenuEnum.values()[i].getOptionDescription();
         }
 
 
@@ -37,9 +37,13 @@ public class EnrollmentMenu {
 
             do{
                 int option = ui.showMenu("GERENCIAR MATRÍCULAS", menuOptions, "Selecione uma opção: ");
-                optionSelected = EnrollmentMenuEnum.selectFromInt(option);
-                if(optionSelected == null)
-                    ui.showError("Opção inexistente. Selecione uma das opções acima.");  
+                if(option == 0){
+                    optionSelected = EnrollmentMenuEnum.BACK;
+                } else {
+                    optionSelected = EnrollmentMenuEnum.selectFromInt(option);
+                    if(optionSelected == null)
+                        ui.showError("Opção inexistente. Selecione uma das opções acima.");  
+                }
             }while(optionSelected == null);
             
 
@@ -52,6 +56,10 @@ public class EnrollmentMenu {
                     int durationMonths = ui.getInputInt("Digite a duração da matrícula (numero de meses): ");
                     double initialPayment = ui.getInputDouble("Digite o valor do pagamento inicial: ");
                     PaymentType paymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
+                    if (paymentType == null) {
+                        ui.showMessage("Operação cancelada.");
+                        break;
+                    }
                     
                     OperationResult resultRegisterEnrollment = null;
 
@@ -86,6 +94,10 @@ public class EnrollmentMenu {
                     int enrollmentCode = ui.getInputInt("Digite o número de matrícula a realizar pagamento: ");
                     double amount = ui.getInputDouble("Valor do pagamento: ");
                     PaymentType registerPaymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
+                    if (registerPaymentType == null) {
+                        ui.showMessage("Operação cancelada.");
+                        break;
+                    }
         
                     OperationResult resultPayment = null;
 
@@ -132,6 +144,10 @@ public class EnrollmentMenu {
 
                                 // Pagamento da taxa
                                 PaymentType feePaymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
+                                if (feePaymentType == null) {
+                                    ui.showMessage("Operação cancelada.");
+                                    break;
+                                }
                                 OperationResult resultFeePayment = null;
 
                                 switch (feePaymentType) {

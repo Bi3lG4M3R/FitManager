@@ -27,14 +27,27 @@ public class JOptionPaneUI implements UserInterface {
     @Override
     public int showMenu(String tittle, String[] options, String prompt){
         StringBuilder menuText = new StringBuilder();
-        menuText.append("==== ").append(tittle).append(" ====\n");
+        menuText.append("==== ").append(tittle).append(" ====\n\n");
 
         for(int i = 0; i < options.length; i++){
-            menuText.append(i + 1).append(" - ").append(options[i]).append("\n");
+            menuText.append(options[i]).append("\n");
         }
 
-        showMessage(menuText.toString());
-        return getInputInt(prompt);
+        menuText.append("\n").append(prompt);
+
+        while(true){
+            try{
+                String input = JOptionPane.showInputDialog(null, menuText.toString(), "FitManager", JOptionPane.PLAIN_MESSAGE);
+                if(input == null){
+                    // map cancel to option 0 (BACK/EXIT)
+                    return 0;
+                }
+                int value = Integer.parseInt(input.trim());
+                return value;
+            } catch (NumberFormatException error){
+                showError("Entrada inválida. Por favor, digite um número inteiro.");
+            }
+        }
     }
 
     @Override
@@ -58,7 +71,7 @@ public class JOptionPaneUI implements UserInterface {
         showMessage(
             "Código de matrícula: " + enrollment.getCode() + "\n" +
             "Nome do aluno: " + enrollment.getStudent().getName() + "\n" +
-            "Plano escolhido: " + enrollment.getPlan().getDescription() + "\n" +
+            "Plano escolhido: " + enrollment.getPlan().getName() + "\n" +
             "Data de início: " + enrollment.getStartDate() + "\n" +
             "Data de término: " + enrollment.getEndDate() + "\n" +
             "Duração da matrícula: " + enrollment.getDurationMonths() + " meses\n" +
@@ -185,41 +198,42 @@ public class JOptionPaneUI implements UserInterface {
 
     @Override
     public PlanType getInputPlanType(String prompt){
-        PlanType planType = null;
+        String[] menuOptions = new String[PlanType.values().length];
+        for(int i = 0; i < PlanType.values().length; i++){
+            menuOptions[i] = PlanType.values()[i].getValueOption() + " - " + PlanType.values()[i].getDescription();
+        }
 
-        do {
-            try {
-                showPlanTypeOptions();
-                int selectedPlan = getInputInt(prompt);
-                planType = PlanType.selectFromInt(selectedPlan);
-                if (planType == null) {
-                    showError("Opção inválida. Por favor, selecione um tipo de plano válido.");
-                }
-            } catch (NumberFormatException error) {
-                showError("Entrada inválida. Por favor, digite um número inteiro correspondente ao tipo de plano.");
+        while(true){
+            int selected = showMenu("Tipos de planos disponíveis:", menuOptions, prompt);
+            if(selected == 0){
+                showMessage("Operação cancelada.");
+                return null;
             }
-        } while (planType == null);
-
-        return planType;
+            PlanType selectedPlanType = PlanType.selectFromInt(selected);
+            if(selectedPlanType != null) 
+                return selectedPlanType;
+            showError("Entrada inválida. Por favor, selecione um tipo de plano válido.");
+        }
     }
 
     @Override
     public PaymentType getInputPaymentType(String prompt){
-        PaymentType paymentType = null;
+        String[] menuOptions = new String[PaymentType.values().length];
+        for(int i = 0; i < PaymentType.values().length; i++){
+            menuOptions[i] = PaymentType.values()[i].getValueOpcao() + " - " + PaymentType.values()[i].getDescription();
+        }
 
-        do {
-            try {
-                showPaymentTypeOptions();
-                int selectedPayment = getInputInt(prompt);
-                paymentType = PaymentType.selectFromInt(selectedPayment);
-                if (paymentType == null) {
-                    showError("Opção inválida. Por favor, selecione uma forma de pagamento válida.");
-                }
-            } catch (NumberFormatException error) {
-                showError("Entrada inválida. Por favor, digite um número inteiro correspondente a forma de pagamento.");
+        while(true){
+            int selected = showMenu("Formas de pagamento disponíveis:", menuOptions, prompt);
+            if(selected == 0){
+                showMessage("Operação cancelada.");
+                return null;
             }
-        } while (paymentType == null);
-
-        return paymentType;
+            PaymentType selectedPaymentType = PaymentType.selectFromInt(selected);
+            if(selectedPaymentType != null) 
+                return selectedPaymentType;
+            showError("Entrada inválida. Por favor, selecione uma forma de pagamento válida.");
+        }
+        
     }
 }

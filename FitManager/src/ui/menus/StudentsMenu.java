@@ -29,16 +29,20 @@ public class StudentsMenu{
 
         //  Construção do array pegando as descrições do do enum
         for(int i = 0; i < StudentMenuEnum.values().length; i++){
-            menuOptions[i] = StudentMenuEnum.values()[i].getOptionDescription();
+            menuOptions[i] = StudentMenuEnum.values()[i].getOptionNumber() + " - " + StudentMenuEnum.values()[i].getOptionDescription();
         }
 
         do{ 
 
             do{
                 int option = ui.showMenu("GERENCIAR ALUNOS", menuOptions, "Selecione uma opção: ");
-                optionSelected = StudentMenuEnum.selectFromInt(option);
-                if(optionSelected == null)
-                    ui.showError("Opção inexistente. Selecione uma das opções acima.");
+                if(option == 0){
+                    optionSelected = StudentMenuEnum.BACK;
+                } else {
+                    optionSelected = StudentMenuEnum.selectFromInt(option);
+                    if(optionSelected == null)
+                        ui.showError("Opção inexistente. Selecione uma das opções acima.");
+                }
             }while(optionSelected == null);
 
 

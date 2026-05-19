@@ -30,7 +30,7 @@ public class ReportsMenu{
 
         //  Construção do array a partir das descrições do do enum
         for(int i = 0; i < ReportsMenuEnum.values().length; i++){
-            menuOptions[i] = ReportsMenuEnum.values()[i].getOptionDescription();
+            menuOptions[i] = ReportsMenuEnum.values()[i].getOptionNumber() + " - " + ReportsMenuEnum.values()[i].getOptionDescription();
         }
 
 
@@ -39,9 +39,13 @@ public class ReportsMenu{
 
             do{
                 int option = ui.showMenu("RELATÓRIOS", menuOptions, "Selecione uma opção: ");
-                optionSelected = ReportsMenuEnum.selectFromInt(option);
-                if(optionSelected == null)
-                    ui.showError("Opção inexistente. Selecione uma das opções acima.");
+                if(option == 0){
+                    optionSelected = ReportsMenuEnum.BACK;
+                } else {
+                    optionSelected = ReportsMenuEnum.selectFromInt(option);
+                    if(optionSelected == null)
+                        ui.showError("Opção inexistente. Selecione uma das opções acima.");
+                }
             }while(optionSelected == null);
 
             switch(optionSelected) {

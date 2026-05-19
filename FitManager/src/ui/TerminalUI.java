@@ -30,8 +30,8 @@ public class TerminalUI implements UserInterface {
     @Override
     public int showMenu(String tittle, String[] options, String prompt){
         showMessage("==== " + tittle + " ====");
-        for(int i = 0; i < options.length; i++){
-            showMessage((i + 1) + " - " + options[i]);
+        for (int i = 0; i < options.length; i++) {
+            showMessage(options[i]);
         }
         return getInputInt(prompt);
     }
@@ -58,7 +58,7 @@ public class TerminalUI implements UserInterface {
         showMessage(
             "Código de matrícula: " + enrollment.getCode() + "\n" +
             "Nome do aluno: " + enrollment.getStudent().getName() + "\n" +
-            "Plano escolhido: " + enrollment.getPlan().getDescription() + "\n" +
+            "Plano escolhido: " + enrollment.getPlan().getName() + "\n" +
             "Data de início: " + enrollment.getStartDate() + "\n" +
             "Data de término: " + enrollment.getEndDate() + "\n" +
             "Duração da matrícula: " + enrollment.getDurationMonths() + " meses\n" +
@@ -173,37 +173,46 @@ public class TerminalUI implements UserInterface {
     @Override
     public PlanType getInputPlanType(String prompt){
         PlanType planType = null;
-        
-        do { 
-            try {
-                showPlanTypeOptions();
-                int selectedPlan = getInputInt(prompt);
-                planType = PlanType.selectFromInt(selectedPlan);
-                if (planType == null) {
-                    showError("Opção inválida. Por favor, selecione um tipo de plano válido.");
-                }
-            } catch (NumberFormatException error) {
-                showError("Entrada inválida. Por favor, digite um número inteiro correspondente ao tipo de plano.");
+        String[] menuOptions = new String[PlanType.values().length];
+        for(int i = 0; i < PlanType.values().length; i++){
+            menuOptions[i] = PlanType.values()[i].getValueOption() + " - " + PlanType.values()[i].getDescription();
+        }
+
+        do{
+            int selectedPlan = showMenu("Tipos de planos disponíveis:", menuOptions, prompt);
+            if(selectedPlan == 0){
+                showMessage("Operação cancelada.");
+                return null;
             }
-        } while (planType == null);
+            planType = PlanType.selectFromInt(selectedPlan);
+            if(planType == null){
+                showError("Opção inválida. Por favor, selecione um tipo de plano válido.");
+            }
+        }while(planType == null);
+
         return planType;
     }
 
     @Override
     public PaymentType getInputPaymentType(String prompt){
         PaymentType paymentType = null;
-        do { 
-            try {
-                showPaymentTypeOptions();
-                int selectedPayment = getInputInt(prompt);
-                paymentType = PaymentType.selectFromInt(selectedPayment);
-                if (paymentType == null) {
-                    showError("Opção inválida. Por favor, selecione uma forma de pagamento válida.");
-                }
-            } catch (NumberFormatException error) {
-                showError("Entrada inválida. Por favor, digite um número inteiro correspondente a forma de pagamento.");
+        String[] menuOptions = new String[PaymentType.values().length];
+        for(int i = 0; i < PaymentType.values().length; i++){
+            menuOptions[i] = PaymentType.values()[i].getValueOpcao() + " - " + PaymentType.values()[i].getDescription();
+        }
+
+        do{
+            int selectedPayment = showMenu("Formas de pagamento disponíveis:", menuOptions, prompt);
+            if(selectedPayment == 0){
+                showMessage("Operação cancelada.");
+                return null;
             }
-        } while (paymentType == null);
+            paymentType = PaymentType.selectFromInt(selectedPayment);
+            if(paymentType == null){
+                showError("Opção inválida. Por favor, selecione uma forma de pagamento válida.");
+            }
+        }while(paymentType == null);
+
         return paymentType;
     }
 
