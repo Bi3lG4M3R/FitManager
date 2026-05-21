@@ -30,7 +30,7 @@ public class ReportsMenu{
 
         //  Construção do array a partir das descrições do do enum
         for(int i = 0; i < ReportsMenuEnum.values().length; i++){
-            menuOptions[i] = ReportsMenuEnum.values()[i].getOptionDescription();
+            menuOptions[i] = ReportsMenuEnum.values()[i].getOptionNumber() + " - " + ReportsMenuEnum.values()[i].getOptionDescription();
         }
 
 
@@ -38,98 +38,104 @@ public class ReportsMenu{
         do{ 
 
             do{
-                ui.showMenu("RELATÓRIOS", menuOptions);
-                optionSelected = ReportsMenuEnum.selectFromInt(ui.getInputInt("Selecione uma opção: "));
-                if(optionSelected == null)
-                    ui.showError("Opção inexistente. Selecione uma das opções acima.");
+                int option = ui.showMenu("RELATÓRIOS", menuOptions, "Selecione uma opção: ");
+                if(option == 0){
+                    optionSelected = ReportsMenuEnum.BACK;
+                } else {
+                    optionSelected = ReportsMenuEnum.selectFromInt(option);
+                    if(optionSelected == null)
+                        ui.showError("Opção inexistente. Selecione uma das opções acima.");
+                }
             }while(optionSelected == null);
+            
+            ArrayList<Enrollment> allEnrollments = fitManager.listEnrollments();
 
             switch(optionSelected) {
-
-
                 case ACTIVE_ENROLLMENTS_STUDENTS:
-                    boolean hasActiveEnrollments = false;
-                    ArrayList<Enrollment> activeEnrollments = fitManager.listEnrollments();
-                    if(activeEnrollments.isEmpty()){
+                    if(allEnrollments.isEmpty()){
                         ui.showError("Não há matriculas cadastradas.");
                     } else {
-                        ui.showMessage("Histórico de Matrículas Ativas:");
-                        for(Enrollment enrollment : activeEnrollments){
-                            if(enrollment.getStatus() == domain.EnrollmentStatus.ACTIVE){
-                                hasActiveEnrollments = true;
-                                String studentName = enrollment.getStudent().getName();
-                                String planName = enrollment.getPlan().getName();
-                                
-                                ui.showMessage(
-                                    "Aluno: " + studentName + "\n" +
-                                    "Plano: " + planName + "\n" +
-                                    "----------------------------------"
-                                );
+                        String result = "Histórico de Matrículas Ativas:\n\n";
+                        boolean found = false;
+
+                        for (Enrollment enrollment : allEnrollments) {
+                            if (enrollment.getStatus() == domain.EnrollmentStatus.ACTIVE) {
+                                found = true;
+                                result = result + "Aluno: " + enrollment.getStudent().getName() + "\n";
+                                result = result + "Plano: " + enrollment.getPlan().getName() + "\n";
+                                result = result + "----------------------------------\n";
                             }
                         }
-                        if(hasActiveEnrollments){
-                            ui.showMessage("Fim da lista de matriculas ativas.");
-                        }else{
-                            ui.showError("Não há matriculas ativas cadastradas.");
+
+                        if (found) {
+                            ui.showMessage(result);
+                        } else {
+                            ui.showError("Não há matrículas ativas cadastradas.");
                         }
                     }
                 break;
 
                 case PENDING_PAYMENTS_ENROLLMENTS:
-                    ArrayList<Enrollment> pendingPaymentsEnrollments = fitManager.listEnrollments();
-                    if(pendingPaymentsEnrollments.isEmpty()){
-                        ui.showError("Não há matriculas cadastradas.");
+                    if (allEnrollments.isEmpty()) {
+                        ui.showError("Não há matrículas cadastradas.");
                     } else {
-                        ui.showMessage("Lista de matriculas com pagamentos pendentes:");
-                        for(Enrollment enrollment : pendingPaymentsEnrollments){
-                                if(enrollment.getStatus() == domain.EnrollmentStatus.ACTIVE && enrollment.calculateTotalPaid() < enrollment.getTotalPrice()){
-                                int code = enrollment.getCode();
-                                String studentName = enrollment.getStudent().getName();
-                                String planName = enrollment.getPlan().getName();
-                                double totalPrice = enrollment.getTotalPrice();
-                                LocalDate startDate = enrollment.getStartDate();
-                                LocalDate endDate = enrollment.getEndDate();
-                                int durationMonths = enrollment.getDurationMonths();
-                                String status = enrollment.getStatus().toString();
+                        String result = "Lista de matrículas com pagamentos pendentes:\n\n";
+                        boolean found = false;
 
-                                ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, status);
-                                }
+                        for (Enrollment enrollment : allEnrollments) {
+                            if (enrollment.getStatus() == domain.EnrollmentStatus.ACTIVE && enrollment.calculateBalanceForMonthsUsed() > 0) {
+                                found = true;
+                                result = result + "Código: " + enrollment.getCode() + "\n";
+                                result = result + "Aluno: " + enrollment.getStudent().getName() + "\n";
+                                result = result + "Plano: " + enrollment.getPlan().getName() + "\n";
+                                result = result + "Início: " + enrollment.getStartDate() + "\n";
+                                result = result + "Fim: " + enrollment.getEndDate() + "\n";
+                                result = result + "Duração: " + enrollment.getDurationMonths() + " meses\n";
+                                result = result + "Preço Total: R$ " + enrollment.getTotalPrice() + "\n";
+                                result = result + "Saldo Pendente: R$ " + enrollment.calculateBalanceForMonthsUsed() + "\n";
+                                result = result + "Status: " + enrollment.getStatus().getDescription() + "\n";
+                                result = result + "----------------------------------\n";
                             }
-                            ui.showMessage("Fim da lista de matriculas ativas."); 
+                        }
+
+                        if (found) {
+                            ui.showMessage(result);
+                        } else {
+                            ui.showError("Não há matrículas com pagamentos pendentes.");
+                        }
                     }
                 break;
 
-
                 case ALL_ENROLLMENTS: 
-                    ArrayList<Enrollment> allEnrollments = fitManager.listEnrollments();
-                    if(allEnrollments.isEmpty()){
-                        ui.showError("Não há matriculas cadastradas.");
+                    if (allEnrollments.isEmpty()) {
+                        ui.showError("Não há matrículas cadastradas.");
                     } else {
-                        ui.showMessage("Histórico de Matrículas:");
-                        for(Enrollment enrollment : allEnrollments){
-                                
-                                int code = enrollment.getCode();
-                                String studentName = enrollment.getStudent().getName();
-                                String planName = enrollment.getPlan().getName();
-                                double totalPrice = enrollment.getTotalPrice();
-                                LocalDate startDate = enrollment.getStartDate();
-                                LocalDate endDate = enrollment.getEndDate();
-                                int durationMonths = enrollment.getDurationMonths();
-                                String status = enrollment.getStatus().toString();
+                        String result = "Histórico de Matrículas:\n\n";
 
-                                if(status.equals("CANCELLED")){
-                                    endDate = enrollment.getCancellationDate();
-                                    String cancellationReason = enrollment.getCancellationReason();
-                                    ui.showCancelledEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, status, cancellationReason);
-                                }else{
-                                    ui.showEnrollment(code, studentName, planName, startDate, endDate, durationMonths, totalPrice, status);
-                                }
+                        for (Enrollment enrollment : allEnrollments) {
+                            result = result + "Código: " + enrollment.getCode() + "\n";
+                            result = result + "Aluno: " + enrollment.getStudent().getName() + "\n";
+                            result = result + "Plano: " + enrollment.getPlan().getName() + "\n";
+                            result = result + "Início: " + enrollment.getStartDate() + "\n";
+                            result = result + "Duração: " + enrollment.getDurationMonths() + " meses\n";
+                            result = result + "Preço Total: R$ " + enrollment.getTotalPrice() + "\n";
+                            result = result + "Status: " + enrollment.getStatus().getDescription() + "\n";
 
+                            // Lógica condicional para cancelados
+                            if (enrollment.getStatus().getDescription().equals("CANCELADO")) {
+                                result = result + "Data de Cancelamento: " + enrollment.getCancellationDate() + "\n";
+                                result = result + "Motivo: " + enrollment.getCancellationReason() + "\n";
+                            } else {
+                                double pendingAmount = enrollment.getTotalPrice() - enrollment.calculateTotalPaid();
+                                result = result + "Saldo Pendente: R$ " + pendingAmount + "\n";
+                                result = result + "Fim: " + enrollment.getEndDate() + "\n";
                             }
-                            
-                            ui.showMessage("Fim da lista de matriculas ativas."); 
+
+                            result = result + "----------------------------\n";
+                        }
+
+                        ui.showMessage(result);
                     }
-                    
                 break;
 
             }

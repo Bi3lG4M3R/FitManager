@@ -52,6 +52,13 @@ public class Enrollment {
      Calculado dinamicamente a partir dos pagamentos — nunca armazenado como atributo separado
      para evitar inconsistências entre o saldo e a lista de pagamentos*/
     public double calculateBalance() { return totalPrice - calculateTotalPaid(); }
+    
+    /*Resultado positivo = saldo pendente que precisa ser pago para colocar em dia com a
+    quantidade que ele já deveria ter pago em relação aos meses usados, resultado negativo = pagou
+    mais do que o necessário em relação aos meses já usados(mas não haverá devolução), resultado 0.0 estamos quites*/
+    public double calculateBalanceForMonthsUsed() { 
+        return (this.getMonthsUsed() * this.plan.getPricePerMonth()) - calculateTotalPaid();
+    }
 
     /**A transição é unidirecional: CANCELLED não pode voltar para ACTIVE.
     Registra opcionalmente um motivo para fins de histórico*/

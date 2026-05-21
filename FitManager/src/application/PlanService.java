@@ -1,8 +1,13 @@
 package application;
 
-import domain.plan.Plan;
-import domain.plan.PlanType;
 import java.util.ArrayList;
+
+import domain.plan.Plan;
+import domain.plan.PlanAnnual;
+import domain.plan.PlanMonthly;
+import domain.plan.PlanQuarterly;
+import domain.plan.PlanSemiAnnual;
+import domain.plan.PlanType;
 
 public class PlanService {
     private static ArrayList<Plan> plans;
@@ -27,7 +32,7 @@ public class PlanService {
     public boolean nameExists(String name){ return findByName(name) != null; }
     
     public OperationResult registerPlan(String name, String description, PlanType type, int minDurationMonths, double pricePerMonth) {
-        if(name.isEmpty() || nameExists(name)){
+        if(name.isBlank() || nameExists(name)){
             return new OperationResult(false, "Nome inválido ou já existente.");
         }
         if(description.isEmpty()){
@@ -42,8 +47,41 @@ public class PlanService {
         if(pricePerMonth <= 0){
             return new OperationResult(false, "Preço inválido.");
         }
-
-        Plan temporary = new Plan(name, description, type, minDurationMonths, pricePerMonth);
+        
+        Plan temporary;
+        switch(type){
+            case MONTHLY:
+                if(minDurationMonths < 1){
+                    return new OperationResult(false, "Duração mínima inválida.");
+                }
+                temporary = new PlanMonthly(name, description, minDurationMonths, pricePerMonth);
+            break;
+            
+            case QUARTERLY:
+                if(minDurationMonths < 3){
+                    return new OperationResult(false, "Duração mínima inválida.");
+                }
+                temporary = new PlanQuarterly(name, description, minDurationMonths, pricePerMonth);
+            break;
+            
+            case SEMI_ANNUAL:
+                if(minDurationMonths < 6){
+                    return new OperationResult(false, "Duração mínima inválida.");
+                }
+                temporary = new PlanSemiAnnual(name, description, minDurationMonths, pricePerMonth);
+            break;
+            
+            case ANNUAL:
+                if(minDurationMonths < 12){
+                    return new OperationResult(false, "Duração mínima inválida.");
+                }
+                temporary = new PlanAnnual(name, description, minDurationMonths, pricePerMonth);
+            break;
+            
+            default:
+                return new OperationResult(false, "Tipo inválido");
+        }
+        
         this.plans.add(temporary);
         return new OperationResult(true, "O plano " + name + " foi criado com sucesso.", temporary);
     }
@@ -57,7 +95,7 @@ public class PlanService {
         
         if(planNamed != null){
             planNamed.updatePrice(newPrice);
-            return new OperationResult(true, "O valor do plano " + planNamed.getName() + "foi alterado com sucesso.", planNamed);
+            return new OperationResult(true, "O valor do plano " + planNamed.getName() + " foi alterado com sucesso.", planNamed);
         }
         return new OperationResult(false, "O plano " + name + " não foi localizado."); 
     }

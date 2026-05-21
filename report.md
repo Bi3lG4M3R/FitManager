@@ -1,107 +1,58 @@
-# Relatório — FitManager (Stage 1)
+# Relatório — FitManager (Stage 2)
 
 ## Introdução
 
-O sistema FitManager tem como objetivo simular o gerenciamento de uma academia, permitindo o controle de alunos, planos, matrículas e pagamentos. Nesta primeira etapa (stage-1), foi implementada a base funcional do sistema, com foco na modelagem do domínio, organização em camadas e implementação das operações essenciais.
+O sistema FitManager foi evoluído nesta segunda etapa para incorporar os seguintes conceitos: Classes abstratas, herança, polimorfismo e interfaces Java. Essas abordagens organizam nossa hierarquia de classes, generalizam comportamentos comuns e especializam regras específicas das entidades.
 
-O sistema foi estruturado seguindo os princípios de Programação Orientada a Objetos, com separação entre interface, aplicação e domínio. Foram implementadas funcionalidades como cadastro, consulta, listagem e controle de regras de negócio, preparando o projeto para evoluções futuras.
+Durante esta etapa, substituímos as classes concretas estáticas `Plan` e `Payment` por superclasses abstratas, criando subclasses para cada tipo correspondente. Também transformamos a `UserInterface` num contrato formal (Interface Java) para possibilitar a interação via Console ou Interface Gráfica, mantendo todas as regras de negócio consistentes.
 
 ## Integrantes e contribuições
 
-- Matheus Henrique dos Santos Gomes: desenvolvimento das classes mais desacopladas do núcleo do sistema, focando na modelagem do domínio e estrutura base.
-- Gabriel Richard Zambianchi de Oliveira: implementação dos menus e da interação com o usuário (camada de interface).
-- Matheus Mandarini: responsável pela integração entre as classes, com foco nas partes centrais do sistema, especialmente relacionadas às matrículas (Enrollment).
+- **Matheus Henrique dos Santos Gomes:** Refatoração e separação da classe de Domínio (`Plan`), implementando a superclasse abstrata e as respectivas regras matemática da subclasse. Refatoração do Service e Integração (`FitManager` e `EnrollmentService`) para suportar instâncias polimórficas de Pagamento e Plano. Correção de alguns bugs vindos da etapa anterior (`Stage-1`).
+- **Gabriel Richard Zambianchi de Oliveira:** Adaptação da camada de Interface de Usuário. Implementação da interface `UserInterface` e sua realização nas classes `TerminalUI` e `JOptionPaneUI`, bem como o roteamento das classes concretas nos Menus.
+- **Matheus Mandarini:** Correção e refinamento da etapa anterior (`Stage-1`). Refatoração do Service e Integração (`FitManager` e `EnrollmentService`) para suportar instâncias polimórficas de Pagamento, delegando a responsabilidade de criação para blocos de decisão coesos.
 
-## Decisões de projeto
+## Decisões de Projeto e Análise de Arquitetura
 
-### Armazenamento do CPF
+### 1. O que pertence às superclasses abstratas (`Plan` e `Payment`)?
 
-- Decisão: CPF armazenado como String.
-- Alternativas: armazenar como int ou long.
-- Motivo: CPF pode conter zeros à esquerda e não é utilizado para cálculos.
-- Impacto: evita perda de informação e facilita validação.
+Após análise, concentramos na superclasse `Plan` os atributos que definem a universalidade de um plano: `name`, `description`, `minDurationMonths` e `pricePerMonth`. Tudo que altera o cálculo matemático do sistema foi delegado aos métodos abstratos/sobrescritos `calculateTotalPrice` e `getCancellationFee`.
 
-### totalPrice como atributo da matrícula
+Em `Payment`, identificamos que atributos como `date`, `amount` e `description` são genuinamente universais. O atributo `amountReceived` ou as `installments` são exclusivos de modalidades de pagamento específicas, portando foram posicionados em subclasses como `CashPayment` e `CreditCardPayment`. Criamos os métodos abstratos `getProcessingFee()` e `getPaymentSummary()` para lidar com taxas financeiras e recibos formatados.
 
-- Decisão: armazenar o valor total no momento da criação da matrícula.
-- Alternativas: calcular dinamicamente com base no plano.
-- Motivo: garantir que mudanças futuras no plano não afetem contratos antigos.
-- Impacto: mantém consistência histórica dos dados.
+### 2. Herança versus Composição
 
-### Estratégia de remoção de alunos
+Verificamos a semântica do sistema: um `AnnualPlan` **é um tipo de** `Plan`, assim como um `CreditCardPayment` **é um tipo de** `Payment`. Essa constatação justifica o uso de herança. Composição seria usada se um Plano "tivesse" uma estratégia de pagamento avulsa ou se fosse apenas um anexo ao contrato. A herança aplicada aqui centraliza o código base e garante a aderência ao Liskov Substitution Principle.
 
-- Decisão: impedir remoção de alunos com matrícula ativa.
-- Alternativas: remover diretamente ou apenas desativar o aluno.
-- Motivo: evitar inconsistência no sistema.
-- Impacto: garante integridade dos dados.
+### 3. Interface vs. Classe Abstrata para `UserInterface`
 
-### Regra de pagamento inicial
+Optamos por criar uma **Interface Java** pura (`interface UserInterface`) porque `TerminalUI` e `JOptionPaneUI` não compartilham atributos de estado, variáveis, construtores em comum ou lógica interna. A classe via Terminal usa `Scanner` e `System.out.println`, enquanto a interface gráfica utiliza instâncias do `JOptionPane`. A única ligação entre elas é o contrato estabelecido das assinaturas dos métodos, algo que a Interface Java atende perfeitamente, garantindo baixo acoplamento.
 
-- Decisão: exigir pagamento inicial para efetivar matrícula.
-- Alternativas: permitir matrícula sem pagamento inicial.
-- Motivo: refletir um cenário mais realista.
-- Impacto: garante vínculo financeiro válido para cada matrícula.
+### 4. Onde o Polimorfismo simplifica o código existente?
 
-### Lógica de cancelamento de matrícula
+No stage-1, se precisássemos calcular as diferentes taxas de cancelamento ou totais pagos, encheríamos o `EnrollmentService` e a classe `Enrollment` com lógicas condicionais atreladas a `Enums` (`switch(plan.getType())`).
+Agora, na chamada polimórfica `enrollment.getPlan().getCancellationFee(enrollment)` ou `payment.getProcessingFee()`, o código externo desconhece qual subclasse está respondendo. As condificionais foram totalmente eliminadas dessas operações de negócio vitais.
 
-- Decisão: cancelar matrícula alterando o status para CANCELLED.
-- Alternativas: remover matrícula da lista.
-- Motivo: preservar histórico de operações.
-- Impacto: permite rastreamento de dados antigos.
+### 5. Instanciação da subclasse correta no serviço
 
-### Organização em camadas
+No sistema, o `PlanService` agora usa um bloco `switch` no momento em que os dados são enviados do Menu (baseado no `PlanType` do Enum) para construir a classe instanciada correta (`PlanMonthly`, `PlanAnnual`, etc.). Da mesma forma, no menu de Matrícula e Pagamento, sobrecargas de métodos (`enrollStudent`) no `FitManager` instanciam a subclasse de pagamento correspondente (`PixPayment`, `CashPayment`...) antes de mandá-las para a base de dados via Polimorfismo.
 
-- Decisão: separar o sistema em UI, Application e Domain.
-- Alternativas: concentrar toda a lógica em uma única camada.
-- Motivo: facilitar manutenção e evolução do sistema.
-- Impacto: código mais organizado e escalável.
+### 6. O Enum `PlanType` e `PaymentType` ainda tem papel no sistema?
 
-### Uso de enums nos menus
+Sim, optamos por mantê-los. Eles provaram ser fundamentais para exibir descrições limpas nos Menus de Usuário (camada de UI) e atuar como "Roteadores" seguros na hora que o usuário deve escolher qual classe concreta o construtor do sistema precisa usar (sem que o usuário precise entender o código em si).
 
-- Decisão: utilizar enums para representar as opções de menus.
-- Alternativas: utilizar valores numéricos (int) diretamente nas estruturas de decisão.
-- Motivo: melhorar a legibilidade do código, evitar o uso de valores "mágicos" e facilitar futuras alterações na interface do sistema. Além disso, essa abordagem prepara o sistema para uma possível migração para interface gráfica, onde as ações podem ser associadas diretamente a constantes bem definidas.
-- Impacto: maior clareza no código da camada de interface, redução de erros relacionados a opções inválidas e maior facilidade de manutenção e evolução do sistema.
+### 7. Taxa de cancelamento: Semântica no Domínio
 
-## Regras de negócio implementadas
+A taxa de cancelamento foi definida no domínio como uma multa monetária explícita que o cliente deve arcar para encerrar o vínculo. No caso exclusivo do `PlanAnnual`, se ele usar menos da metade do tempo acordado, ele pagará uma fatura extra que representa 20% do valor de contrato original. No sistema, essa regra é tratada por meio do `EnrollmentMenu`, que obriga o registro de um novo pagamento antes de prosseguir com a troca de status para `CANCELLED`. Planos avulsos como Mensal retornam `0.0` em sua sobrescrita natural.
 
-- CPF deve ser único
-  → Implementado em StudentService.cpfExists()
+## Regras de negócio evoluídas nesta etapa
 
-- Nome do plano deve ser único
-  → Implementado em PlanService.nameExists()
-
-- Não permitir mais de uma matrícula ativa por aluno
-  → Implementado em EnrollmentService.hasActiveEnrollment()
-
-- Duração da matrícula deve respeitar o mínimo do plano
-  → Implementado em EnrollmentService.enroll()
-
-- Pagamento deve ser positivo
-  → Implementado em EnrollmentService.registerPayment()
-
-- Pagamentos só podem ser feitos em matrículas ativas
-  → Implementado em EnrollmentService.registerPayment()
-
-- Cálculo de total pago e saldo
-  → Implementado em Enrollment.calculateTotalPaid() e calculateBalance()
-
-- Impedir remoção de aluno com matrícula ativa
-  → Implementado em FitManager.removeStudent()
-
-### Regras não implementadas
-
-- Validação completa do CPF (dígitos verificadores)
-  → Não implementada devido à priorização das funcionalidades principais.
-
-## Funcionalidades extras
-
-Não foram implementadas funcionalidades extras nesta etapa.
+- **Desconto por longo prazo de Planos:** Subclasses como `PlanQuarterly` e `PlanAnnual` encapsularam fórmulas de redução em seu `calculateTotalPrice`.
+- **Multa de quebra de contrato (`getCancellationFee`):** Apenas presente de forma afirmativa no Plano Anual caso os meses utilizados não atinjam 50% do contrato.
+- **Taxa de Processamento de Cartão (`getProcessingFee`):** O Cartão de crédito assume 2,5% de perda que a academia absorve nas suas finanças. O código da subclasse `CreditCardPayment` garante essa abstração.
 
 ## Dificuldades e aprendizados
 
-Durante o desenvolvimento, a principal dificuldade foi organizar corretamente as responsabilidades entre as camadas, especialmente separar o que deveria ficar nos serviços e no FitManager. Também houve desafios na integração entre as classes, principalmente envolvendo matrículas e pagamentos.
+A maior dificuldade da refatoração da Segunda Etapa (`Stage-2`) foi limpar a mente para **remover lógicas específicas que estavam na superclasse**. Especialmente no início do refatoramento da camada `Payment`, tínhamos um reflexo de colocar todos os dados na classe mãe para "reaproveitar" o código, criando anomalias como um `PixPayment` possuindo "Parcelas", mas logo esse reflexo foi desaparecendo.
 
-Outra dificuldade foi estruturar a interação via menus sem misturar lógica de negócio com interface.
-
-Como aprendizado, o grupo compreendeu melhor a importância da separação de responsabilidades e da organização do código. A utilização de enums nos menus também reforçou a importância de escrever código preparado para futuras evoluções. Caso o projeto fosse reiniciado, seria feita uma definição mais detalhada da arquitetura antes da implementação, a fim de evitar retrabalho.
+O aprendizado chave foi que classes abstratas bem desenhadas não servem para concentrar "todos os campos", e sim para isolar o que é genuinamente universal, encapsulando no Polimorfismo as especificidades, deixando o restante da aplicação muito mais fácil de manter.

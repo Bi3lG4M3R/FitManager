@@ -6,9 +6,9 @@ public enum MainMenuEnum {
 
     MANAGE_STUDENTS (1, "Gerenciar Alunos"),
     MANAGE_PLANS (2, "Gerenciar Planos"),
-    MANAGE_ENROLLMENTS (3, "Gerenciar Inscrições"),
+    MANAGE_ENROLLMENTS (3, "Gerenciar Matriculas"),
     REPORTS (4, "Relatórios / Listagens"),
-    EXIT (5, "Sair");
+    EXIT (0, "Sair");
 
 
     private final int option;

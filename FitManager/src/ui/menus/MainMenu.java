@@ -26,7 +26,7 @@ public class MainMenu{
 
         //  Construção do array pegando as descrições do do enum
         for(int i = 0; i < MainMenuEnum.values().length; i++){
-            menuOptions[i] = MainMenuEnum.values()[i].getOptionDescription();
+            menuOptions[i] = MainMenuEnum.values()[i].getOptionNumber() + " - " + MainMenuEnum.values()[i].getOptionDescription();
         }
 
 
@@ -34,8 +34,14 @@ public class MainMenu{
         do { 
 
             do{
-                ui.showMenu("Menu Principal", menuOptions);
-                optionSelected = MainMenuEnum.selectFromInt(ui.getInputInt("Selecione uma opção: "));
+                int option = ui.showMenu("Menu Principal", menuOptions, "Selecione uma opção: ");
+                if(option == 0){
+                    // caso o menu do JOption seja fechado, o programa direciona para saida
+                    optionSelected = MainMenuEnum.EXIT;
+                }else{
+                    optionSelected = MainMenuEnum.selectFromInt(option);
+                }
+                
                 if(optionSelected == null){
                     ui.showError("Opção inexistente. Selecione uma das opções acima.");
                 }
@@ -68,7 +74,6 @@ public class MainMenu{
                 case EXIT:
                     ui.showMessage("Saindo do programa...");
                 break;
-
             }
 
         }while(optionSelected != MainMenuEnum.EXIT);
