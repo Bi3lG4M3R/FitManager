@@ -8,16 +8,16 @@ public class StudentService {
     
     private ArrayList<Student> students = new ArrayList<>();
     
-    public OperationResult registerStudent(String name, String cpf, String contact, LocalDate birthDate){
+    public OperationResult<Student> registerStudent(String name, String cpf, String contact, LocalDate birthDate){
         if (cpfExists(cpf)) {
-            return new OperationResult(false, "CPF ja cadastrado.");
+            return new OperationResult<>(false, "CPF ja cadastrado.");
         }
         if (!Student.validateCpf(cpf)) {
-            return new OperationResult(false, "CPF invalido.");
+            return new OperationResult<>(false, "CPF invalido.");
         }
         Student student = new Student(name, cpf, contact, birthDate);
         students.add(student);
-        return new OperationResult(true, "Aluno cadastrado!", student);
+        return new OperationResult<>(true, "Aluno cadastrado!", student);
     }
     
     public Student findByCpf(String cpf){
@@ -30,13 +30,13 @@ public class StudentService {
         return null;
     }
     
-    public OperationResult removeStudent(String cpf) {
+    public OperationResult<Student> removeStudent(String cpf) {
         Student student = findByCpf(cpf);
         if (student == null) {
-            return new OperationResult(false, "CPF não cadastrado.");
+            return new OperationResult<>(false, "CPF não cadastrado.");
         }
         student.deactivate();
-        return new OperationResult(true, "Estudante desativado.", student);
+        return new OperationResult<>(true, "Estudante desativado.", student);
     }
     
     public ArrayList<Student> listStudents(){
@@ -47,12 +47,12 @@ public class StudentService {
         return findByCpf(cpf) != null;
     }   
 
-    OperationResult reactivateStudent(String cpf) {
+    OperationResult<Student> reactivateStudent(String cpf) {
         Student student = findByCpf(cpf);
         if (student == null) {
-            return new OperationResult(false, "CPF não cadastrado.");
+            return new OperationResult<>(false, "CPF não cadastrado.");
         }
         student.activate();
-        return new OperationResult(true, "Estudante reativado.", student);
+        return new OperationResult<>(true, "Estudante reativado.", student);
     }
 }

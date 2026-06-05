@@ -58,7 +58,7 @@ public class StudentsMenu{
                     LocalDate studentBirthDate = ui.getInputDate("Digite a data de nascimento do aluno (dd/mm/aaaa): ");
                     if(studentBirthDate == null) break;
                     
-                    OperationResult resultRegister = fitManager.registerStudent(studentName, studentCpf, studentContact, studentBirthDate);
+                    OperationResult<Student> resultRegister = fitManager.registerStudent(studentName, studentCpf, studentContact, studentBirthDate);
                     if(resultRegister.isSuccess()){
                         ui.showMessage(resultRegister.getMessage());
                     } else {
@@ -84,7 +84,7 @@ public class StudentsMenu{
                 case DELETE_STUDENT:
                     String cpfToDelete = ui.getInput("Digite o CPF do aluno a ser desativado: ");
                     if(cpfToDelete == null) break;
-                    OperationResult resultDelete = fitManager.removeStudent(cpfToDelete);
+                    OperationResult<Student> resultDelete = fitManager.removeStudent(cpfToDelete);
                     if(resultDelete.isSuccess()){
                         ui.showMessage(resultDelete.getMessage());
                     } else {
@@ -95,7 +95,7 @@ public class StudentsMenu{
                 case ACTIVATE_STUDENT:
                     String cpfToActivate = ui.getInput("Digite o CPF do aluno a ser reativado: ");
                     if(cpfToActivate == null) break;
-                    OperationResult resultActivate = fitManager.activateStudent(cpfToActivate);
+                    OperationResult<Student> resultActivate = fitManager.activateStudent(cpfToActivate);
                     if(resultActivate.isSuccess()){
                         ui.showMessage(resultActivate.getMessage());
                     } else {
