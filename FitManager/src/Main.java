@@ -28,7 +28,15 @@ public class Main {
                 tempUi.showError("Opção inválida. Selecione uma opção válida.");
         }while(choice != 1 && choice != 2);
 
-        FitManager fitManager = new FitManager();
+        FitManager fitManager = new FitManager();   
+        
+        try {
+        fitManager.loadAll();
+        } catch (PersistenceException e) {
+            tempUi.showError("Arquivo corrompido: " + e.getFilePath() + "\n" + e.getMessage());
+            tempUi.showMessage("Encerrando o sistema. Verifique o arquivo e reinicie.");
+            return; // encerra o main
+        }
         
         MainMenu mainMenu = new MainMenu(ui, fitManager);
 
