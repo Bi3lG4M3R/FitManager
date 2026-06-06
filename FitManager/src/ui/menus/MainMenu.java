@@ -1,5 +1,5 @@
 package ui.menus;
-
+import application.PersistenceException;
 import application.FitManager;
 import ui.UserInterface;
 import ui.enums.MainMenuEnum;
