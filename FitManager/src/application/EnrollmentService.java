@@ -97,12 +97,12 @@ public class EnrollmentService extends Repository<Enrollment> {
     // Persistência                                                          //
     // ------------------------------------------------------------------ //
 
-    private static final String SEP          = "|";
-    private static final String SEP_REGEX    = "\\|";
+    private static final String SEP           = "|";
+    private static final String SEP_REGEX     = "\\|";
     private static final String NEXT_CODE_KEY = "NEXT_CODE";
     private static final String PAYMENT_PREFIX = "PAYMENT";
-    private static final String END_PAYMENTS   = "END_PAYMENTS";
-    private static final String NULL_MARKER    = "NULL";
+    private static final String END_PAYMENTS  = "END_PAYMENTS";
+    private static final String NULL_MARKER   = "NULL";
 
     /**
      * Grava nextCode na primeira linha, depois cada matrícula em um bloco:
@@ -215,8 +215,8 @@ public class EnrollmentService extends Repository<Enrollment> {
 
     // Formato: code|cpf|planName|startDate|durationMonths|status|cancellationDate|cancellationReason
     private String encodeHeader(Enrollment e) {
-        String cancDate   = e.getCancellationDate()   != null ? e.getCancellationDate().toString()   : NULL_MARKER;
-        String cancReason = e.getCancellationReason() != null ? e.getCancellationReason()             : NULL_MARKER;
+        String cancDate   = e.getCancellationDate()   != null ? e.getCancellationDate().toString() : NULL_MARKER;
+        String cancReason = e.getCancellationReason() != null ? e.getCancellationReason()           : NULL_MARKER;
         return String.join(SEP,
             String.valueOf(e.getCode()),
             e.getStudent().getCpf(),
@@ -246,6 +246,9 @@ public class EnrollmentService extends Repository<Enrollment> {
             LocalDate startDate = LocalDate.parse(p[3]);
             int durationMonths  = Integer.parseInt(p[4]);
             String statusStr    = p[5];
+            // CORRIGIDO: p[6] é a data de cancelamento — era ignorada antes
+            String cancDateStr  = p[6];
+            String cancReason   = p[7].equals(NULL_MARKER) ? null : p[7];
 
             Student student = students.findByCpf(cpf);
             if (student == null) {
@@ -264,8 +267,9 @@ public class EnrollmentService extends Repository<Enrollment> {
             Enrollment enrollment = new Enrollment(code, student, planResult.getData(), startDate, durationMonths);
 
             if (statusStr.equals("CANCELLED")) {
-                String reason = p[7].equals(NULL_MARKER) ? null : p[7];
-                enrollment.cancel(reason);
+                // CORRIGIDO: restaura a data original lida do arquivo em vez de usar LocalDate.now()
+                LocalDate cancDate = cancDateStr.equals(NULL_MARKER) ? LocalDate.now() : LocalDate.parse(cancDateStr);
+                enrollment.cancelWithDate(cancDate, cancReason);
             }
 
             return enrollment;

@@ -25,11 +25,14 @@ public class StudentService extends Repository<Student> {
 
     public OperationResult<Student> registerStudent(String name, String cpf,
             String contact, LocalDate birthDate) {
-        if (cpfExists(cpf)) {
-            return new OperationResult<>(false, "CPF ja cadastrado.");
-        }
+        // CORRIGIDO: valida o formato do CPF antes de verificar duplicata.
+        // Antes, um CPF inválido já cadastrado retornava "CPF já cadastrado"
+        // em vez de "CPF inválido", mascarando o erro real.
         if (!Student.validateCpf(cpf)) {
             return new OperationResult<>(false, "CPF invalido.");
+        }
+        if (cpfExists(cpf)) {
+            return new OperationResult<>(false, "CPF ja cadastrado.");
         }
         Student student = new Student(name, cpf, contact, birthDate);
         items.add(student);
