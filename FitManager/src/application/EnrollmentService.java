@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import exceptions.CorruptedFileException;
+import exceptions.WriteFailureException;
 
 import domain.Enrollment;
 import domain.EnrollmentStatus;
@@ -134,8 +136,7 @@ public class EnrollmentService extends Repository<Enrollment> {
             }
 
         } catch (IOException e) {
-            throw new PersistenceException(
-                "Falha ao gravar arquivo de matrículas: " + e.getMessage(), filePath, e);
+            throw new WriteFailureException("Falha ao gravar arquivo de matrículas: " + e.getMessage(), filePath, e);
         }
     }
 
@@ -162,13 +163,13 @@ public class EnrollmentService extends Repository<Enrollment> {
             if (firstLine == null) return;
             String[] ncParts = firstLine.trim().split(SEP_REGEX, -1);
             if (ncParts.length != 2 || !ncParts[0].equals(NEXT_CODE_KEY)) {
-                throw new PersistenceException(
+                throw new CorruptedFileException(
                     "Arquivo de matrículas corrompido: primeira linha inválida.", filePath);
             }
             try {
                 nextCode = Integer.parseInt(ncParts[1]);
             } catch (NumberFormatException e) {
-                throw new PersistenceException(
+                throw new CorruptedFileException(
                     "Arquivo de matrículas corrompido: nextCode inválido.", filePath, e);
             }
 
@@ -197,7 +198,7 @@ public class EnrollmentService extends Repository<Enrollment> {
             }
 
         } catch (IOException e) {
-            throw new PersistenceException(
+            throw new WriteFailureException(
                 "Falha ao ler arquivo de matrículas: " + e.getMessage(), filePath, e);
         }
     }
@@ -234,7 +235,7 @@ public class EnrollmentService extends Repository<Enrollment> {
 
         String[] p = line.split(SEP_REGEX, -1);
         if (p.length != 8) {
-            throw new PersistenceException(
+            throw new CorruptedFileException(
                 "Arquivo de matrículas corrompido na linha " + lineNumber
                 + ": esperado 8 campos, encontrado " + p.length, filePath);
         }
@@ -252,14 +253,14 @@ public class EnrollmentService extends Repository<Enrollment> {
 
             Student student = students.findByCpf(cpf);
             if (student == null) {
-                throw new PersistenceException(
+                throw new CorruptedFileException(
                     "Arquivo de matrículas corrompido na linha " + lineNumber
                     + ": aluno com CPF '" + cpf + "' não encontrado.", filePath);
             }
 
             OperationResult<Plan> planResult = plans.findByName(planName);
             if (!planResult.isSuccess()) {
-                throw new PersistenceException(
+                throw new CorruptedFileException(
                     "Arquivo de matrículas corrompido na linha " + lineNumber
                     + ": plano '" + planName + "' não encontrado.", filePath);
             }
@@ -275,7 +276,7 @@ public class EnrollmentService extends Repository<Enrollment> {
             return enrollment;
 
         } catch (NumberFormatException | DateTimeParseException e) {
-            throw new PersistenceException(
+            throw new CorruptedFileException(
                 "Arquivo de matrículas corrompido na linha " + lineNumber
                 + ": valor inválido — " + e.getMessage(), filePath, e);
         }
@@ -319,7 +320,7 @@ public class EnrollmentService extends Repository<Enrollment> {
 
         String[] p = line.split(SEP_REGEX, -1);
         if (p.length < 6 || !p[0].equals(PAYMENT_PREFIX)) {
-            throw new PersistenceException(
+            throw new CorruptedFileException(
                 "Arquivo de matrículas corrompido na linha " + lineNumber
                 + ": linha de pagamento inválida.", filePath);
         }
@@ -338,19 +339,19 @@ public class EnrollmentService extends Repository<Enrollment> {
                 case "DEBIT":
                     return new DebitCardPayment(date, amount, description, p[5]);
                 case "CREDIT":
-                    if (p.length < 7) throw new PersistenceException(
+                    if (p.length < 7) throw new CorruptedFileException(
                         "Arquivo de matrículas corrompido na linha " + lineNumber
                         + ": pagamento CREDIT incompleto.", filePath);
                     return new CreditCardPayment(date, amount, description,
                                                  Integer.parseInt(p[5]), p[6]);
                 default:
-                    throw new PersistenceException(
+                    throw new CorruptedFileException(
                         "Arquivo de matrículas corrompido na linha " + lineNumber
                         + ": tipo de pagamento desconhecido '" + type + "'", filePath);
             }
 
         } catch (NumberFormatException | DateTimeParseException e) {
-            throw new PersistenceException(
+            throw new CorruptedFileException(
                 "Arquivo de matrículas corrompido na linha " + lineNumber
                 + ": valor inválido — " + e.getMessage(), filePath, e);
         }

@@ -5,6 +5,8 @@ import domain.plan.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import exceptions.CorruptedFileException;
+import exceptions.WriteFailureException;
 
 public class PlanService extends Repository<Plan> {
 
@@ -103,7 +105,7 @@ public class PlanService extends Repository<Plan> {
             }
 
         } catch (IOException e) {
-            throw new PersistenceException(
+            throw new WriteFailureException(
                 "Falha ao gravar arquivo de planos: " + e.getMessage(), filePath, e);
         }
     }
@@ -128,7 +130,7 @@ public class PlanService extends Repository<Plan> {
 
                 String[] parts = line.split(SEP_REGEX, -1);
                 if (parts.length != 5) {
-                    throw new PersistenceException(
+                    throw new CorruptedFileException(
                         "Arquivo de planos corrompido na linha " + lineNumber
                         + ": esperado 5 campos, encontrado " + parts.length, filePath);
                 }
@@ -143,14 +145,14 @@ public class PlanService extends Repository<Plan> {
                     items.add(instantiatePlan(typeName, name, description,
                                              minDuration, price, lineNumber, filePath));
                 } catch (NumberFormatException e) {
-                    throw new PersistenceException(
+                    throw new CorruptedFileException(
                         "Arquivo de planos corrompido na linha " + lineNumber
                         + ": valor numérico inválido", filePath, e);
                 }
             }
 
         } catch (IOException e) {
-            throw new PersistenceException(
+            throw new WriteFailureException(
                 "Falha ao ler arquivo de planos: " + e.getMessage(), filePath, e);
         }
     }
@@ -178,7 +180,7 @@ public class PlanService extends Repository<Plan> {
             case "SEMI_ANNUAL": return new PlanSemiAnnual(name, description, minDuration, price);
             case "ANNUAL":      return new PlanAnnual(name, description, minDuration, price);
             default:
-                throw new PersistenceException(
+                throw new CorruptedFileException(
                     "Arquivo de planos corrompido na linha " + lineNumber
                     + ": tipo desconhecido '" + typeName + "'", filePath);
         }

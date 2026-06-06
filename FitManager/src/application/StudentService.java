@@ -7,6 +7,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import exceptions.CorruptedFileException;
+import exceptions.WriteFailureException;
 
 /**
  * Serviço de alunos. Estende Repository<Student> (herança).
@@ -91,8 +93,7 @@ public class StudentService extends Repository<Student> {
             }
 
         } catch (IOException e) {
-            throw new PersistenceException(
-                "Falha ao gravar arquivo de alunos: " + e.getMessage(), filePath, e);
+            throw new WriteFailureException("Falha ao gravar arquivo de alunos: " + e.getMessage(), filePath, e);
         }
     }
 
@@ -121,10 +122,7 @@ public class StudentService extends Repository<Student> {
 
                 String[] parts = line.split(SEP_REGEX, -1);
                 if (parts.length != 5) {
-                    throw new PersistenceException(
-                        "Arquivo de alunos corrompido na linha " + lineNumber
-                        + ": esperado 5 campos, encontrado " + parts.length,
-                        filePath);
+                    throw new CorruptedFileException("Arquivo de alunos corrompido na linha " + lineNumber + "...", filePath);
                 }
 
                 try {
@@ -139,15 +137,12 @@ public class StudentService extends Repository<Student> {
                     items.add(student);
 
                 } catch (DateTimeParseException e) {
-                    throw new PersistenceException(
-                        "Arquivo de alunos corrompido na linha " + lineNumber
-                        + ": data inválida '" + parts[3] + "'",
-                        filePath, e);
+                    throw new CorruptedFileException("Arquivo de alunos corrompido na linha " + lineNumber + ": data inválida...", filePath, e);
                 }
             }
 
         } catch (IOException e) {
-            throw new PersistenceException(
+            throw new WriteFailureException(
                 "Falha ao ler arquivo de alunos: " + e.getMessage(), filePath, e);
         }
     }
