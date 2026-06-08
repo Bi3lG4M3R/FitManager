@@ -1,7 +1,7 @@
 package application;
 
 import domain.plan.*;
-
+import exceptions.PersistenceException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -9,16 +9,16 @@ import exceptions.CorruptedFileException;
 import exceptions.WriteFailureException;
 
 public class PlanService extends Repository<Plan> {
-
+    private static ArrayList<Plan> plans;
     // ------------------------------------------------------------------ //
     // Regras de negócio                                                    //
     // ------------------------------------------------------------------ //
 
-    public ArrayList<Plan> listPlans() { return items; }
+    public ArrayList<Plan> listPlans() { return plans; }
 
     /** Retorna OperationResult<Plan> conforme diagrama — método de instância. */
     public OperationResult<Plan> findByName(String name) {
-        for (Plan p : items) {
+        for (Plan p : plans) {
             if (name != null && name.equals(p.getName()))
                 return new OperationResult<>(true, "Plano encontrado.", p);
         }
@@ -77,7 +77,7 @@ public class PlanService extends Repository<Plan> {
                 return new OperationResult<>(false, "Tipo inválido");
         }
 
-        items.add(temporary);
+        plans.add(temporary);
         return new OperationResult<>(true, "O plano " + name + " foi criado com sucesso.", temporary);
     }
 
@@ -107,7 +107,7 @@ public class PlanService extends Repository<Plan> {
         try (BufferedWriter writer = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8))) {
 
-            for (Plan p : items) {
+            for (Plan p : plans) {
                 writer.write(encode(p));
                 writer.newLine();
             }
@@ -123,7 +123,7 @@ public class PlanService extends Repository<Plan> {
         File file = new File(filePath);
         if (!file.exists()) return;
 
-        items.clear();
+        plans.clear();
 
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
@@ -150,7 +150,7 @@ public class PlanService extends Repository<Plan> {
                     int minDuration    = Integer.parseInt(parts[3]);
                     double price       = Double.parseDouble(parts[4]);
 
-                    items.add(instantiatePlan(typeName, name, description,
+                    plans.add(instantiatePlan(typeName, name, description,
                                              minDuration, price, lineNumber, filePath));
                 } catch (NumberFormatException e) {
                     throw new CorruptedFileException(

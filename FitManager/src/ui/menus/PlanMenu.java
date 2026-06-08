@@ -73,7 +73,7 @@ public class PlanMenu{
                 case CHECK_BY_NAME:
                     String planNameToSearch = ui.getInput("Digite o nome do plano a ser consultado: ");
                     if(planNameToSearch == null) break;
-                    Plan planFound = fitManager.findPlanByName(planNameToSearch);
+                    Plan planFound = fitManager.findPlanByName(planNameToSearch).getData();
                     if(planFound == null){
                         ui.showError("Plano não encontrado.");
                     } else {
