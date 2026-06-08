@@ -1,5 +1,5 @@
 package ui.menus;
-
+import application.PersistenceException;
 import application.FitManager;
 import ui.UserInterface;
 import ui.enums.MainMenuEnum;
@@ -72,7 +72,14 @@ public class MainMenu{
                 break;
 
                 case EXIT:
-                    ui.showMessage("Saindo do programa...");
+                    try {
+                        fitManager.saveAll();
+                        ui.showMessage("Dados salvos. Saindo do programa...");
+                    } catch (PersistenceException e) {
+                        ui.showError("ATENÇÃO: Falha ao salvar '" + e.getFilePath() + "'!\n"
+                            + "Os dados desta sessão podem ter sido perdidos.\n"
+                            + "Verifique espaço em disco e permissões da pasta 'data/'.");
+                    }
                 break;
             }
 
