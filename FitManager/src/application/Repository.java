@@ -1,6 +1,8 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Classe abstrata genérica que centraliza o comportamento estrutural
@@ -16,11 +18,11 @@ import java.util.ArrayList;
  */
 public abstract class Repository<T> {
 
-    protected ArrayList<T> items = new ArrayList<>();
+    protected List<T> items = new ArrayList<>();
 
     /** Retorna todos os itens da coleção. */
-    public ArrayList<T> listAll() {
-        return items;
+    public List<T> listAll() {
+        return Collections.unmodifiableList(items);
     }
 
     /** Retorna a quantidade de itens na coleção. */
