@@ -3,10 +3,10 @@ package application;
 import java.util.ArrayList;
 
 import domain.plan.Plan;
-import domain.plan.PlanAnnual;
-import domain.plan.PlanMonthly;
-import domain.plan.PlanQuarterly;
-import domain.plan.PlanSemiAnnual;
+import domain.plan.AnnualPlan;
+import domain.plan.MonthlyPlan;
+import domain.plan.QuarterlyPlan;
+import domain.plan.SemiAnnualPlan;
 import domain.plan.PlanType;
 
 public class PlanService {
@@ -54,28 +54,28 @@ public class PlanService {
                 if(minDurationMonths < 1){
                     return new OperationResult(false, "Duração mínima inválida.");
                 }
-                temporary = new PlanMonthly(name, description, minDurationMonths, pricePerMonth);
+                temporary = new MonthlyPlan(name, description, minDurationMonths, pricePerMonth);
             break;
             
             case QUARTERLY:
                 if(minDurationMonths < 3){
                     return new OperationResult(false, "Duração mínima inválida.");
                 }
-                temporary = new PlanQuarterly(name, description, minDurationMonths, pricePerMonth);
+                temporary = new QuarterlyPlan(name, description, minDurationMonths, pricePerMonth);
             break;
             
             case SEMI_ANNUAL:
                 if(minDurationMonths < 6){
                     return new OperationResult(false, "Duração mínima inválida.");
                 }
-                temporary = new PlanSemiAnnual(name, description, minDurationMonths, pricePerMonth);
+                temporary = new SemiAnnualPlan(name, description, minDurationMonths, pricePerMonth);
             break;
             
             case ANNUAL:
                 if(minDurationMonths < 12){
                     return new OperationResult(false, "Duração mínima inválida.");
                 }
-                temporary = new PlanAnnual(name, description, minDurationMonths, pricePerMonth);
+                temporary = new AnnualPlan(name, description, minDurationMonths, pricePerMonth);
             break;
             
             default:
