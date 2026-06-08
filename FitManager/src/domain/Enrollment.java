@@ -98,4 +98,17 @@ public class Enrollment {
     public LocalDate getCancellationDate() { return cancellationDate; }
     
     public String getCancellationReason() { return cancellationReason; }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Enrollment other = (Enrollment) obj;
+        return code == other.code;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(code);
+    }
 }
