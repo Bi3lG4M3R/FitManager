@@ -70,7 +70,7 @@ public class PlanService extends Repository<Plan> {
                 if (minDurationMonths < 12)
                     return new OperationResult<>(false, "Duração mínima inválida.");
                 }
-                temporary = new AnnualPlan(name, description, minDurationMonths, pricePerMonth);
+                temporary = new planAnnual(name, description, minDurationMonths, pricePerMonth);
             break;
             
             default:
