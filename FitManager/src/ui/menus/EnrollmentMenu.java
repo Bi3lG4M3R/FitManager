@@ -153,71 +153,65 @@ public class EnrollmentMenu {
                     OperationResult findEnrollmentResult = fitManager.findEnrollmentByCode(enrollmentCodeToCancel);
 
                     if(findEnrollmentResult.isSuccess()){ // Encontrou matricula
-                        // Se o plano for anual possui taxa de cancelamento
-                        Enrollment enrollmentToCancel = (Enrollment) findEnrollmentResult.getData();
-                        if(enrollmentToCancel.getPlan().getType() == domain.plan.PlanType.ANNUAL){
+                        double cancelationFee = (double) fitManager.calculateCancelationFee(enrollmentCodeToCancel).getData();
+                        
+                        if(cancelationFee > 0.0){   // Calcula a taxa usando polimorfismo
+                            ui.showMessage("Taxa de cancelamento: " + String.format("%.2f", cancelationFee));
 
-                            double cancelationFee = (double) fitManager.calculateCancelationFee(enrollmentCodeToCancel).getData();
-                            if(cancelationFee > 0.0){   // Calcula a taxa
-                                                        // Solicita pagamento
-                                ui.showMessage("Taxa de cancelamento: " + String.format("%.2f", cancelationFee));
-
-                                // Pagamento da taxa
-                                PaymentType feePaymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
-                                if (feePaymentType == null) {
-                                    ui.showMessage("Operação cancelada.");
-                                    break;
-                                }
-                                OperationResult resultFeePayment = null;
-
-                                switch (feePaymentType) {
-                                    case PIX:
-                                        String pixKey = ui.getInput("Digite a chave PIX de origem: ");
-                                        if(pixKey == null) break;
-                                        resultFeePayment = fitManager.registerPaymentPix(enrollmentCodeToCancel, cancelationFee, "Taxa de cancelamento", pixKey);
-                                        break;
-                                    case CASH:
-                                        double amountReceived = ui.getInputDouble("Valor em dinheiro entregue pelo aluno: ");
-                                        if(amountReceived < 0) break;
-                                        resultFeePayment = fitManager.registerPaymentCash(enrollmentCodeToCancel, cancelationFee, "Taxa de cancelamento", amountReceived);
-                                        break;
-                                    case DEBIT_CARD:
-                                        String debitLastDigits = ui.getInput("Últimos 4 dígitos do cartão de débito: ");
-                                        if(debitLastDigits == null) break;
-                                        resultFeePayment = fitManager.registerPaymentDebit(enrollmentCodeToCancel, cancelationFee, "Taxa de cancelamento", debitLastDigits);
-                                        break;
-                                    case CREDIT_CARD:
-                                        int installments = ui.getInputInt("Quantidade de parcelas: ");
-                                        if(installments < 0) break;
-                                        String creditLastDigits = ui.getInput("Últimos 4 dígitos do cartão de crédito: ");
-                                        if(creditLastDigits == null) break;
-                                        resultFeePayment = fitManager.registerPaymentCredit(enrollmentCodeToCancel, cancelationFee, "Taxa de cancelamento", installments, creditLastDigits);
-                                        break;
-                                }
-
-                                if(resultFeePayment != null && resultFeePayment.isSuccess()){   // Pagamento foi sucesso
-                                    ui.showMessage(resultFeePayment.getMessage());
-                                    OperationResult resultCancelEnrollment = fitManager.cancelEnrollment(enrollmentCodeToCancel, cancelReason);
-                                    
-                                    if(resultCancelEnrollment.isSuccess()){
-                                        ui.showMessage(resultCancelEnrollment.getMessage());
-                                    } else {
-                                        ui.showError("Erro ao cancelar matrícula: " + resultCancelEnrollment.getMessage());
-                                    }
-
-                                }else if(resultFeePayment != null){ // Pagamento falhou
-                                    ui.showError("Erro ao registrar pagamento da taxa de cancelamento: " + resultFeePayment.getMessage());
-                                }
+                            // Pagamento da taxa
+                            PaymentType feePaymentType = ui.getInputPaymentType("Selecione a forma de pagamento: ");
+                            if (feePaymentType == null) {
+                                ui.showMessage("Operação cancelada.");
+                                break;
                             }
-                        }else{  // Não há taxa de cancelamento
-                                // Realiza somente o cancelamento
+                            OperationResult resultFeePayment = null;
+
+                            switch (feePaymentType) {
+                                case PIX:
+                                    String pixKey = ui.getInput("Digite a chave PIX de origem: ");
+                                    if(pixKey == null) break;
+                                    resultFeePayment = fitManager.registerPaymentPix(enrollmentCodeToCancel, cancelationFee, "Taxa de cancelamento", pixKey);
+                                    break;
+                                case CASH:
+                                    double amountReceived = ui.getInputDouble("Valor em dinheiro entregue pelo aluno: ");
+                                    if(amountReceived < 0) break;
+                                    resultFeePayment = fitManager.registerPaymentCash(enrollmentCodeToCancel, cancelationFee, "Taxa de cancelamento", amountReceived);
+                                    break;
+                                case DEBIT_CARD:
+                                    String debitLastDigits = ui.getInput("Últimos 4 dígitos do cartão de débito: ");
+                                    if(debitLastDigits == null) break;
+                                    resultFeePayment = fitManager.registerPaymentDebit(enrollmentCodeToCancel, cancelationFee, "Taxa de cancelamento", debitLastDigits);
+                                    break;
+                                case CREDIT_CARD:
+                                    int installments = ui.getInputInt("Quantidade de parcelas: ");
+                                    if(installments < 0) break;
+                                    String creditLastDigits = ui.getInput("Últimos 4 dígitos do cartão de crédito: ");
+                                    if(creditLastDigits == null) break;
+                                    resultFeePayment = fitManager.registerPaymentCredit(enrollmentCodeToCancel, cancelationFee, "Taxa de cancelamento", installments, creditLastDigits);
+                                    break;
+                            }
+
+                            if(resultFeePayment != null && resultFeePayment.isSuccess()){   // Pagamento foi sucesso
+                                ui.showMessage(resultFeePayment.getMessage());
+                                OperationResult resultCancelEnrollment = fitManager.cancelEnrollment(enrollmentCodeToCancel, cancelReason);
+                                
+                                if(resultCancelEnrollment.isSuccess()){
+                                    ui.showMessage(resultCancelEnrollment.getMessage());
+                                } else {
+                                    ui.showError("Erro ao cancelar matrícula: " + resultCancelEnrollment.getMessage());
+                                }
+
+                            }else if(resultFeePayment != null){ // Pagamento falhou
+                                ui.showError("Erro ao registrar pagamento da taxa de cancelamento: " + resultFeePayment.getMessage());
+                            }
+                        }else{  // Sem taxa de cancelamento - só cancela
                             OperationResult resultCancelEnrollment = fitManager.cancelEnrollment(enrollmentCodeToCancel, cancelReason);
                             if(resultCancelEnrollment.isSuccess()){
                                 ui.showMessage(resultCancelEnrollment.getMessage());
                             } else {
                                 ui.showError("Erro ao cancelar matrícula: " + resultCancelEnrollment.getMessage());
                             }
-                            }    
+                        }
                     }else{
                         ui.showError("Erro ao encontrar matrícula: " + findEnrollmentResult.getMessage());
                     }
