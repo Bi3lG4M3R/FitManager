@@ -48,29 +48,29 @@ public class PlanService extends Repository<Plan> {
             case MONTHLY:
                 if (minDurationMonths < 1)
                     return new OperationResult<>(false, "Duração mínima inválida.");
-                }
-                temporary = new MonthlyPlan(name, description, minDurationMonths, pricePerMonth);
+                
+                temporary = new PlanMonthly(name, description, minDurationMonths, pricePerMonth);
             break;
             
             case QUARTERLY:
                 if (minDurationMonths < 3)
                     return new OperationResult<>(false, "Duração mínima inválida.");
-                }
-                temporary = new QuarterlyPlan(name, description, minDurationMonths, pricePerMonth);
+                
+                temporary = new PlanQuarterly(name, description, minDurationMonths, pricePerMonth);
             break;
             
             case SEMI_ANNUAL:
                 if (minDurationMonths < 6)
                     return new OperationResult<>(false, "Duração mínima inválida.");
-                }
-                temporary = new SemiAnnualPlan(name, description, minDurationMonths, pricePerMonth);
+                
+                temporary = new PlanSemiAnnual(name, description, minDurationMonths, pricePerMonth);
             break;
             
             case ANNUAL:
                 if (minDurationMonths < 12)
                     return new OperationResult<>(false, "Duração mínima inválida.");
-                }
-                temporary = new planAnnual(name, description, minDurationMonths, pricePerMonth);
+                
+                temporary = new PlanAnnual(name, description, minDurationMonths, pricePerMonth);
             break;
             
             default:
