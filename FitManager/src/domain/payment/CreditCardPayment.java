@@ -31,11 +31,12 @@ public class CreditCardPayment extends Payment {
         String parcelamento = installments > 1
             ? installments + "x de R$ " + String.format("%.2f", getAmount() / installments)
             : "à vista";
+        double processingFee = getProcessingFee();
+        double netValue = getAmount() - processingFee;
 
         return String.format(
-            "Tipo: Cartão de Crédito | Data: %s | Valor: R$ %.2f (%s) | Cartão: **** %s | Taxa processamento: R$ %.2f | Desc: %s",
-            getFormattedDate(), getAmount(), parcelamento, cardLastDigits,
-            getProcessingFee(), getDescription()
+            "[CRÉDITO] Data: %s | Valor Bruto: R$ %.2f (%s) | Cartão: **** %s | Taxa: R$ %.2f | Valor Líquido: R$ %.2f | %s",
+            getFormattedDate(), getAmount(), parcelamento, cardLastDigits, processingFee, netValue, getDescription()
         );
     }
 }
