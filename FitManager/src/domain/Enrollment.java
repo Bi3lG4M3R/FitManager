@@ -69,6 +69,12 @@ public class Enrollment {
         this.cancellationReason = (reason != null && !reason.isBlank()) ? reason : "Não informado";
     }
 
+    public void cancelWithDate(LocalDate cancDate, String reason) {
+        this.status = EnrollmentStatus.CANCELLED;
+        this.cancellationDate = cancDate;
+        this.cancellationReason = (reason != null && !reason.isBlank()) ? reason : "Não informado";
+    }
+
     public long getMonthsUsed() {
         /* Se já foi cancelada, conta até a data de cancelamento; caso contrário, até hoje*/
         LocalDate end = (status == EnrollmentStatus.CANCELLED && cancellationDate != null)? cancellationDate : LocalDate.now();
