@@ -63,7 +63,7 @@ public class PlanMenu{
                     int planDuration = ui.getInputInt("Digite a duração mínima do plano (em meses): ");
                     if(planDuration < 0) break;
 
-                    OperationResult resultRegister = fitManager.registerPlan(planName, planDescription, planType, planDuration, planPrice);
+                    OperationResult<Plan> resultRegister = fitManager.registerPlan(planName, planDescription, planType, planDuration, planPrice);
                     if(resultRegister.isSuccess())
                         ui.showMessage(resultRegister.getMessage());
                      else 
@@ -92,7 +92,7 @@ public class PlanMenu{
                     if(planName == null) break;
                     double newPrice = ui.getInputDouble("Digite o novo preço do plano: ");
                     if(newPrice < 0) break;
-                    OperationResult resultUpdate = fitManager.updatePlanPrice(planName, newPrice);
+                    OperationResult<Plan> resultUpdate = fitManager.updatePlanPrice(planName, newPrice);
                     if(resultUpdate.isSuccess())
                         ui.showMessage(resultUpdate.getMessage());
                     else

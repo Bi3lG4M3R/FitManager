@@ -14,10 +14,10 @@ public class EnrollmentService {
     static int nextCode;
 
     // Agora recebemos diretamente o objeto Payment pronto!
-    public OperationResult enroll(Student student, Plan plan, LocalDate startDate, int duration, Payment payment) {
+    public OperationResult<Enrollment> enroll(Student student, Plan plan, LocalDate startDate, int duration, Payment payment) {
 
         if (plan.getMinDurationMonths() > duration) {
-            return new OperationResult(false, "Duração inferior à mínima prevista no plano.");
+            return new OperationResult<>(false, "Duração inferior à mínima prevista no plano.");
         }
 
         nextCode++;
@@ -27,20 +27,20 @@ public class EnrollmentService {
 
         enrollment.registerPayment(payment);
 
-        return new OperationResult(true, "Cadastro realizado com sucesso!", enrollment);
+        return new OperationResult<>(true, "Cadastro realizado com sucesso!", enrollment);
     }
 
-    public OperationResult registerPayment(int code, Payment payment) {
+    public OperationResult<Payment> registerPayment(int code, Payment payment) {
         Enrollment enrollment = findByCode(code);
         
         if(enrollment == null){
-            return new OperationResult(false, "Matrícula não encontrada.");
+            return new OperationResult<>(false, "Matrícula não encontrada.");
         }
         if(enrollment.getStatus() != EnrollmentStatus.ACTIVE){
-            return new OperationResult(false, "Não é possível registrar pagamento em uma matrícula inativa.");
+            return new OperationResult<>(false, "Não é possível registrar pagamento em uma matrícula inativa.");
         }
         if(payment.getAmount() <= 0){
-            return new OperationResult(false, "O valor do pagamento deve ser maior que zero.");
+            return new OperationResult<>(false, "O valor do pagamento deve ser maior que zero.");
         }
         
         // Validação específica para pagamentos em dinheiro
@@ -52,7 +52,7 @@ public class EnrollmentService {
         }
 
         enrollment.registerPayment(payment);
-        return new OperationResult(true, "Pagamento Registrado", payment);
+        return new OperationResult<>(true, "Pagamento Registrado", payment);
     }
 
     public Enrollment findActiveByStudent(String cpf) {
@@ -73,27 +73,27 @@ public class EnrollmentService {
 
     public ArrayList<Enrollment> listEnrollments() { return enrollments; }
     
-    public OperationResult cancel(int code, String reason){
+    public OperationResult<Enrollment> cancel(int code, String reason){
         Enrollment enrollment = findByCode(code); 
-        if(enrollment==null) return new OperationResult(false, "Matricula não encontrada.");
-        if(enrollment.getStatus()!=EnrollmentStatus.ACTIVE) return new OperationResult(false, "Matricula ja cancelada.");
+        if(enrollment==null) return new OperationResult<>(false, "Matricula não encontrada.");
+        if(enrollment.getStatus()!=EnrollmentStatus.ACTIVE) return new OperationResult<>(false, "Matricula ja cancelada.");
         
         enrollment.cancel(reason);
-        return new OperationResult(true, "Matricula cancelada!!", enrollment);
+        return new OperationResult<>(true, "Matricula cancelada!!", enrollment);
     }
 
-    public OperationResult calculateCancelationFee(int code){
+    public OperationResult<Double> calculateCancelationFee(int code){
         Enrollment enrollment = findByCode(code); 
-        if(enrollment==null) return new OperationResult(false, "Matricula não encontrada.");
-        if(enrollment.getStatus()!=EnrollmentStatus.ACTIVE) return new OperationResult(false, "Matricula ja cancelada.");
+        if(enrollment==null) return new OperationResult<>(false, "Matricula não encontrada.");
+        if(enrollment.getStatus()!=EnrollmentStatus.ACTIVE) return new OperationResult<>(false, "Matricula ja cancelada.");
 
         double balanceMonthsUsed = enrollment.calculateBalanceForMonthsUsed();
         double fee = enrollment.getPlan().getCancellationFee(enrollment);
         
         if(balanceMonthsUsed > 0.0) {
-            return new OperationResult(true, "Taxa de cancelamento: ", fee + balanceMonthsUsed);
+            return new OperationResult<>(true, "Taxa de cancelamento: ", fee + balanceMonthsUsed);
         }
-        return new OperationResult(true, "Taxa de cancelamento: ", fee);
+        return new OperationResult<>(true, "Taxa de cancelamento: ", fee);
     }
 
     public boolean hasActiveEnrollment(String cpf) {

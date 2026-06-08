@@ -31,72 +31,72 @@ public class PlanService {
     
     public boolean nameExists(String name){ return findByName(name) != null; }
     
-    public OperationResult registerPlan(String name, String description, PlanType type, int minDurationMonths, double pricePerMonth) {
+    public OperationResult<Plan> registerPlan(String name, String description, PlanType type, int minDurationMonths, double pricePerMonth) {
         if(name.isBlank() || nameExists(name)){
-            return new OperationResult(false, "Nome inválido ou já existente.");
+            return new OperationResult<>(false, "Nome inválido ou já existente.");
         }
         if(description.isEmpty()){
-            return new OperationResult(false, "Descrição inválida.");
+            return new OperationResult<>(false, "Descrição inválida.");
         }
         if(type == null){
-            return new OperationResult(false, "Tipo inválido.");
+            return new OperationResult<>(false, "Tipo inválido.");
         }
         if(minDurationMonths <= 0){
-            return new OperationResult(false, "Duração mínima inválida.");
+            return new OperationResult<>(false, "Duração mínima inválida.");
         }
         if(pricePerMonth <= 0){
-            return new OperationResult(false, "Preço inválido.");
+            return new OperationResult<>(false, "Preço inválido.");
         }
         
         Plan temporary;
         switch(type){
             case MONTHLY:
                 if(minDurationMonths < 1){
-                    return new OperationResult(false, "Duração mínima inválida.");
+                    return new OperationResult<>(false, "Duração mínima inválida.");
                 }
                 temporary = new MonthlyPlan(name, description, minDurationMonths, pricePerMonth);
             break;
             
             case QUARTERLY:
                 if(minDurationMonths < 3){
-                    return new OperationResult(false, "Duração mínima inválida.");
+                    return new OperationResult<>(false, "Duração mínima inválida.");
                 }
                 temporary = new QuarterlyPlan(name, description, minDurationMonths, pricePerMonth);
             break;
             
             case SEMI_ANNUAL:
                 if(minDurationMonths < 6){
-                    return new OperationResult(false, "Duração mínima inválida.");
+                    return new OperationResult<>(false, "Duração mínima inválida.");
                 }
                 temporary = new SemiAnnualPlan(name, description, minDurationMonths, pricePerMonth);
             break;
             
             case ANNUAL:
                 if(minDurationMonths < 12){
-                    return new OperationResult(false, "Duração mínima inválida.");
+                    return new OperationResult<>(false, "Duração mínima inválida.");
                 }
                 temporary = new AnnualPlan(name, description, minDurationMonths, pricePerMonth);
             break;
             
             default:
-                return new OperationResult(false, "Tipo inválido");
+                return new OperationResult<>(false, "Tipo inválido");
         }
         
         this.plans.add(temporary);
-        return new OperationResult(true, "O plano " + name + " foi criado com sucesso.", temporary);
+        return new OperationResult<>(true, "O plano " + name + " foi criado com sucesso.", temporary);
     }
     
-    public OperationResult updatePrice(String name, double newPrice){
+    public OperationResult<Plan> updatePrice(String name, double newPrice){
         if(newPrice <= 0){
-            return new OperationResult(false, "Preço inválido.");
+            return new OperationResult<>(false, "Preço inválido.");
         }
         
         Plan planNamed = this.findByName(name);
         
         if(planNamed != null){
             planNamed.updatePrice(newPrice);
-            return new OperationResult(true, "O valor do plano " + planNamed.getName() + " foi alterado com sucesso.", planNamed);
+            return new OperationResult<>(true, "O valor do plano " + planNamed.getName() + " foi alterado com sucesso.", planNamed);
         }
-        return new OperationResult(false, "O plano " + name + " não foi localizado."); 
+        return new OperationResult<>(false, "O plano " + name + " não foi localizado.");
     }
 }

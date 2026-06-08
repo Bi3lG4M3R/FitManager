@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import application.FitManager;
 import application.OperationResult;
 import domain.Enrollment;
+import domain.payment.Payment;
 import domain.payment.PaymentType;
 import ui.UserInterface;
 import ui.enums.EnrollmentMenuEnum;
@@ -106,10 +107,10 @@ public class EnrollmentMenu {
                 case CHECK_ACTIVE_ENROLLMENT:
                     String studentCpfToCheck = ui.getInput("Digite o CPF do aluno para consultar a matrícula: ");
                     if(studentCpfToCheck == null) break;
-                    OperationResult resultCheckEnrollment = fitManager.findActiveEnrollment(studentCpfToCheck);
+                    OperationResult<Enrollment> resultCheckEnrollment = fitManager.findActiveEnrollment(studentCpfToCheck);
                     if(resultCheckEnrollment.isSuccess()){
                         ui.showMessage(resultCheckEnrollment.getMessage());
-                        ui.showEnrollment((Enrollment) resultCheckEnrollment.getData());
+                        ui.showEnrollment(resultCheckEnrollment.getData());
                         // adicionar mostrar saldo pendente.
                     } else {
                         ui.showError("Erro ao consultar matrícula: " + resultCheckEnrollment.getMessage());
