@@ -1,6 +1,5 @@
 package ui.menus;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 import application.FitManager;
@@ -138,6 +137,13 @@ public class ReportsMenu{
                     }
                 break;
 
+                case BACK:
+                    ui.showMessage("Voltando ao menu principal...");
+                break;
+
+                default:
+                    ui.showMessage("Opção inexistente, selecione uma das opçãoes acima.");
+                break;
             }
         }while(optionSelected != ReportsMenuEnum.BACK);
     }

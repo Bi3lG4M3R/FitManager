@@ -10,18 +10,18 @@ import domain.plan.PlanSemiAnnual;
 import domain.plan.PlanType;
 
 public class PlanService {
-    private static ArrayList<Plan> plans;
+    private ArrayList<Plan> plans;
 
     public PlanService() {
-         PlanService.plans = new ArrayList<>();
+         this.plans = new ArrayList<>();
     }
     
     public ArrayList<Plan> listPlans(){
         return plans;
     }
     
-    public static Plan findByName(String name){
-        for (Plan item : plans) {
+    public Plan findByName(String name){
+        for (Plan item : this.plans) {
             if (name != null && name.equals(item.getName())){
                 return item;
             }
@@ -91,7 +91,7 @@ public class PlanService {
             return new OperationResult(false, "Preço inválido.");
         }
         
-        Plan planNamed = PlanService.findByName(name);
+        Plan planNamed = this.findByName(name);
         
         if(planNamed != null){
             planNamed.updatePrice(newPrice);

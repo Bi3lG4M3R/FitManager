@@ -54,7 +54,7 @@ public class FitManager {
         return planService.registerPlan(name, description, type, minDurationMonths, pricePerMonth);
     }
 
-    public Plan findPlanByName(String name) { return PlanService.findByName(name); }
+    public Plan findPlanByName(String name) { return planService.findByName(name); }
 
     public OperationResult updatePlanPrice(String name, double newPrice) {
         return planService.updatePrice(name, newPrice);
@@ -72,7 +72,7 @@ public class FitManager {
         if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
         
         Payment payment = new PixPayment(startDate, initialAmount, paymentDescription, pixKey);
-        return enrollmentService.enroll(studentService.findByCpf(cpf), PlanService.findByName(planName), startDate, durationMonths, payment);
+        return enrollmentService.enroll(studentService.findByCpf(cpf), planService.findByName(planName), startDate, durationMonths, payment);
     }
 
     /* Dinheiro */
@@ -81,7 +81,7 @@ public class FitManager {
         if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
         
         Payment payment = new CashPayment(startDate, initialAmount, paymentDescription, amountReceived);
-        return enrollmentService.enroll(studentService.findByCpf(cpf), PlanService.findByName(planName), startDate, durationMonths, payment);
+        return enrollmentService.enroll(studentService.findByCpf(cpf), planService.findByName(planName), startDate, durationMonths, payment);
     }
 
     /* Débito */
@@ -90,7 +90,7 @@ public class FitManager {
         if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
         
         Payment payment = new DebitCardPayment(startDate, initialAmount, paymentDescription, cardLastDigits);
-        return enrollmentService.enroll(studentService.findByCpf(cpf), PlanService.findByName(planName), startDate, durationMonths, payment);
+        return enrollmentService.enroll(studentService.findByCpf(cpf), planService.findByName(planName), startDate, durationMonths, payment);
     }
 
     /* Crédito */
@@ -99,7 +99,7 @@ public class FitManager {
         if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
         
         Payment payment = new CreditCardPayment(startDate, initialAmount, paymentDescription, installments, cardLastDigits);
-        return enrollmentService.enroll(studentService.findByCpf(cpf), PlanService.findByName(planName), startDate, durationMonths, payment);
+        return enrollmentService.enroll(studentService.findByCpf(cpf), planService.findByName(planName), startDate, durationMonths, payment);
     }
 
     /* ------------------------------------------------------------------ */
@@ -125,7 +125,7 @@ public class FitManager {
     private boolean validate(String cpf, String planName, double initialAmount) {
         Student student = studentService.findByCpf(cpf);
         if (student == null || !student.isActive()) return false;
-        if (PlanService.findByName(planName) == null) return false;
+        if (planService.findByName(planName) == null) return false;
         if (enrollmentService.hasActiveEnrollment(cpf)) return false;
         if (initialAmount <= 0) return false;
         return true;
@@ -135,7 +135,7 @@ public class FitManager {
         Student student = studentService.findByCpf(cpf);
         if (student == null) return new OperationResult(false, "Aluno não encontrado.");
         if (!student.isActive()) return new OperationResult(false, "O aluno inativo não pode ser matriculado.");
-        if (PlanService.findByName(planName) == null) return new OperationResult(false, "Plano não encontrado.");
+        if (planService.findByName(planName) == null) return new OperationResult(false, "Plano não encontrado.");
         if (enrollmentService.hasActiveEnrollment(cpf)) return new OperationResult(false, "O aluno já possui matrícula ativa.");
         if (initialAmount <= 0) return new OperationResult(false, "A matrícula exige pagamento inicial maior que zero.");
         return new OperationResult(false, "Erro de validação.");
