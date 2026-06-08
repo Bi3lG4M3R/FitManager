@@ -243,7 +243,6 @@ public class EnrollmentMenu {
 
         }while(optionSelected != EnrollmentMenuEnum.BACK);
 
-
     }
     
     public static String formatEnrollmentList(ArrayList<Enrollment> enrollmentHistory) {
