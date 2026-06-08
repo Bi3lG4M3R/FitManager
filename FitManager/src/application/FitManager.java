@@ -133,12 +133,12 @@ public class FitManager {
 
     private OperationResult<Enrollment> validationError(String cpf, String planName, double initialAmount) {
         Student student = studentService.findByCpf(cpf);
-        if (student == null) return new OperationResult(false, "Aluno não encontrado.");
-        if (!student.isActive()) return new OperationResult(false, "O aluno inativo não pode ser matriculado.");
-        if (planService.findByName(planName) == null) return new OperationResult(false, "Plano não encontrado.");
-        if (enrollmentService.hasActiveEnrollment(cpf)) return new OperationResult(false, "O aluno já possui matrícula ativa.");
-        if (initialAmount <= 0) return new OperationResult(false, "A matrícula exige pagamento inicial maior que zero.");
-        return new OperationResult(false, "Erro de validação.");
+        if (student == null) return new OperationResult<>(false, "Aluno não encontrado.");
+        if (!student.isActive()) return new OperationResult<>(false, "O aluno inativo não pode ser matriculado.");
+        if (planService.findByName(planName) == null) return new OperationResult<>(false, "Plano não encontrado.");
+        if (enrollmentService.hasActiveEnrollment(cpf)) return new OperationResult<>(false, "O aluno já possui matrícula ativa.");
+        if (initialAmount <= 0) return new OperationResult<>(false, "A matrícula exige pagamento inicial maior que zero.");
+        return new OperationResult<>(false, "Erro de validação.");
     }
 
     public OperationResult<Enrollment> findEnrollmentByCode(int code) {

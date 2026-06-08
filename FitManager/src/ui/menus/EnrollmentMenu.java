@@ -68,7 +68,7 @@ public class EnrollmentMenu {
                         break;
                     }
                     
-                    OperationResult resultRegisterEnrollment = collectAndRegisterInitialPayment(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType);
+                    OperationResult<Enrollment> resultRegisterEnrollment = collectAndRegisterInitialPayment(studentCpf, planName, startDate, durationMonths, initialPayment, paymentType);
                     
                     if(resultRegisterEnrollment != null && resultRegisterEnrollment.isSuccess())
                         ui.showMessage(resultRegisterEnrollment.getMessage());
@@ -87,7 +87,7 @@ public class EnrollmentMenu {
                         break;
                     }
                     
-                    OperationResult resultPayment = collectAndRegisterPayment(enrollmentCode, amount, registerPaymentType, registerPaymentType.getDescription());
+                    OperationResult<Payment> resultPayment = collectAndRegisterPayment(enrollmentCode, amount, registerPaymentType, registerPaymentType.getDescription());
                     
                     if(resultPayment != null && resultPayment.isSuccess())
                         ui.showMessage(resultPayment.getMessage());
@@ -134,7 +134,7 @@ public class EnrollmentMenu {
     
     /* Método auxiliar para coletar dados de pagamento baseado no tipo.
        Retorna null se cancelado, senão chama a função fitManager apropriada. */
-    private OperationResult collectAndRegisterPayment(int enrollmentCode, double amount, PaymentType paymentType, String description) {
+    private OperationResult<Payment> collectAndRegisterPayment(int enrollmentCode, double amount, PaymentType paymentType, String description) {
         switch (paymentType) {
             case PIX:
                 String pixKey = ui.getInput("Digite a chave PIX de origem: ");
@@ -160,7 +160,7 @@ public class EnrollmentMenu {
     
     /* Método auxiliar para processar cancelamento da matrícula com ou sem taxa. */
     private void processCancellation(int enrollmentCode, String cancelReason, ArrayList<Enrollment> enrollmentHistory) {
-        OperationResult findEnrollmentResult = fitManager.findEnrollmentByCode(enrollmentCode);
+        OperationResult<Enrollment> findEnrollmentResult = fitManager.findEnrollmentByCode(enrollmentCode);
         
         if(!findEnrollmentResult.isSuccess()) {
             ui.showError("Erro ao encontrar matrícula: " + findEnrollmentResult.getMessage());
@@ -178,7 +178,7 @@ public class EnrollmentMenu {
                 return;
             }
             
-            OperationResult resultFeePayment = collectAndRegisterPayment(enrollmentCode, cancelationFee, feePaymentType, "Taxa de cancelamento");
+            OperationResult<Payment> resultFeePayment = collectAndRegisterPayment(enrollmentCode, cancelationFee, feePaymentType, "Taxa de cancelamento");
             
             if(resultFeePayment == null) {
                 ui.showMessage("Operação cancelada.");
@@ -194,7 +194,7 @@ public class EnrollmentMenu {
         }
         
         // Realiza o cancelamento após taxa (se houver) ser paga
-        OperationResult resultCancelEnrollment = fitManager.cancelEnrollment(enrollmentCode, cancelReason);
+        OperationResult<Enrollment> resultCancelEnrollment = fitManager.cancelEnrollment(enrollmentCode, cancelReason);
         if(resultCancelEnrollment.isSuccess()) {
             ui.showMessage(resultCancelEnrollment.getMessage());
         } else {
@@ -203,7 +203,7 @@ public class EnrollmentMenu {
     }
     
     /* Método auxiliar para coletar dados e registrar pagamento inicial ou adicional. */
-    private OperationResult collectAndRegisterInitialPayment(String cpf, String planName, LocalDate startDate, 
+    private OperationResult<Enrollment> collectAndRegisterInitialPayment(String cpf, String planName, LocalDate startDate, 
                                                              int durationMonths, double initialPayment, PaymentType paymentType) {
         switch (paymentType) {
             case PIX:

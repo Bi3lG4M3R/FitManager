@@ -47,7 +47,7 @@ public class EnrollmentService {
         if(payment instanceof domain.payment.CashPayment) {
             domain.payment.CashPayment cashPayment = (domain.payment.CashPayment) payment;
             if(cashPayment.getAmountReceived() < cashPayment.getAmount()) {
-                return new OperationResult(false, "Valor recebido é menor que o valor do pagamento.");
+                return new OperationResult<>(false, "Valor recebido é menor que o valor do pagamento.");
             }
         }
 
