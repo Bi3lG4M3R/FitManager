@@ -28,9 +28,10 @@ public class CashPayment extends Payment {
 
     @Override
     public String getPaymentSummary() {
+        double change = getChange();
         return String.format(
-            "Tipo: Dinheiro | Data: %s | Valor: R$ %.2f | Recebido: R$ %.2f | Troco: R$ %.2f | Desc: %s",
-            getFormattedDate(), getAmount(), amountReceived, getChange(), getDescription()
+            "[DINHEIRO] Data: %s | Valor Pago: R$ %.2f | Recebido: R$ %.2f | Troco: R$ %.2f | Taxa: R$ %.2f | Valor Líquido: R$ %.2f | %s",
+            getFormattedDate(), getAmount(), amountReceived, change, getProcessingFee(), getAmount(), getDescription()
         );
     }
 }

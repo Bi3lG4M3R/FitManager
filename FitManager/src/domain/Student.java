@@ -56,6 +56,19 @@ public class Student {
 
     public boolean isActive() { return active; }
     
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Student other = (Student) obj;
+        return cpf != null && cpf.equals(other.cpf);
+    }
+    
+    @Override
+    public int hashCode() {
+        return cpf != null ? cpf.hashCode() : 0;
+    }
+    
     /*retorna true se valido, false para invalido*/
     public static boolean validateCpf(String cpf){
         /*tratamento em regex para tirar pontos e traços*/

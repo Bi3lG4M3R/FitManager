@@ -39,11 +39,12 @@ public class Enrollment {
 
     public void registerPayment(Payment payment) { payments.add(payment); }
     
-    /*Soma todos pagamentos do array e coloca na variavel*/
+    /*Soma todos pagamentos, já descontando as taxas de processamento de cada um.
+     Assim apenas o valor recebido de fato pela academia é contabilizado.*/
     public double calculateTotalPaid() {
         double total = 0;
         for (Payment payment : payments) {
-            total += payment.getAmount();
+            total += (payment.getAmount() - payment.getProcessingFee());
         }
         return total;
     }
@@ -97,4 +98,17 @@ public class Enrollment {
     public LocalDate getCancellationDate() { return cancellationDate; }
     
     public String getCancellationReason() { return cancellationReason; }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Enrollment other = (Enrollment) obj;
+        return code == other.code;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(code);
+    }
 }

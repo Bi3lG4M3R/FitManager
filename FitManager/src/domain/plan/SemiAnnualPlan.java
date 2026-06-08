@@ -1,8 +1,10 @@
 package domain.plan;
 
-public class PlanSemiAnnual extends Plan {
+import domain.Enrollment;
+
+public class SemiAnnualPlan extends Plan {
     
-    public PlanSemiAnnual(String name, String description, int minDurationMonths, double pricePerMonth){
+    public SemiAnnualPlan(String name, String description, int minDurationMonths, double pricePerMonth){
         super(name, description, minDurationMonths, pricePerMonth);
     }
     
@@ -16,5 +18,10 @@ public class PlanSemiAnnual extends Plan {
         }
         
         return this.getPricePerMonth() * months * 0.90;
+    }
+    
+    @Override
+    public double getCancellationFee(Enrollment enrollment){
+        return 0.0;
     }
 }

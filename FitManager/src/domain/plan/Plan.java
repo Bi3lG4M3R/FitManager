@@ -37,5 +37,18 @@ public abstract class Plan {
     
     public abstract double calculateTotalPrice(int months);
     
-    public double getCancellationFee(Enrollment enrollment) { return 0.0; };
+    public abstract double getCancellationFee(Enrollment enrollment);
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Plan other = (Plan) obj;
+        return name != null && name.equals(other.name);
+    }
+    
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
+    }
 }

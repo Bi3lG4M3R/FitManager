@@ -21,8 +21,8 @@ public class DebitCardPayment extends Payment {
     @Override
     public String getPaymentSummary() {
         return String.format(
-            "Tipo: Cartão de Débito | Data: %s | Valor: R$ %.2f | Cartão: **** %s | Desc: %s",
-            getFormattedDate(), getAmount(), cardLastDigits, getDescription()
+            "[DÉBITO] Data: %s | Valor: R$ %.2f | Cartão: **** %s | Taxa: R$ %.2f (sem taxa) | Valor Líquido: R$ %.2f | %s",
+            getFormattedDate(), getAmount(), cardLastDigits, getProcessingFee(), getAmount(), getDescription()
         );
     }
 }

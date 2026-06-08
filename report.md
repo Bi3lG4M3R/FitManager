@@ -35,7 +35,7 @@ Agora, na chamada polimórfica `enrollment.getPlan().getCancellationFee(enrollme
 
 ### 5. Instanciação da subclasse correta no serviço
 
-No sistema, o `PlanService` agora usa um bloco `switch` no momento em que os dados são enviados do Menu (baseado no `PlanType` do Enum) para construir a classe instanciada correta (`PlanMonthly`, `PlanAnnual`, etc.). Da mesma forma, no menu de Matrícula e Pagamento, sobrecargas de métodos (`enrollStudent`) no `FitManager` instanciam a subclasse de pagamento correspondente (`PixPayment`, `CashPayment`...) antes de mandá-las para a base de dados via Polimorfismo.
+No sistema, o `PlanService` agora usa um bloco `switch` no momento em que os dados são enviados do Menu (baseado no `PlanType` do Enum) para construir a classe instanciada correta (`MonthlyPlan`, `AnnualPlan`, etc.). Da mesma forma, no menu de Matrícula e Pagamento, sobrecargas de métodos (`enrollStudent`) no `FitManager` instanciam a subclasse de pagamento correspondente (`PixPayment`, `CashPayment`...) antes de mandá-las para a base de dados via Polimorfismo.
 
 ### 6. O Enum `PlanType` e `PaymentType` ainda tem papel no sistema?
 
@@ -43,11 +43,11 @@ Sim, optamos por mantê-los. Eles provaram ser fundamentais para exibir descriç
 
 ### 7. Taxa de cancelamento: Semântica no Domínio
 
-A taxa de cancelamento foi definida no domínio como uma multa monetária explícita que o cliente deve arcar para encerrar o vínculo. No caso exclusivo do `PlanAnnual`, se ele usar menos da metade do tempo acordado, ele pagará uma fatura extra que representa 20% do valor de contrato original. No sistema, essa regra é tratada por meio do `EnrollmentMenu`, que obriga o registro de um novo pagamento antes de prosseguir com a troca de status para `CANCELLED`. Planos avulsos como Mensal retornam `0.0` em sua sobrescrita natural.
+A taxa de cancelamento foi definida no domínio como uma multa monetária explícita que o cliente deve arcar para encerrar o vínculo. No caso exclusivo do `AnnualPlan`, se ele usar menos da metade do tempo acordado, ele pagará uma fatura extra que representa 20% do valor de contrato original. No sistema, essa regra é tratada por meio do `EnrollmentMenu`, que obriga o registro de um novo pagamento antes de prosseguir com a troca de status para `CANCELLED`. Planos avulsos como Mensal retornam `0.0` em sua sobrescrita natural.
 
 ## Regras de negócio evoluídas nesta etapa
 
-- **Desconto por longo prazo de Planos:** Subclasses como `PlanQuarterly` e `PlanAnnual` encapsularam fórmulas de redução em seu `calculateTotalPrice`.
+- **Desconto por longo prazo de Planos:** Subclasses como `QuarterlyPlan` e `AnnualPlan` encapsularam fórmulas de redução em seu `calculateTotalPrice`.
 - **Multa de quebra de contrato (`getCancellationFee`):** Apenas presente de forma afirmativa no Plano Anual caso os meses utilizados não atinjam 50% do contrato.
 - **Taxa de Processamento de Cartão (`getProcessingFee`):** O Cartão de crédito assume 2,5% de perda que a academia absorve nas suas finanças. O código da subclasse `CreditCardPayment` garante essa abstração.
 

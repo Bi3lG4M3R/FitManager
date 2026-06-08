@@ -29,4 +29,18 @@ public abstract class Payment {
     public String getDescription() { return description; }
 
     public String getFormattedDate() { return date.format(DATE_FORMATTER); }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Payment other = (Payment) obj;
+        return date != null && date.equals(other.date) && 
+               Double.compare(amount, other.amount) == 0;
+    }
+    
+    @Override
+    public int hashCode() {
+        return (date != null ? date.hashCode() : 0) ^ Double.hashCode(amount);
+    }
 }

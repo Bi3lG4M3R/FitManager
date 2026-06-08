@@ -47,6 +47,15 @@ public class EnrollmentService extends Repository<Enrollment> {
             return new OperationResult<>(false, "Não é possível registrar pagamento em uma matrícula inativa.");
         if (payment.getAmount() <= 0)
             return new OperationResult<>(false, "O valor do pagamento deve ser maior que zero.");
+        }
+        
+        // Validação específica para pagamentos em dinheiro
+        if(payment instanceof domain.payment.CashPayment) {
+            domain.payment.CashPayment cashPayment = (domain.payment.CashPayment) payment;
+            if(cashPayment.getAmountReceived() < cashPayment.getAmount()) {
+                return new OperationResult<>(false, "Valor recebido é menor que o valor do pagamento.");
+            }
+        }
 
         enrollment.registerPayment(payment);
         return new OperationResult<>(true, "Pagamento Registrado", payment);
