@@ -14,9 +14,6 @@ import java.util.TreeMap;
 
 import domain.Enrollment;
 import domain.payment.Payment;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class FinancialReport {
@@ -51,7 +48,7 @@ public class FinancialReport {
         for (Enrollment enrollment : enrollments) {
             String planTypeName = enrollment.getPlan().getType().getDescription();
 
-            if (isSamePeriod(enrollment.getStartDate())) {
+            if (checkSamePeriod(enrollment.getStartDate())) {
                 this.enrollmentsStarted++;
                 contractedCountByPlanType.put(
                     planTypeName,
@@ -59,31 +56,29 @@ public class FinancialReport {
                 );
             }
 
-            if (isSamePeriod(enrollment.getCancellationDate())) {
+            if (checkSamePeriod(enrollment.getCancellationDate())) {
                 this.enrollmentsCancelled++;
             }
 
             for (Payment payment : enrollment.getPayments()) {
-                if (!isSamePeriod(payment.getDate())) {
-                    continue;
+                if (checkSamePeriod(payment.getDate())) {  
+                    double processingFee = payment.getProcessingFee();
+                    double netRevenue = payment.getAmount() - processingFee;
+                    String paymentTypeName = payment.getType().getDescription();
+
+                    this.totalRevenue += netRevenue;
+                    this.totalProcessingFees += processingFee;
+
+                    revenueByPlanType.put(
+                        planTypeName,
+                        revenueByPlanType.getOrDefault(planTypeName, 0.0) + netRevenue
+                    );
+
+                    revenueByPaymentType.put(
+                        paymentTypeName,
+                        revenueByPaymentType.getOrDefault(paymentTypeName, 0.0) + netRevenue
+                    );
                 }
-
-                double processingFee = payment.getProcessingFee();
-                double netRevenue = payment.getAmount() - processingFee;
-                String paymentTypeName = payment.getType().getDescription();
-
-                this.totalRevenue += netRevenue;
-                this.totalProcessingFees += processingFee;
-
-                revenueByPlanType.put(
-                    planTypeName,
-                    revenueByPlanType.getOrDefault(planTypeName, 0.0) + netRevenue
-                );
-
-                revenueByPaymentType.put(
-                    paymentTypeName,
-                    revenueByPaymentType.getOrDefault(paymentTypeName, 0.0) + netRevenue
-                );
             }
         }
 
@@ -101,27 +96,27 @@ public class FinancialReport {
     }
 
     private void updateMostContractedPlanTypes(Map<String, Integer> contractedCountByPlanType) {
-        if (contractedCountByPlanType.isEmpty()) {
-            return;
-        }
+        if (!contractedCountByPlanType.isEmpty()) {
 
-        int maxCount = 0;
-        for (Integer count : contractedCountByPlanType.values()) {
-            if (count > maxCount) {
-                maxCount = count;
+            int maxCount = 0;
+            for (Integer count : contractedCountByPlanType.values()) {
+                if (count > maxCount) {
+                    maxCount = count;
+                }
             }
-        }
 
-        TreeMap<String, Integer> ordered = new TreeMap<>(contractedCountByPlanType);
-        for (Map.Entry<String, Integer> entry : ordered.entrySet()) {
-            if (entry.getValue() == maxCount) {
-                mostContractedPlanTypes.add(entry.getKey());
+            TreeMap<String, Integer> ordered = new TreeMap<>(contractedCountByPlanType);
+            for (Map.Entry<String, Integer> entry : ordered.entrySet()) {
+                if (entry.getValue() == maxCount) {
+                    mostContractedPlanTypes.add(entry.getKey());
+                }
             }
         }
     }
 
-    private boolean isSamePeriod(LocalDate date) {
-        return date != null && date.getMonthValue() == this.month && date.getYear() == this.year;
+    private boolean checkSamePeriod(LocalDate date) {
+        if(date != null && date.getMonthValue() == this.month && date.getYear() == this.year) return true;
+        else return false;
     }
 
     public String toDisplayString() {
@@ -160,12 +155,7 @@ public class FinancialReport {
 
         TreeMap<String, Double> ordered = new TreeMap<>(source);
         for (Map.Entry<String, Double> entry : ordered.entrySet()) {
-            reportText
-                .append("- ")
-                .append(entry.getKey())
-                .append(": R$ ")
-                .append(String.format("%.2f", entry.getValue()))
-                .append("\n");
+            reportText.append("- ").append(entry.getKey()).append(": R$ ").append(String.format("%.2f", entry.getValue())).append("\n");
         }
     }
 

@@ -88,26 +88,31 @@ public class ReportsMenu{
 
                 case MONTHLY_FINANCIAL_REPORT:
                     int month = ui.getInputInt("Digite o mês do relatório (1-12): ");
-                    if (month < 0) break;
-                    int year = ui.getInputInt("Digite o ano do relatório: ");
-                    if (year < 0) break;
+                    if (month < 0){
+                        ui.showError("Digite um mes valido ! Operacao cancelada");
+                    }else{
+                        int year = ui.getInputInt("Digite o ano do relatório: ");
+                        if (year < 0){
+                            ui.showError("Digite um mes valido ! Operacao cancelada");
+                        }else{
 
-                    OperationResult<FinancialReport> resultReport = fitManager.generateMonthlyReport(month, year);
-                    if (!resultReport.isSuccess()) {
-                        ui.showError(resultReport.getMessage());
-                        break;
-                    }
+                            OperationResult<FinancialReport> resultReport = fitManager.generateMonthlyReport(month, year);
+                            if (!resultReport.isSuccess()) {
+                                FinancialReport report = resultReport.getData();
+                                ui.showMessage(report.toDisplayString());
 
-                    FinancialReport report = resultReport.getData();
-                    ui.showMessage(report.toDisplayString());
-
-                    String exportChoice = ui.getInput("Deseja exportar este relatório para arquivo? (S/N): ");
-                    if (exportChoice != null && exportChoice.equalsIgnoreCase("S")) {
-                        OperationResult<String> exportResult = fitManager.exportMonthlyReport(report);
-                        if (exportResult.isSuccess()) {
-                            ui.showMessage(exportResult.getMessage() + "\nArquivo: " + exportResult.getData());
-                        } else {
-                            ui.showError(exportResult.getMessage());
+                                String exportChoice = ui.getInput("Deseja exportar este relatório para arquivo? (S/N): ");
+                                if (exportChoice != null && exportChoice.equalsIgnoreCase("S")) {
+                                    OperationResult<String> exportResult = fitManager.exportMonthlyReport(report);
+                                    if (exportResult.isSuccess()) {
+                                        ui.showMessage(exportResult.getMessage() + "\nArquivo: " + exportResult.getData());
+                                    } else {
+                                        ui.showError(exportResult.getMessage());
+                                    }
+                                }
+                            }else{
+                                ui.showError(resultReport.getMessage());
+                            }
                         }
                     }
                 break;
