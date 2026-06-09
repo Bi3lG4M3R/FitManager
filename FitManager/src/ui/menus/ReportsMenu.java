@@ -2,7 +2,9 @@ package ui.menus;
 
 import java.util.ArrayList;
 
+import application.FinancialReport;
 import application.FitManager;
+import application.OperationResult;
 import domain.Enrollment;
 import ui.UserInterface;
 import ui.enums.ReportsMenuEnum;
@@ -81,6 +83,32 @@ public class ReportsMenu{
                         ui.showError("Não há matrículas cadastradas.");
                     } else {
                         ui.showMessage(buildAllEnrollmentsReport(allEnrollments));
+                    }
+                break;
+
+                case MONTHLY_FINANCIAL_REPORT:
+                    int month = ui.getInputInt("Digite o mês do relatório (1-12): ");
+                    if (month < 0) break;
+                    int year = ui.getInputInt("Digite o ano do relatório: ");
+                    if (year < 0) break;
+
+                    OperationResult<FinancialReport> resultReport = fitManager.generateMonthlyReport(month, year);
+                    if (!resultReport.isSuccess()) {
+                        ui.showError(resultReport.getMessage());
+                        break;
+                    }
+
+                    FinancialReport report = resultReport.getData();
+                    ui.showMessage(report.toDisplayString());
+
+                    String exportChoice = ui.getInput("Deseja exportar este relatório para arquivo? (S/N): ");
+                    if (exportChoice != null && exportChoice.equalsIgnoreCase("S")) {
+                        OperationResult<String> exportResult = fitManager.exportMonthlyReport(report);
+                        if (exportResult.isSuccess()) {
+                            ui.showMessage(exportResult.getMessage() + "\nArquivo: " + exportResult.getData());
+                        } else {
+                            ui.showError(exportResult.getMessage());
+                        }
                     }
                 break;
 
