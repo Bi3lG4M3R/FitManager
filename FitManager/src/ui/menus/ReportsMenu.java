@@ -97,7 +97,7 @@ public class ReportsMenu{
                         }else{
 
                             OperationResult<FinancialReport> resultReport = fitManager.generateMonthlyReport(month, year);
-                            if (!resultReport.isSuccess()) {
+                            if (resultReport.isSuccess()) {
                                 FinancialReport report = resultReport.getData();
                                 ui.showMessage(report.toDisplayString());
 
