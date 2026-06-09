@@ -20,6 +20,9 @@ public class CreditCardPayment extends Payment {
     public String getCardLastDigits() { return cardLastDigits; }
 
     @Override
+    public PaymentType getType() { return PaymentType.CREDIT_CARD; }
+
+    @Override
     public double getProcessingFee() {
         /*A academia absorve o custo: o aluno paga o valor nominal,
          mas apenas (amount - fee) é creditado no saldo.*/
