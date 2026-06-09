@@ -1,9 +1,9 @@
+// application/FitManager.java
 package application;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import exceptions.PersistenceException;
+import exceptions.*;
 import domain.Enrollment;
 import domain.Student;
 import domain.payment.*;
@@ -18,53 +18,47 @@ public class FitManager {
         this.studentService    = new StudentService();
         this.planService       = new PlanService();
         this.enrollmentService = new EnrollmentService();
-
-        new java.io.File("data").mkdirs(); // garante que o diretório data/ existe
+        new java.io.File("data").mkdirs();
     }
-
-    // ------------------------------------------------------------------ //
-    // Persistência                                                          //
-    // ------------------------------------------------------------------ //
 
     private static final String FILE_STUDENTS    = "data/students.csv";
     private static final String FILE_PLANS       = "data/plans.csv";
     private static final String FILE_ENROLLMENTS = "data/enrollments.csv";
 
-    /** Carrega na ordem correta: students → plans → enrollments */
     public void loadAll() throws PersistenceException {
         studentService.load(FILE_STUDENTS);
         planService.load(FILE_PLANS);
         enrollmentService.load(FILE_ENROLLMENTS, studentService, planService);
     }
 
-    /** Grava na ordem correta: enrollments → plans → students */
     public void saveAll() throws PersistenceException {
         enrollmentService.save(FILE_ENROLLMENTS);
         planService.save(FILE_PLANS);
         studentService.save(FILE_STUDENTS);
     }
 
-    /** Tenta salvar silenciosamente após operações relevantes. */
-    private boolean trySaveAll() {
+    private <T> OperationResult<T> persistAfterMutation(OperationResult<T> result) {
+        if (!result.isSuccess()) return result;
         try {
             saveAll();
-            return true;
+            return result;
         } catch (PersistenceException e) {
-            return false;
+            return new OperationResult<>(false,
+                "Operação realizada em memória, mas houve falha ao salvar os dados em '"
+                + e.getFilePath() + "': " + e.getMessage(),
+                result.getData());
         }
     }
 
-    // ------------------------------------------------------------------ //
-    // Alunos — idêntico ao original, + trySaveAll() nas mutações          //
-    // ------------------------------------------------------------------ //
-
+    // Alunos
     public OperationResult<Student> registerStudent(String name, String cpf, String contact, LocalDate birthDate) {
         OperationResult<Student> result = studentService.registerStudent(name, cpf, contact, birthDate);
-        if (result.isSuccess()) trySaveAll();
-        return result;
+        return persistAfterMutation(result);
     }
 
-    public Student findStudentByCpf(String cpf) { return studentService.findByCpf(cpf); }
+    public Student findStudentByCpf(String cpf) {
+        return studentService.findByCpf(cpf);
+    }
 
     public OperationResult<Student> removeStudent(String cpf) {
         Student student = studentService.findByCpf(cpf);
@@ -72,7 +66,6 @@ public class FitManager {
             return new OperationResult<>(false, "Não foi possível encontrar o aluno.");
         if (enrollmentService.hasActiveEnrollment(student.getCpf()))
             return new OperationResult<>(false, "Não é possível desativar um aluno com matrícula ativa.");
-
         OperationResult<Student> result = studentService.removeStudent(student.getCpf());
         if (result.isSuccess()) trySaveAll();
         return result;
@@ -84,26 +77,25 @@ public class FitManager {
             return new OperationResult<>(false, "Não foi possível encontrar o aluno.");
         if (student.isActive())
             return new OperationResult<>(false, "O aluno já está ativo no sistema.");
-
         OperationResult<Student> result = studentService.reactivateStudent(student.getCpf());
         if (result.isSuccess()) trySaveAll();
         return result;
     }
 
-    public ArrayList<Student> listStudents() { return studentService.listStudents(); }
+    public ArrayList<Student> listStudents() {
+        return studentService.listStudents();
+    }
 
-    // ------------------------------------------------------------------ //
-    // Planos — idêntico ao original, + trySaveAll() nas mutações          //
-    // ------------------------------------------------------------------ //
-
+    // Planos
     public OperationResult<Plan> registerPlan(String name, String description, PlanType type, int minDurationMonths, double pricePerMonth) {
         OperationResult<Plan> result = planService.registerPlan(name, description, type, minDurationMonths, pricePerMonth);
         if (result.isSuccess()) trySaveAll();
         return result;
     }
 
-    /** findByName agora retorna OperationResult<Plan> conforme diagrama */
-    public OperationResult<Plan> findPlanByName(String name) { return planService.findByName(name); }
+    public OperationResult<Plan> findPlanByName(String name) {
+        return planService.findByName(name);
+    }
 
     public OperationResult<Plan> updatePlanPrice(String name, double newPrice) {
         OperationResult<Plan> result = planService.updatePrice(name, newPrice);
@@ -111,13 +103,11 @@ public class FitManager {
         return result;
     }
 
-    public ArrayList<Plan> listPlans() { return planService.listPlans(); }
+    public ArrayList<Plan> listPlans() {
+        return planService.listPlans();
+    }
 
-    // ------------------------------------------------------------------ //
-    // Matrículas — idêntico ao original, + trySaveAll() nas mutações      //
-    // ------------------------------------------------------------------ //
-
-    /* PIX */
+    // Matrículas
     public OperationResult<Enrollment> enrollStudent(String cpf, String planName, LocalDate startDate,
             int durationMonths, String paymentDescription, double initialAmount, String pixKey) {
         if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
@@ -129,7 +119,6 @@ public class FitManager {
         return result;
     }
 
-    /* Dinheiro */
     public OperationResult<Enrollment> enrollStudent(String cpf, String planName, LocalDate startDate,
             int durationMonths, double initialAmount, String paymentDescription, double amountReceived) {
         if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
@@ -141,7 +130,6 @@ public class FitManager {
         return result;
     }
 
-    /* Débito */
     public OperationResult<Enrollment> enrollStudent(String cpf, String planName, LocalDate startDate,
             int durationMonths, double initialAmount, String paymentDescription, String cardLastDigits) {
         if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
@@ -153,7 +141,6 @@ public class FitManager {
         return result;
     }
 
-    /* Crédito */
     public OperationResult<Enrollment> enrollStudent(String cpf, String planName, LocalDate startDate,
             int durationMonths, double initialAmount, String paymentDescription, int installments, String cardLastDigits) {
         if (!validate(cpf, planName, initialAmount)) return validationError(cpf, planName, initialAmount);
@@ -165,10 +152,7 @@ public class FitManager {
         return result;
     }
 
-    // ------------------------------------------------------------------ //
-    // Pagamentos adicionais — idêntico ao original, + trySaveAll()        //
-    // ------------------------------------------------------------------ //
-
+    // Pagamentos
     public OperationResult<Payment> registerPaymentPix(int code, double amount, String description, String pixKey) {
         OperationResult<Payment> result = enrollmentService.registerPayment(code, new PixPayment(LocalDate.now(), amount, description, pixKey));
         if (result.isSuccess()) trySaveAll();
@@ -193,14 +177,11 @@ public class FitManager {
         return result;
     }
 
-    // ------------------------------------------------------------------ //
-    // Consultas e cancelamento — idêntico ao original                     //
-    // ------------------------------------------------------------------ //
-
+    // Consultas e cancelamento
     public OperationResult<Enrollment> findEnrollmentByCode(int code) {
-        if (enrollmentService.findByCode(code) == null)
-            return new OperationResult<>(false, "Matrícula não encontrada.");
-        return new OperationResult<>(true, "Matricula encontrada.", enrollmentService.findByCode(code));
+        Enrollment e = enrollmentService.findByCode(code);
+        if (e == null) return new OperationResult<>(false, "Matrícula não encontrada.");
+        return new OperationResult<>(true, "Matrícula encontrada.", e);
     }
 
     public OperationResult<Enrollment> cancelEnrollment(int code, String reason) {
@@ -214,51 +195,41 @@ public class FitManager {
     }
 
     public OperationResult<Enrollment> findActiveEnrollment(String cpf) {
-        if (studentService.findByCpf(cpf) == null)
-            return new OperationResult<>(false, "Aluno não encontrado.");
-        if (!studentService.findByCpf(cpf).isActive())
-            return new OperationResult<>(false, "Aluno inativo não possui matrícula ativa.");
+        Student s = studentService.findByCpf(cpf);
+        if (s == null) return new OperationResult<>(false, "Aluno não encontrado.");
+        if (!s.isActive()) return new OperationResult<>(false, "Aluno inativo não possui matrícula ativa.");
         if (!enrollmentService.hasActiveEnrollment(cpf))
             return new OperationResult<>(false, "Nenhuma matrícula ativa encontrada para este aluno.");
         return new OperationResult<>(true, "Matrícula ativa encontrada.", enrollmentService.findActiveByStudent(cpf));
     }
 
-    public ArrayList<Enrollment> listEnrollments() { return enrollmentService.listEnrollments(); }
+    public ArrayList<Enrollment> listEnrollments() {
+        return enrollmentService.listEnrollments();
+    }
 
-    // ------------------------------------------------------------------ //
-    // Relatórios financeiros mensais                                      //
-    // ------------------------------------------------------------------ //
-
+    // Relatórios
     public OperationResult<FinancialReport> generateMonthlyReport(int month, int year) {
-        if (month < 1 || month > 12) {
+        if (month < 1 || month > 12)
             return new OperationResult<>(false, "Mês inválido. Informe um valor entre 1 e 12.");
-        }
-        if (year <= 0) {
+        if (year <= 0)
             return new OperationResult<>(false, "Ano inválido.");
-        }
-
         FinancialReport report = new FinancialReport(month, year);
         report.calculate(enrollmentService.listEnrollments());
         return new OperationResult<>(true, "Relatório financeiro mensal gerado com sucesso.", report);
     }
 
     public OperationResult<String> exportMonthlyReport(FinancialReport report) {
-        if (report == null) {
+        if (report == null)
             return new OperationResult<>(false, "Relatório inválido para exportação.");
-        }
-
         try {
             String path = report.exportToFile("data/reports");
             return new OperationResult<>(true, "Relatório exportado com sucesso.", path);
-        } catch (IOException e) {
+        } catch (java.io.IOException e) {
             return new OperationResult<>(false, "Falha ao exportar relatório: " + e.getMessage());
         }
     }
 
-    // ------------------------------------------------------------------ //
-    // Validação interna — idêntico ao original                            //
-    // ------------------------------------------------------------------ //
-
+    // Validação interna
     private boolean validate(String cpf, String planName, double initialAmount) {
         Student student = studentService.findByCpf(cpf);
         if (student == null || !student.isActive()) return false;
@@ -276,5 +247,14 @@ public class FitManager {
         if (enrollmentService.hasActiveEnrollment(cpf)) return new OperationResult<>(false, "O aluno já possui matrícula ativa.");
         if (initialAmount <= 0) return new OperationResult<>(false, "A matrícula exige pagamento inicial maior que zero.");
         return new OperationResult<>(false, "Erro de validação.");
+    }
+
+    private void trySaveAll() {
+        try {
+            saveAll();
+        } catch (PersistenceException e) {
+            // Log interno, mas não interrompe o fluxo; o erro já será reportado no próximo save
+            System.err.println("Aviso: falha ao salvar dados automaticamente: " + e.getMessage());
+        }
     }
 }

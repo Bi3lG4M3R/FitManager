@@ -10,5 +10,7 @@ public class PersistenceException extends FitManagerException {
         super(message, cause);
         this.filePath = filePath;
     }
-    public String getFilePath() { return filePath; }
+    public String getFilePath() {
+        return filePath;
+    }
 }
