@@ -7,7 +7,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import exceptions.CorruptedFileException;
 import exceptions.WriteFailureException;
-
+import exceptions.PersistenceException;
 import domain.Enrollment;
 import domain.EnrollmentStatus;
 import domain.Student;
@@ -15,7 +15,7 @@ import domain.payment.*;
 import domain.plan.Plan;
 
 public class EnrollmentService extends Repository<Enrollment> {
-
+    private ArrayList<Enrollment> enrollments = new ArrayList<>();
     // nextCode agora é de instância (não static) para funcionar corretamente
     // com persistência — o valor é salvo e restaurado junto com o arquivo.
     private int nextCode = 0;
@@ -32,7 +32,7 @@ public class EnrollmentService extends Repository<Enrollment> {
         nextCode++;
 
         Enrollment enrollment = new Enrollment(nextCode, student, plan, startDate, duration);
-        items.add(enrollment);
+        enrollments.add(enrollment);
         enrollment.registerPayment(payment);
 
         return new OperationResult<>(true, "Cadastro realizado com sucesso!", enrollment);
@@ -47,7 +47,7 @@ public class EnrollmentService extends Repository<Enrollment> {
             return new OperationResult<>(false, "Não é possível registrar pagamento em uma matrícula inativa.");
         if (payment.getAmount() <= 0)
             return new OperationResult<>(false, "O valor do pagamento deve ser maior que zero.");
-        }
+    
         
         // Validação específica para pagamentos em dinheiro
         if(payment instanceof domain.payment.CashPayment) {
@@ -62,7 +62,7 @@ public class EnrollmentService extends Repository<Enrollment> {
     }
 
     public Enrollment findActiveByStudent(String cpf) {
-        for (Enrollment enrollment : items) {
+        for (Enrollment enrollment : enrollments) {
             if (enrollment.getStudent().getCpf().equals(cpf) && enrollment.getStatus() == EnrollmentStatus.ACTIVE)
                 return enrollment;
         }
@@ -70,13 +70,13 @@ public class EnrollmentService extends Repository<Enrollment> {
     }
 
     public Enrollment findByCode(int code) {
-        for (Enrollment enrollment : items) {
+        for (Enrollment enrollment : enrollments) {
             if (enrollment.getCode() == code) return enrollment;
         }
         return null;
     }
 
-    public ArrayList<Enrollment> listEnrollments() { return items; }
+    public ArrayList<Enrollment> listEnrollments() { return enrollments; }
 
     public OperationResult<Enrollment> cancel(int code, String reason) {
         Enrollment enrollment = findByCode(code);
@@ -130,7 +130,7 @@ public class EnrollmentService extends Repository<Enrollment> {
             writer.write(NEXT_CODE_KEY + SEP + nextCode);
             writer.newLine();
 
-            for (Enrollment e : items) {
+            for (Enrollment e : enrollments) {
                 writer.write(encodeHeader(e));
                 writer.newLine();
 
@@ -161,7 +161,7 @@ public class EnrollmentService extends Repository<Enrollment> {
         File file = new File(filePath);
         if (!file.exists()) return; // arquivo ausente é normal
 
-        items.clear();
+        enrollments.clear();
         nextCode = 0;
 
         try (BufferedReader reader = new BufferedReader(
@@ -203,7 +203,7 @@ public class EnrollmentService extends Repository<Enrollment> {
                     enrollment.registerPayment(decodePayment(paymentLine, lineNumber, filePath));
                 }
 
-                items.add(enrollment);
+                enrollments.add(enrollment);
             }
 
         } catch (IOException e) {
@@ -250,15 +250,15 @@ public class EnrollmentService extends Repository<Enrollment> {
         }
 
         try {
-            int code            = Integer.parseInt(p[0]);
-            String cpf          = p[1];
-            String planName     = p[2];
+            int code = Integer.parseInt(p[0]);
+            String cpf = p[1];
+            String planName = p[2];
             LocalDate startDate = LocalDate.parse(p[3]);
-            int durationMonths  = Integer.parseInt(p[4]);
-            String statusStr    = p[5];
+            int durationMonths = Integer.parseInt(p[4]);
+            String statusStr = p[5];
             // CORRIGIDO: p[6] é a data de cancelamento — era ignorada antes
-            String cancDateStr  = p[6];
-            String cancReason   = p[7].equals(NULL_MARKER) ? null : p[7];
+            String cancDateStr = p[6];
+            String cancReason = p[7].equals(NULL_MARKER) ? null : p[7];
 
             Student student = students.findByCpf(cpf);
             if (student == null) {

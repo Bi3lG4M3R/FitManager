@@ -15,6 +15,9 @@ public class CashPayment extends Payment {
 
     public double getAmountReceived() { return amountReceived; }
 
+    @Override
+    public PaymentType getType() { return PaymentType.CASH; }
+
     /* Método exclusivo de CashPayment — não pertence ao contrato de Payment
      pois troco não faz sentido para os outros tipos.*/
     public double getChange() {

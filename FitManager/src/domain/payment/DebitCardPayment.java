@@ -14,6 +14,9 @@ public class DebitCardPayment extends Payment {
     public String getCardLastDigits() { return cardLastDigits; }
 
     @Override
+    public PaymentType getType() { return PaymentType.DEBIT_CARD; }
+
+    @Override
     public double getProcessingFee() {
         return 0.0; /* Débito não tem taxa*/
     }

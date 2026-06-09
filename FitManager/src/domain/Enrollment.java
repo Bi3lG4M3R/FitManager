@@ -58,6 +58,8 @@ public class Enrollment {
     quantidade que ele já deveria ter pago em relação aos meses usados, resultado negativo = pagou
     mais do que o necessário em relação aos meses já usados(mas não haverá devolução), resultado 0.0 estamos quites*/
     public double calculateBalanceForMonthsUsed() { 
+        if(this.getMonthsUsed() > this.durationMonths)
+            return (this.durationMonths * this.plan.getPricePerMonth()) - calculateTotalPaid();
         return (this.getMonthsUsed() * this.plan.getPricePerMonth()) - calculateTotalPaid();
     }
 
@@ -66,6 +68,12 @@ public class Enrollment {
     public void cancel(String reason) {
         this.status = EnrollmentStatus.CANCELLED;
         this.cancellationDate = LocalDate.now();
+        this.cancellationReason = (reason != null && !reason.isBlank()) ? reason : "Não informado";
+    }
+
+    public void cancelWithDate(LocalDate cancDate, String reason) {
+        this.status = EnrollmentStatus.CANCELLED;
+        this.cancellationDate = cancDate;
         this.cancellationReason = (reason != null && !reason.isBlank()) ? reason : "Não informado";
     }
 

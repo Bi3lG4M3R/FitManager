@@ -1,5 +1,6 @@
 package application;
 
+import exceptions.PersistenceException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

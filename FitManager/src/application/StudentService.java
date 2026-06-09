@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import exceptions.CorruptedFileException;
+import exceptions.PersistenceException;
 import exceptions.WriteFailureException;
 
 /**
@@ -20,7 +21,7 @@ import exceptions.WriteFailureException;
  * que podem aparecer em nomes ou contatos.
  */
 public class StudentService extends Repository<Student> {
-
+    private ArrayList<Student> students = new ArrayList<>();
     // ------------------------------------------------------------------ //
     // Regras de negócio                                                    //
     // ------------------------------------------------------------------ //
@@ -37,13 +38,13 @@ public class StudentService extends Repository<Student> {
             return new OperationResult<>(false, "CPF ja cadastrado.");
         }
         Student student = new Student(name, cpf, contact, birthDate);
-        items.add(student);
+        students.add(student);
         return new OperationResult<>(true, "Aluno cadastrado!", student);
     }
 
     public Student findByCpf(String cpf) {
         cpf = cpf.replaceAll("\\D", "");
-        for (Student s : items) {
+        for (Student s : students) {
             if (s.getCpf().equals(cpf)) return s;
         }
         return null;
@@ -58,7 +59,7 @@ public class StudentService extends Repository<Student> {
         return new OperationResult<>(true, "Estudante desativado.", student);
     }
 
-    public ArrayList<Student> listStudents() { return items; }
+    public ArrayList<Student> listStudents() { return students; }
 
     public boolean cpfExists(String cpf) { return findByCpf(cpf) != null; }
 
@@ -87,7 +88,7 @@ public class StudentService extends Repository<Student> {
         try (BufferedWriter writer = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.UTF_8))) {
 
-            for (Student s : items) {
+            for (Student s : students) {
                 writer.write(encode(s));
                 writer.newLine();
             }
@@ -107,7 +108,7 @@ public class StudentService extends Repository<Student> {
         File file = new File(filePath);
         if (!file.exists()) return; // arquivo ausente é normal
 
-        items.clear();
+        students.clear();
 
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
@@ -134,7 +135,7 @@ public class StudentService extends Repository<Student> {
 
                     Student student = new Student(name, cpf, contact, birth);
                     if (!active) student.deactivate();
-                    items.add(student);
+                    students.add(student);
 
                 } catch (DateTimeParseException e) {
                     throw new CorruptedFileException("Arquivo de alunos corrompido na linha " + lineNumber + ": data inválida...", filePath, e);

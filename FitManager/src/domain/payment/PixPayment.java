@@ -13,6 +13,9 @@ public class PixPayment extends Payment {
     public String getPixKey() { return pixKey; }
 
     @Override
+    public PaymentType getType() { return PaymentType.PIX; }
+
+    @Override
     public double getProcessingFee() {
         return 0.0; /* PIX não tem taxa de processamento*/
     }

@@ -2,9 +2,9 @@ package domain.plan;
 
 import domain.Enrollment;
 
-public class MonthlyPlan extends Plan {
+public class PlanMonthly extends Plan {
     
-    public MonthlyPlan(String name, String description, int minDurationMonths, double pricePerMonth){
+    public PlanMonthly(String name, String description, int minDurationMonths, double pricePerMonth){
         super(name, description, minDurationMonths, pricePerMonth);
     }
     

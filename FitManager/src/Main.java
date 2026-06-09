@@ -1,5 +1,5 @@
 
-import application.PersistenceException;
+import exceptions.PersistenceException;
 import application.FitManager;
 import ui.JOptionPaneUI;
 import ui.TerminalUI;

@@ -2,7 +2,7 @@ package application;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-
+import exceptions.PersistenceException;
 import domain.Enrollment;
 import domain.Student;
 import domain.payment.*;
