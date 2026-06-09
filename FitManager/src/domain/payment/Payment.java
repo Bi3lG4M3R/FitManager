@@ -19,7 +19,7 @@ public abstract class Payment {
     /* Cada subclasse define sua taxa de processamento (0.0 se isenta)*/
     public abstract double getProcessingFee();
 
-    /* Cada subclasse define seu tipo para agrupamentos e relatórios. */
+    /*  Identificação polimórfica do tipo para agrupamentos e relatórios. */
     public abstract PaymentType getType();
 
     /* Cada subclasse gera o resumo com suas informações específicas*/

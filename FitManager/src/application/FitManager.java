@@ -1,5 +1,6 @@
 package application;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import exceptions.PersistenceException;
@@ -223,6 +224,36 @@ public class FitManager {
     }
 
     public ArrayList<Enrollment> listEnrollments() { return enrollmentService.listEnrollments(); }
+
+    // ------------------------------------------------------------------ //
+    // Relatórios financeiros mensais                                      //
+    // ------------------------------------------------------------------ //
+
+    public OperationResult<FinancialReport> generateMonthlyReport(int month, int year) {
+        if (month < 1 || month > 12) {
+            return new OperationResult<>(false, "Mês inválido. Informe um valor entre 1 e 12.");
+        }
+        if (year <= 0) {
+            return new OperationResult<>(false, "Ano inválido.");
+        }
+
+        FinancialReport report = new FinancialReport(month, year);
+        report.calculate(enrollmentService.listEnrollments());
+        return new OperationResult<>(true, "Relatório financeiro mensal gerado com sucesso.", report);
+    }
+
+    public OperationResult<String> exportMonthlyReport(FinancialReport report) {
+        if (report == null) {
+            return new OperationResult<>(false, "Relatório inválido para exportação.");
+        }
+
+        try {
+            String path = report.exportToFile("data/reports");
+            return new OperationResult<>(true, "Relatório exportado com sucesso.", path);
+        } catch (IOException e) {
+            return new OperationResult<>(false, "Falha ao exportar relatório: " + e.getMessage());
+        }
+    }
 
     // ------------------------------------------------------------------ //
     // Validação interna — idêntico ao original                            //
