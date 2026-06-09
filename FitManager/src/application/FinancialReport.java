@@ -14,6 +14,9 @@ import java.util.TreeMap;
 
 import domain.Enrollment;
 import domain.payment.Payment;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class FinancialReport {
