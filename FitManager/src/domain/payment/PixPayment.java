@@ -13,6 +13,9 @@ public class PixPayment extends Payment {
     public String getPixKey() { return pixKey; }
 
     @Override
+    public PaymentType getType() { return PaymentType.PIX; }
+
+    @Override
     public double getProcessingFee() {
         return 0.0; /* PIX não tem taxa de processamento*/
     }
@@ -20,8 +23,8 @@ public class PixPayment extends Payment {
     @Override
     public String getPaymentSummary() {
         return String.format(
-            "Tipo: PIX | Data: %s | Valor: R$ %.2f | Chave: %s | Desc: %s",
-            getFormattedDate(), getAmount(), pixKey, getDescription()
+            "[PIX] Data: %s | Valor: R$ %.2f | Chave: %s | Taxa: R$ %.2f (sem taxa) | Valor Líquido: R$ %.2f | %s",
+            getFormattedDate(), getAmount(), pixKey, getProcessingFee(), getAmount(), getDescription()
         );
     }
 }

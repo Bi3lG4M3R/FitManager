@@ -1,5 +1,5 @@
 @startuml FitManager
-scale 0.75
+scale 0.2
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
 skinparam packageStyle rectangle
@@ -22,11 +22,14 @@ package "Interface do Usuario (UI)" as UI #PapayaWhip {
   interface UserInterface {
     +showMessage(message: String): void
     +showError(error: String): void
-    +showMenu(title: String, options: String[], promptText: String): int
+    +showMenu(tittle: String, options: String[], prompt: String): int
+    +showEnrollment(code: int, studentName: String, planName: String, startDate: LocalDate, endDate: LocalDate, durationMonths: int, totalPrice: double, pendingAmount: double, status: String): void
     +showEnrollment(enrollment: Enrollment): void
-    +showCancelledEnrollment(enrollment: Enrollment): void
-    +showPlan(name: String, desc: String, type: String, minDur: int, price: double): void
-    +showStudent(name: String, cpf: String, contact: String, birth: String): void
+    +showCancelledEnrollment(code: int, studentName: String, planName: String, startDate: LocalDate, endDate: LocalDate, durationMonths: int, totalPrice: double, status: String, cancellationReason: String): void
+    +showPlan(planNameList: String, planDescriptionList: String, planTypeList: String, planMinDurationList: int, planPricePerMonthList: double): void
+    +showStudent(studentNameList: String, studentCpfList: String, studentContactList: String, studentBirthDateList: String): void
+    +showPlanTypeOptions(): void
+    +showPaymentTypeOptions(): void
     +getInput(prompt: String): String
     +getInputInt(prompt: String): int
     +getInputDouble(prompt: String): double
@@ -37,39 +40,85 @@ package "Interface do Usuario (UI)" as UI #PapayaWhip {
 
   class TerminalUI {
     -input: Scanner
+    +showMessage(message: String): void
+    +showError(error: String): void
+    +showMenu(tittle: String, options: String[], prompt: String): int
+    +showEnrollment(code: int, studentName: String, planName: String, startDate: LocalDate, endDate: LocalDate, durationMonths: int, totalPrice: double, pendingAmount: double, status: String): void
+    +showEnrollment(enrollment: Enrollment): void
+    +showCancelledEnrollment(code: int, studentName: String, planName: String, startDate: LocalDate, endDate: LocalDate, durationMonths: int, totalPrice: double, status: String, cancellationReason: String): void
+    +showPlan(planNameList: String, planDescriptionList: String, planTypeList: String, planMinDurationList: int, planPricePerMonthList: double): void
+    +showStudent(studentNameList: String, studentCpfList: String, studentContactList: String, studentBirthDateList: String): void
+    +showPlanTypeOptions(): void
+    +showPaymentTypeOptions(): void
+    +getInput(prompt: String): String
+    +getInputInt(prompt: String): int
+    +getInputDouble(prompt: String): double
+    +getInputDate(prompt: String): LocalDate
+    +getInputPlanType(prompt: String): PlanType
+    +getInputPaymentType(prompt: String): PaymentType
   }
 
   class JOptionPaneUI {
+    +showMessage(message: String): void
+    +showError(error: String): void
+    +showMenu(tittle: String, options: String[], prompt: String): int
+    +showEnrollment(code: int, studentName: String, planName: String, startDate: LocalDate, endDate: LocalDate, durationMonths: int, totalPrice: double, pendingAmount: double, status: String): void
+    +showEnrollment(enrollment: Enrollment): void
+    +showCancelledEnrollment(code: int, studentName: String, planName: String, startDate: LocalDate, endDate: LocalDate, durationMonths: int, totalPrice: double, status: String, cancellationReason: String): void
+    +showPlan(planNameList: String, planDescriptionList: String, planTypeList: String, planMinDurationList: int, planPricePerMonthList: double): void
+    +showStudent(studentNameList: String, studentCpfList: String, studentContactList: String, studentBirthDateList: String): void
+    +showPlanTypeOptions(): void
+    +showPaymentTypeOptions(): void
+    +getInput(prompt: String): String
+    +getInputInt(prompt: String): int
+    +getInputDouble(prompt: String): double
+    +getInputDate(prompt: String): LocalDate
+    +getInputPlanType(prompt: String): PlanType
+    +getInputPaymentType(prompt: String): PaymentType
   }
 
   class MainMenu {
     -ui: UserInterface
     -fitManager: FitManager
+    +MainMenu(ui: UserInterface, fitManager: FitManager)
     +start(): void
   }
 
   class StudentsMenu {
     -ui: UserInterface
     -fitManager: FitManager
+    +StudentsMenu(ui: UserInterface, fitManager: FitManager)
     +run(): void
+    +formatStudentList(studentList: ArrayList<Student>): String
   }
 
   class PlanMenu {
     -ui: UserInterface
     -fitManager: FitManager
+    +PlanMenu(ui: UserInterface, fitManager: FitManager)
     +run(): void
+    +formatPlanList(planList: ArrayList<Plan>): String
   }
 
   class EnrollmentMenu {
     -ui: UserInterface
     -fitManager: FitManager
+    +EnrollmentMenu(ui: UserInterface, fitManager: FitManager)
     +run(): void
+    -collectAndRegisterPayment(enrollmentCode: int, amount: double, paymentType: PaymentType, description: String): OperationResult<Payment>
+    -processCancellation(enrollmentCode: int, cancelReason: String, enrollmentHistory: ArrayList<Enrollment>): void
+    -collectAndRegisterInitialPayment(cpf: String, planName: String, startDate: LocalDate, durationMonths: int, initialPayment: double, paymentType: PaymentType): OperationResult<Enrollment>
+    +formatEnrollmentList(enrollmentHistory: ArrayList<Enrollment>): String
   }
 
   class ReportsMenu {
     -ui: UserInterface
     -fitManager: FitManager
+    +ReportsMenu(ui: UserInterface, fitManager: FitManager)
     +run(): void
+    -buildActiveEnrollmentsReport(allEnrollments: ArrayList<Enrollment>): String
+    -buildPendingPaymentsReport(allEnrollments: ArrayList<Enrollment>): String
+    -buildAllEnrollmentsReport(allEnrollments: ArrayList<Enrollment>): String
   }
 
   enum MainMenuEnum {
@@ -78,6 +127,9 @@ package "Interface do Usuario (UI)" as UI #PapayaWhip {
     MANAGE_ENROLLMENTS
     REPORTS
     EXIT
+    +getOptionNumber(): int
+    +getOptionDescription(): String
+    +selectFromInt(option: int): MainMenuEnum
   }
 
   enum StudentMenuEnum {
@@ -87,6 +139,9 @@ package "Interface do Usuario (UI)" as UI #PapayaWhip {
     ACTIVATE_STUDENT
     VIEW_ALL_STUDENTS
     BACK
+    +getOptionNumber(): int
+    +getOptionDescription(): String
+    +selectFromInt(option: int): StudentMenuEnum
   }
 
   enum PlanMenuEnum {
@@ -95,6 +150,9 @@ package "Interface do Usuario (UI)" as UI #PapayaWhip {
     CHANGE_PRICE
     VIEW_ALL
     BACK
+    +getOptionNumber(): int
+    +getOptionDescription(): String
+    +selectFromInt(option: int): PlanMenuEnum
   }
 
   enum EnrollmentMenuEnum {
@@ -104,13 +162,20 @@ package "Interface do Usuario (UI)" as UI #PapayaWhip {
     CHECK_ACTIVE_ENROLLMENT
     VIEW_HISTORY
     BACK
+    +getOptionNumber(): int
+    +getOptionDescription(): String
+    +selectFromInt(option: int): EnrollmentMenuEnum
   }
 
   enum ReportsMenuEnum {
     ACTIVE_ENROLLMENTS_STUDENTS
     PENDING_PAYMENTS_ENROLLMENTS
     ALL_ENROLLMENTS
+    MONTHLY_FINANCIAL_REPORT
     BACK
+    +getOptionNumber(): int
+    +getOptionDescription(): String
+    +selectFromInt(option: int): ReportsMenuEnum
   }
 }
 
@@ -123,71 +188,143 @@ package "Aplicacao" as APP #MistyRose {
     -studentService: StudentService
     -planService: PlanService
     -enrollmentService: EnrollmentService
-
-    +registerStudent(...): OperationResult
+    -{static} FILE_STUDENTS: String
+    -{static} FILE_PLANS: String
+    -{static} FILE_ENROLLMENTS: String
+    +FitManager()
+    +loadAll(): void
+    +saveAll(): void
+    -persistAfterMutation<T>(result: OperationResult<T>): OperationResult<T>
+    +registerStudent(name: String, cpf: String, contact: String, birthDate: LocalDate): OperationResult<Student>
     +findStudentByCpf(cpf: String): Student
-    +removeStudent(cpf: String): OperationResult
-    +activateStudent(cpf: String): OperationResult
+    +removeStudent(cpf: String): OperationResult<Student>
+    +activateStudent(cpf: String): OperationResult<Student>
     +listStudents(): ArrayList<Student>
-
-    +registerPlan(...): OperationResult
-    +findPlanByName(name: String): Plan
-    +updatePlanPrice(name: String, newPrice: double): OperationResult
+    +registerPlan(name: String, description: String, type: PlanType, minDurationMonths: int, pricePerMonth: double): OperationResult<Plan>
+    +findPlanByName(name: String): OperationResult<Plan>
+    +updatePlanPrice(name: String, newPrice: double): OperationResult<Plan>
     +listPlans(): ArrayList<Plan>
-
-    +enrollStudent(...): OperationResult
-    +registerPaymentPix(...): OperationResult
-    +registerPaymentCash(...): OperationResult
-    +registerPaymentDebit(...): OperationResult
-    +registerPaymentCredit(...): OperationResult
-    +cancelEnrollment(code: int, reason: String): OperationResult
-    +calculateCancelationFee(code: int): OperationResult
-    +findActiveEnrollment(cpf: String): OperationResult
+    +enrollStudent(cpf: String, planName: String, startDate: LocalDate, durationMonths: int, paymentDescription: String, initialAmount: double, pixKey: String): OperationResult<Enrollment>
+    +enrollStudent(cpf: String, planName: String, startDate: LocalDate, durationMonths: int, initialAmount: double, paymentDescription: String, amountReceived: double): OperationResult<Enrollment>
+    +enrollStudent(cpf: String, planName: String, startDate: LocalDate, durationMonths: int, initialAmount: double, paymentDescription: String, cardLastDigits: String): OperationResult<Enrollment>
+    +enrollStudent(cpf: String, planName: String, startDate: LocalDate, durationMonths: int, initialAmount: double, paymentDescription: String, installments: int, cardLastDigits: String): OperationResult<Enrollment>
+    +registerPaymentPix(code: int, amount: double, description: String, pixKey: String): OperationResult<Payment>
+    +registerPaymentCash(code: int, amount: double, description: String, amountReceived: double): OperationResult<Payment>
+    +registerPaymentDebit(code: int, amount: double, description: String, cardLastDigits: String): OperationResult<Payment>
+    +registerPaymentCredit(code: int, amount: double, description: String, installments: int, cardLastDigits: String): OperationResult<Payment>
+    +findEnrollmentByCode(code: int): OperationResult<Enrollment>
+    +cancelEnrollment(code: int, reason: String): OperationResult<Enrollment>
+    +calculateCancelationFee(code: int): OperationResult<Double>
+    +findActiveEnrollment(cpf: String): OperationResult<Enrollment>
     +listEnrollments(): ArrayList<Enrollment>
+    +generateMonthlyReport(month: int, year: int): OperationResult<FinancialReport>
+    +exportMonthlyReport(report: FinancialReport): OperationResult<String>
+    -validate(cpf: String, planName: String, initialAmount: double): boolean
+    -validationError(cpf: String, planName: String, initialAmount: double): OperationResult<Enrollment>
+    -trySaveAll(): void
   }
 
-  class StudentService {
+  class StudentService extends Repository<Student> {
     -students: ArrayList<Student>
-    +registerStudent(...): OperationResult
+    +registerStudent(name: String, cpf: String, contact: String, birthDate: LocalDate): OperationResult<Student>
     +findByCpf(cpf: String): Student
-    +removeStudent(cpf: String): OperationResult
-    +reactivateStudent(cpf: String): OperationResult
+    +removeStudent(cpf: String): OperationResult<Student>
     +listStudents(): ArrayList<Student>
     +cpfExists(cpf: String): boolean
+    +reactivateStudent(cpf: String): OperationResult<Student>
+    +save(filePath: String): void
+    +load(filePath: String): void
+    -encode(s: Student): String
   }
 
-  class PlanService {
+  class PlanService extends Repository<Plan> {
     -{static} plans: ArrayList<Plan>
-    +PlanService()
+    -{static} SEP: String
+    -{static} SEP_REGEX: String
     +listPlans(): ArrayList<Plan>
-    +{static} findByName(name: String): Plan
+    +findByName(name: String): OperationResult<Plan>
     +nameExists(name: String): boolean
-    +registerPlan(...): OperationResult
-    +updatePrice(name: String, newPrice: double): OperationResult
+    +registerPlan(name: String, description: String, type: PlanType, minDurationMonths: int, pricePerMonth: double): OperationResult<Plan>
+    +updatePrice(name: String, newPrice: double): OperationResult<Plan>
+    +save(filePath: String): void
+    +load(filePath: String): void
+    -encode(p: Plan): String
+    -instantiatePlan(typeName: String, name: String, description: String, minDuration: int, price: double, lineNumber: int, filePath: String): Plan
   }
 
-  class EnrollmentService {
+  class EnrollmentService extends Repository<Enrollment> {
     -enrollments: ArrayList<Enrollment>
-    -{static} nextCode: int
-    +enroll(...): OperationResult
-    +registerPayment(...): OperationResult
+    -nextCode: int
+    -{static} SEP: String
+    -{static} SEP_REGEX: String
+    -{static} NEXT_CODE_KEY: String
+    -{static} PAYMENT_PREFIX: String
+    -{static} END_PAYMENTS: String
+    -{static} NULL_MARKER: String
+    +enroll(student: Student, plan: Plan, startDate: LocalDate, duration: int, payment: Payment): OperationResult<Enrollment>
+    -validatePayment(payment: Payment): OperationResult<Boolean>
+    +registerPayment(code: int, payment: Payment): OperationResult<Payment>
     +findActiveByStudent(cpf: String): Enrollment
     +findByCode(code: int): Enrollment
     +listEnrollments(): ArrayList<Enrollment>
-    +cancel(code: int, reason: String): OperationResult
-    +calculateCancelationFee(code: int): OperationResult
+    +cancel(code: int, reason: String): OperationResult<Enrollment>
+    +calculateCancelationFee(code: int): OperationResult<Double>
     +hasActiveEnrollment(cpf: String): boolean
+    +save(filePath: String): void
+    +load(filePath: String, students: StudentService, plans: PlanService): void
+    +load(filePath: String): void
+    -encodeHeader(e: Enrollment): String
+    -decodeHeader(line: String, lineNumber: int, filePath: String, students: StudentService, plans: PlanService): Enrollment
+    -encodePayment(p: Payment): String
+    -decodePayment(line: String, lineNumber: int, filePath: String): Payment
   }
 
-  class OperationResult {
+  abstract class Repository<T> {
+    #items: List<T>
+    +listAll(): List<T>
+    +count(): int
+    +{abstract} save(filePath: String): void
+    +{abstract} load(filePath: String): void
+  }
+
+  class OperationResult<T> {
     -success: boolean
     -message: String
-    -data: Object
+    -data: T
     +OperationResult(success: boolean, message: String)
-    +OperationResult(success: boolean, message: String, data: Object)
+    +OperationResult(success: boolean, message: String, data: T)
     +isSuccess(): boolean
     +getMessage(): String
-    +getData(): Object
+    +getData(): T
+  }
+
+  class FinancialReport {
+    -month: int
+    -year: int
+    -totalRevenue: double
+    -revenueByPlanType: Map<String, Double>
+    -revenueByPaymentType: Map<String, Double>
+    -totalProcessingFees: double
+    -enrollmentsStarted: int
+    -enrollmentsCancelled: int
+    -mostContractedPlanTypes: ArrayList<String>
+    +FinancialReport(month: int, year: int)
+    +calculate(enrollments: ArrayList<Enrollment>): void
+    -resetMetrics(): void
+    -updateMostContractedPlanTypes(contractedCountByPlanType: Map<String, Integer>): void
+    -isSamePeriod(date: LocalDate): boolean
+    +toDisplayString(): String
+    -appendRevenueMap(reportText: StringBuilder, source: Map<String, Double>): void
+    +exportToFile(directoryPath: String): String
+    +getMonth(): int
+    +getYear(): int
+    +getTotalRevenue(): double
+    +getRevenueByPlanType(): Map<String, Double>
+    +getRevenueByPaymentType(): Map<String, Double>
+    +getTotalProcessingFees(): double
+    +getEnrollmentsStarted(): int
+    +getEnrollmentsCancelled(): int
+    +getMostContractedPlanTypes(): ArrayList<String>
   }
 }
 
@@ -203,12 +340,24 @@ package "Dominio" as DOM #PowderBlue {
     -birthDate: LocalDate
     -active: boolean
     -{static} dateFormatter: DateTimeFormatter
-    +Student(...)
+    +Student(name: String, cpf: String, contact: String, birthDate: LocalDate)
+    +setName(name: String): void
+    +setCpf(cpf: String): void
+    +setContact(contact: String): void
+    +setBirthDate(birthDate: LocalDate): void
     +activate(): void
     +deactivate(): void
+    +getName(): String
+    +getCpf(): String
     +getFormattedCpf(): String
+    +getContact(): String
+    +getBirthDate(): LocalDate
+    +getFormattedBirthDate(): String
+    +isActive(): boolean
     +calculateAge(): int
     +{static} validateCpf(cpf: String): boolean
+    +equals(obj: Object): boolean
+    +hashCode(): int
   }
 
   abstract class Plan {
@@ -216,32 +365,48 @@ package "Dominio" as DOM #PowderBlue {
     -description: String
     -minDurationMonths: int
     -pricePerMonth: double
-    +Plan(...)
+    +Plan(name: String, description: String, minDurationMonths: int, pricePerMonth: double)
+    +setName(name: String): void
+    +setDescription(description: String): void
+    +setMinDurationMonths(minDurationMonths: int): void
     +updatePrice(newPrice: double): void
+    +getName(): String
+    +getDescription(): String
+    +getMinDurationMonths(): int
+    +getPricePerMonth(): double
     +{abstract} getType(): PlanType
     +{abstract} calculateTotalPrice(months: int): double
+    +{abstract} getCancellationFee(enrollment: Enrollment): double
+    +equals(obj: Object): boolean
+    +hashCode(): int
+  }
+
+  class PlanMonthly {
+    +PlanMonthly(name: String, description: String, minDurationMonths: int, pricePerMonth: double)
+    +getType(): PlanType
+    +calculateTotalPrice(months: int): double
     +getCancellationFee(enrollment: Enrollment): double
   }
 
-  class PlanAnnual {
+  class PlanQuarterly {
+    +PlanQuarterly(name: String, description: String, minDurationMonths: int, pricePerMonth: double)
     +getType(): PlanType
     +calculateTotalPrice(months: int): double
     +getCancellationFee(enrollment: Enrollment): double
   }
 
   class PlanSemiAnnual {
+    +PlanSemiAnnual(name: String, description: String, minDurationMonths: int, pricePerMonth: double)
     +getType(): PlanType
     +calculateTotalPrice(months: int): double
+    +getCancellationFee(enrollment: Enrollment): double
   }
 
-  class PlanQuarterly {
+  class PlanAnnual {
+    +PlanAnnual(name: String, description: String, minDurationMonths: int, pricePerMonth: double)
     +getType(): PlanType
     +calculateTotalPrice(months: int): double
-  }
-
-  class PlanMonthly {
-    +getType(): PlanType
-    +calculateTotalPrice(months: int): double
+    +getCancellationFee(enrollment: Enrollment): double
   }
 
   enum PlanType {
@@ -249,6 +414,9 @@ package "Dominio" as DOM #PowderBlue {
     QUARTERLY
     SEMI_ANNUAL
     ANNUAL
+    +getValueOption(): int
+    +getDescription(): String
+    +selectFromInt(option: int): PlanType
   }
 
   class Enrollment {
@@ -260,15 +428,36 @@ package "Dominio" as DOM #PowderBlue {
     -durationMonths: int
     -totalPrice: double
     -status: EnrollmentStatus
+    -payments: ArrayList<Payment>
     -cancellationDate: LocalDate
     -cancellationReason: String
-    +Enrollment(...)
+    +Enrollment(code: int, student: Student, plan: Plan, startDate: LocalDate, durationMonths: int)
     +registerPayment(payment: Payment): void
     +calculateTotalPaid(): double
     +calculateBalance(): double
     +calculateBalanceForMonthsUsed(): double
     +cancel(reason: String): void
+    +cancelWithDate(cancDate: LocalDate, reason: String): void
     +getMonthsUsed(): long
+    +getCode(): int
+    +getStudent(): Student
+    +getPlan(): Plan
+    +getStartDate(): LocalDate
+    +getEndDate(): LocalDate
+    +getDurationMonths(): int
+    +getTotalPrice(): double
+    +getStatus(): EnrollmentStatus
+    +getPayments(): List<Payment>
+    +getCancellationDate(): LocalDate
+    +getCancellationReason(): String
+    +equals(obj: Object): boolean
+    +hashCode(): int
+  }
+
+  enum EnrollmentStatus {
+    ACTIVE
+    CANCELLED
+    +getDescription(): String
   }
 
   abstract class Payment {
@@ -276,16 +465,24 @@ package "Dominio" as DOM #PowderBlue {
     -amount: double
     -description: String
     -{static} DATE_FORMATTER: DateTimeFormatter
-    +Payment(...)
-    +{abstract} getProcessingFee(): double
-    +{abstract} getPaymentSummary(): String
+    +Payment(date: LocalDate, amount: double, description: String)
+    +getDate(): LocalDate
+    +getAmount(): double
+    +getDescription(): String
     +getFormattedDate(): String
+    +{abstract} getProcessingFee(): double
+    +{abstract} getType(): PaymentType
+    +{abstract} getPaymentSummary(): String
+    +equals(obj: Object): boolean
+    +hashCode(): int
   }
-  
+
   class CashPayment {
     -amountReceived: double
-    +CashPayment(...)
+    +CashPayment(date: LocalDate, amount: double, description: String, amountReceived: double)
+    +getAmountReceived(): double
     +getChange(): double
+    +getType(): PaymentType
     +getProcessingFee(): double
     +getPaymentSummary(): String
   }
@@ -294,21 +491,28 @@ package "Dominio" as DOM #PowderBlue {
     -installments: int
     -cardLastDigits: String
     -{static} PROCESSING_FEE_RATE: double
-    +CreditCardPayment(...)
+    +CreditCardPayment(date: LocalDate, amount: double, description: String, installments: int, cardLastDigits: String)
+    +getInstallments(): int
+    +getCardLastDigits(): String
+    +getType(): PaymentType
     +getProcessingFee(): double
     +getPaymentSummary(): String
   }
 
   class DebitCardPayment {
     -cardLastDigits: String
-    +DebitCardPayment(...)
+    +DebitCardPayment(date: LocalDate, amount: double, description: String, cardLastDigits: String)
+    +getCardLastDigits(): String
+    +getType(): PaymentType
     +getProcessingFee(): double
     +getPaymentSummary(): String
   }
 
   class PixPayment {
     -pixKey: String
-    +PixPayment(...)
+    +PixPayment(date: LocalDate, amount: double, description: String, pixKey: String)
+    +getPixKey(): String
+    +getType(): PaymentType
     +getProcessingFee(): double
     +getPaymentSummary(): String
   }
@@ -318,11 +522,57 @@ package "Dominio" as DOM #PowderBlue {
     CREDIT_CARD
     DEBIT_CARD
     CASH
+    +getValueOpcao(): int
+    +getDescription(): String
+    +selectFromInt(option: int): PaymentType
   }
+}
 
-  enum EnrollmentStatus {
-    ACTIVE
-    CANCELLED
+' =========================
+' EXCEPTIONS
+' =========================
+package "Excecoes" as EXC #LightGray {
+  class FitManagerException {
+    +FitManagerException(message: String)
+    +FitManagerException(message: String, cause: Throwable)
+  }
+  class BusinessException {
+    +BusinessException(message: String)
+    +BusinessException(message: String, cause: Throwable)
+  }
+  class ValidationException {
+    +ValidationException(message: String)
+    +ValidationException(message: String, cause: Throwable)
+  }
+  class PersistenceException {
+    -filePath: String
+    +PersistenceException(message: String, filePath: String)
+    +PersistenceException(message: String, filePath: String, cause: Throwable)
+    +getFilePath(): String
+  }
+  class CorruptedFileException {
+    +CorruptedFileException(message: String, filePath: String)
+    +CorruptedFileException(message: String, filePath: String, cause: Throwable)
+  }
+  class WriteFailureException {
+    +WriteFailureException(message: String, filePath: String)
+    +WriteFailureException(message: String, filePath: String, cause: Throwable)
+  }
+  class DuplicatedPlanException {
+    +DuplicatedPlanException(planName: String)
+  }
+  class DuplicateEnrollmentException {
+    +DuplicateEnrollmentException(cpf: String)
+  }
+  class InvalidFormatFieldException {
+    +InvalidFormatFieldException(fieldName: String, expectedFormat: String)
+    +InvalidFormatFieldException(fieldName: String, expectedFormat: String, cause: Throwable)
+  }
+  class RequiredFieldException {
+    +RequiredFieldException(fieldName: String)
+  }
+  class StudentWithActiveEnrollmentException {
+    +StudentWithActiveEnrollmentException(cpf: String)
   }
 }
 
@@ -333,50 +583,22 @@ package "Dominio" as DOM #PowderBlue {
 top to bottom direction
 UI -[hidden]down-> APP
 APP -[hidden]down-> DOM
-
-' Layout helpers (UI)
-UserInterface -[hidden]right- MainMenu
-MainMenu -[hidden]right- StudentsMenu
-StudentsMenu -[hidden]right- PlanMenu
-PlanMenu -[hidden]right- EnrollmentMenu
-EnrollmentMenu -[hidden]right- ReportsMenu
-
-MainMenuEnum -[hidden]right- StudentMenuEnum
-StudentMenuEnum -[hidden]right- PlanMenuEnum
-PlanMenuEnum -[hidden]right- EnrollmentMenuEnum
-EnrollmentMenuEnum -[hidden]right- ReportsMenuEnum
-
-' Layout helpers (Application)
-FitManager -[hidden]down- StudentService
-StudentService -[hidden]right- PlanService
-PlanService -[hidden]right- EnrollmentService
-FitManager -[hidden]right- OperationResult
-
-' Layout helpers (Domain)
-Student -[hidden]right- Enrollment
-Enrollment -[hidden]right- Plan
-Enrollment -[hidden]down- Payment
-PlanType -[hidden]right- PaymentType
-PaymentType -[hidden]right- EnrollmentStatus
-
-' Subclasses Layout helpers (Domain)
-PlanMonthly -[hidden]right- PlanQuarterly
-PlanQuarterly -[hidden]right- PlanSemiAnnual
-PlanSemiAnnual -[hidden]right- PlanAnnual
-
-CashPayment -[hidden]right- CreditCardPayment
-CreditCardPayment -[hidden]right- DebitCardPayment
-DebitCardPayment -[hidden]right- PixPayment
+DOM -[hidden]down-> EXC
 
 ' UI Realization
 TerminalUI ..|> UserInterface
 JOptionPaneUI ..|> UserInterface
 
+' Repository Inheritance
+StudentService --|> Repository
+PlanService --|> Repository
+EnrollmentService --|> Repository
+
 ' Plan Inheritance
-PlanAnnual --|> Plan
-PlanSemiAnnual --|> Plan
-PlanQuarterly --|> Plan
 PlanMonthly --|> Plan
+PlanQuarterly --|> Plan
+PlanSemiAnnual --|> Plan
+PlanAnnual --|> Plan
 
 ' Payment Inheritance
 CashPayment --|> Payment
@@ -384,13 +606,24 @@ CreditCardPayment --|> Payment
 DebitCardPayment --|> Payment
 PixPayment --|> Payment
 
-' Connections
+' Exception Inheritance
+BusinessException --|> FitManagerException
+ValidationException --|> FitManagerException
+PersistenceException --|> FitManagerException
+CorruptedFileException --|> PersistenceException
+WriteFailureException --|> PersistenceException
+DuplicatedPlanException --|> BusinessException
+DuplicateEnrollmentException --|> BusinessException
+InvalidFormatFieldException --|> ValidationException
+RequiredFieldException --|> ValidationException
+StudentWithActiveEnrollmentException --|> BusinessException
+
+' Main connections
 Main --> MainMenu
 Main --> UserInterface
-Main --> TerminalUI
-Main --> JOptionPaneUI
 Main --> FitManager
 
+' UI Menu connections
 MainMenu --> UserInterface
 MainMenu --> FitManager
 MainMenu --> StudentsMenu
@@ -407,33 +640,50 @@ EnrollmentMenu --> FitManager
 ReportsMenu --> UserInterface
 ReportsMenu --> FitManager
 
+' Enum usage by menus
 MainMenu --> MainMenuEnum
 StudentsMenu --> StudentMenuEnum
 PlanMenu --> PlanMenuEnum
 EnrollmentMenu --> EnrollmentMenuEnum
 ReportsMenu --> ReportsMenuEnum
 
+' FitManager composition of services
 FitManager *-- StudentService
 FitManager *-- PlanService
 FitManager *-- EnrollmentService
 FitManager --> OperationResult
+FitManager --> FinancialReport
 
+' Services contain domain objects
 StudentService "1" o-- "0..*" Student
 PlanService "1" o-- "0..*" Plan
 EnrollmentService "1" o-- "0..*" Enrollment
 
+' Enrollment relationships
 Enrollment "0..*" --> "1" Student
 Enrollment "0..*" --> "1" Plan
 Enrollment "1" *-- "0..*" Payment
 Enrollment --> EnrollmentStatus
+
+' Plan uses PlanType
 Plan --> PlanType
+
+' Payment uses PaymentType
 Payment --> PaymentType
 
-note as NoteLayers
-  UI depende de Application e de Domain para acessar tipos de dados e Enums
-  (PlanType, PaymentType, Student, Plan, Enrollment).
-end note
+' FinancialReport depends on Enrollment
+FinancialReport ..> Enrollment : calculates
 
-APP .. NoteLayers
+' Persistence dependencies (throws)
+StudentService ..> PersistenceException : throws
+StudentService ..> CorruptedFileException : throws
+StudentService ..> WriteFailureException : throws
+PlanService ..> PersistenceException : throws
+PlanService ..> CorruptedFileException : throws
+PlanService ..> WriteFailureException : throws
+EnrollmentService ..> PersistenceException : throws
+EnrollmentService ..> CorruptedFileException : throws
+EnrollmentService ..> WriteFailureException : throws
+FitManager ..> PersistenceException : throws
 
 @enduml
