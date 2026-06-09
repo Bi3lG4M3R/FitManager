@@ -9,7 +9,7 @@ import exceptions.CorruptedFileException;
 import exceptions.WriteFailureException;
 
 public class PlanService extends Repository<Plan> {
-    private static ArrayList<Plan> plans;
+    private static ArrayList<Plan> plans = new ArrayList<>();
     // ------------------------------------------------------------------ //
     // Regras de negócio                                                    //
     // ------------------------------------------------------------------ //
