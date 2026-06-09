@@ -39,11 +39,12 @@ public class Enrollment {
 
     public void registerPayment(Payment payment) { payments.add(payment); }
     
-    /*Soma todos pagamentos do array e coloca na variavel*/
+    /*Soma todos pagamentos, já descontando as taxas de processamento de cada um.
+     Assim apenas o valor recebido de fato pela academia é contabilizado.*/
     public double calculateTotalPaid() {
         double total = 0;
         for (Payment payment : payments) {
-            total += payment.getAmount();
+            total += (payment.getAmount() - payment.getProcessingFee());
         }
         return total;
     }
@@ -57,6 +58,8 @@ public class Enrollment {
     quantidade que ele já deveria ter pago em relação aos meses usados, resultado negativo = pagou
     mais do que o necessário em relação aos meses já usados(mas não haverá devolução), resultado 0.0 estamos quites*/
     public double calculateBalanceForMonthsUsed() { 
+        if(this.getMonthsUsed() > this.durationMonths)
+            return (this.durationMonths * this.plan.getPricePerMonth()) - calculateTotalPaid();
         return (this.getMonthsUsed() * this.plan.getPricePerMonth()) - calculateTotalPaid();
     }
 
@@ -65,6 +68,12 @@ public class Enrollment {
     public void cancel(String reason) {
         this.status = EnrollmentStatus.CANCELLED;
         this.cancellationDate = LocalDate.now();
+        this.cancellationReason = (reason != null && !reason.isBlank()) ? reason : "Não informado";
+    }
+
+    public void cancelWithDate(LocalDate cancDate, String reason) {
+        this.status = EnrollmentStatus.CANCELLED;
+        this.cancellationDate = cancDate;
         this.cancellationReason = (reason != null && !reason.isBlank()) ? reason : "Não informado";
     }
 
@@ -97,4 +106,17 @@ public class Enrollment {
     public LocalDate getCancellationDate() { return cancellationDate; }
     
     public String getCancellationReason() { return cancellationReason; }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Enrollment other = (Enrollment) obj;
+        return code == other.code;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(code);
+    }
 }

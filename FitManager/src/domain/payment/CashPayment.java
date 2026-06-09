@@ -15,6 +15,9 @@ public class CashPayment extends Payment {
 
     public double getAmountReceived() { return amountReceived; }
 
+    @Override
+    public PaymentType getType() { return PaymentType.CASH; }
+
     /* Método exclusivo de CashPayment — não pertence ao contrato de Payment
      pois troco não faz sentido para os outros tipos.*/
     public double getChange() {
@@ -28,9 +31,10 @@ public class CashPayment extends Payment {
 
     @Override
     public String getPaymentSummary() {
+        double change = getChange();
         return String.format(
-            "Tipo: Dinheiro | Data: %s | Valor: R$ %.2f | Recebido: R$ %.2f | Troco: R$ %.2f | Desc: %s",
-            getFormattedDate(), getAmount(), amountReceived, getChange(), getDescription()
+            "[DINHEIRO] Data: %s | Valor Pago: R$ %.2f | Recebido: R$ %.2f | Troco: R$ %.2f | Taxa: R$ %.2f | Valor Líquido: R$ %.2f | %s",
+            getFormattedDate(), getAmount(), amountReceived, change, getProcessingFee(), getAmount(), getDescription()
         );
     }
 }

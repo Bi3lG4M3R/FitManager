@@ -14,6 +14,9 @@ public class DebitCardPayment extends Payment {
     public String getCardLastDigits() { return cardLastDigits; }
 
     @Override
+    public PaymentType getType() { return PaymentType.DEBIT_CARD; }
+
+    @Override
     public double getProcessingFee() {
         return 0.0; /* Débito não tem taxa*/
     }
@@ -21,8 +24,8 @@ public class DebitCardPayment extends Payment {
     @Override
     public String getPaymentSummary() {
         return String.format(
-            "Tipo: Cartão de Débito | Data: %s | Valor: R$ %.2f | Cartão: **** %s | Desc: %s",
-            getFormattedDate(), getAmount(), cardLastDigits, getDescription()
+            "[DÉBITO] Data: %s | Valor: R$ %.2f | Cartão: **** %s | Taxa: R$ %.2f (sem taxa) | Valor Líquido: R$ %.2f | %s",
+            getFormattedDate(), getAmount(), cardLastDigits, getProcessingFee(), getAmount(), getDescription()
         );
     }
 }

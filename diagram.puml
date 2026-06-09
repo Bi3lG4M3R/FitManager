@@ -223,23 +223,23 @@ package "Dominio" as DOM #PowderBlue {
     +getCancellationFee(enrollment: Enrollment): double
   }
 
-  class PlanAnnual {
+  class AnnualPlan {
     +getType(): PlanType
     +calculateTotalPrice(months: int): double
     +getCancellationFee(enrollment: Enrollment): double
   }
 
-  class PlanSemiAnnual {
+  class SemiAnnualPlan {
     +getType(): PlanType
     +calculateTotalPrice(months: int): double
   }
 
-  class PlanQuarterly {
+  class QuarterlyPlan {
     +getType(): PlanType
     +calculateTotalPrice(months: int): double
   }
 
-  class PlanMonthly {
+  class MonthlyPlan {
     +getType(): PlanType
     +calculateTotalPrice(months: int): double
   }
@@ -360,9 +360,9 @@ PlanType -[hidden]right- PaymentType
 PaymentType -[hidden]right- EnrollmentStatus
 
 ' Subclasses Layout helpers (Domain)
-PlanMonthly -[hidden]right- PlanQuarterly
-PlanQuarterly -[hidden]right- PlanSemiAnnual
-PlanSemiAnnual -[hidden]right- PlanAnnual
+MonthlyPlan -[hidden]right- QuarterlyPlan
+QuarterlyPlan -[hidden]right- SemiAnnualPlan
+SemiAnnualPlan -[hidden]right- AnnualPlan
 
 CashPayment -[hidden]right- CreditCardPayment
 CreditCardPayment -[hidden]right- DebitCardPayment
@@ -373,10 +373,10 @@ TerminalUI ..|> UserInterface
 JOptionPaneUI ..|> UserInterface
 
 ' Plan Inheritance
-PlanAnnual --|> Plan
-PlanSemiAnnual --|> Plan
-PlanQuarterly --|> Plan
-PlanMonthly --|> Plan
+AnnualPlan --|> Plan
+SemiAnnualPlan --|> Plan
+QuarterlyPlan --|> Plan
+MonthlyPlan --|> Plan
 
 ' Payment Inheritance
 CashPayment --|> Payment
